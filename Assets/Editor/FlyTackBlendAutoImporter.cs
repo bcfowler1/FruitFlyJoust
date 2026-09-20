@@ -50,17 +50,15 @@ public static class FlyTackBlendAutoImporter
         if(process!=null)
         {
             if(!process.HasExited)return;
-            string output=process.StandardOutput.ReadToEnd();
-            string error=process.StandardError.ReadToEnd();
             int exitCode=process.ExitCode;
             process.Dispose();process=null;
             if(exitCode==0)
             {
-                UnityEngine.Debug.Log("FLY_TACK_AUTO_IMPORT_PASS: "+Path.GetFileName(active.blend)+" -> "+active.fbx+"\n"+output);
+                UnityEngine.Debug.Log("FLY_TACK_AUTO_IMPORT_PASS: "+Path.GetFileName(active.blend)+" -> "+active.fbx);
                 AssetDatabase.ImportAsset(RelativeAssetPath(active.fbx),ImportAssetOptions.ForceUpdate);
                 FlyTackLabWindow.RebuildOpenWindows();
             }
-            else UnityEngine.Debug.LogError("FLY_TACK_AUTO_IMPORT_FAIL: "+Path.GetFileName(active.blend)+"\n"+error+"\n"+output);
+            else UnityEngine.Debug.LogError("FLY_TACK_AUTO_IMPORT_FAIL: "+Path.GetFileName(active.blend)+" (Blender exit code "+exitCode+")");
             StartNext();return;
         }
         if(EditorApplication.timeSinceStartup<nextCheck)return;
@@ -94,8 +92,8 @@ public static class FlyTackBlendAutoImporter
             Arguments=Quote(active.blend)+" --background --python "+Quote(script)+" -- "+Quote(active.fbx),
             UseShellExecute=false,
             CreateNoWindow=true,
-            RedirectStandardOutput=true,
-            RedirectStandardError=true
+            RedirectStandardOutput=false,
+            RedirectStandardError=false
         };
         process=Process.Start(start);
         UnityEngine.Debug.Log("FLY_TACK_AUTO_IMPORT_STARTED: "+Path.GetFileName(active.blend));
