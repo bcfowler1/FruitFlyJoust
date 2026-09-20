@@ -53,9 +53,13 @@ namespace FruitFlyJoust
             generated=new GameObject("Fly tack (horse adapted)").transform;
             generated.SetParent(transform,false);
             var source=Resources.Load<GameObject>("FlyTack/Horse Realistic");
-            if(!source){Debug.LogWarning("Fly tack source model has not imported yet.",this);return;}
-            BuildPiece(source,"Saddle",new[]{"Saddle","Saddle Low","Saddle PA","Reins","Reins Head","Reins PA"},SaddleMaterial());
-            BuildPiece(source,"Armour",new[]{"Armour","Armour PA"},ArmourMaterial());
+            var editedSaddle=Resources.Load<GameObject>("FlyTack/Fly Saddle Edited");
+            var editedArmour=Resources.Load<GameObject>("FlyTack/Fly Armor Edited");
+            if(!source && (!editedSaddle || !editedArmour)){Debug.LogWarning("Fly tack source model has not imported yet.",this);return;}
+            if(editedSaddle)BuildPiece(editedSaddle,"Saddle",new[]{"Fly Saddle"},SaddleMaterial());
+            else BuildPiece(source,"Saddle",new[]{"Saddle","Saddle Low","Saddle PA","Reins","Reins Head","Reins PA"},SaddleMaterial());
+            if(editedArmour)BuildPiece(editedArmour,"Armour",new[]{"Fly Armor"},ArmourMaterial());
+            else BuildPiece(source,"Armour",new[]{"Armour","Armour PA"},ArmourMaterial());
             Apply();
         }
 
@@ -95,6 +99,7 @@ namespace FruitFlyJoust
                     case "Reins": renderer.enabled=fit.showSaddle&&fit.reins;break;
                     case "Reins Head": renderer.enabled=fit.showSaddle&&fit.reinsHead;break;
                     case "Reins PA": renderer.enabled=fit.showSaddle&&fit.reinsPolyArt;break;
+                    case "Fly Saddle": renderer.enabled=fit.showSaddle;break;
                     default: renderer.enabled=false;break;
                 }
             }
@@ -102,6 +107,7 @@ namespace FruitFlyJoust
             {
                 if(renderer.gameObject.name=="Armour")renderer.enabled=fit.showArmour&&fit.armour;
                 else if(renderer.gameObject.name=="Armour PA")renderer.enabled=fit.showArmour&&fit.armourPolyArt;
+                else if(renderer.gameObject.name=="Fly Armor")renderer.enabled=fit.showArmour;
                 else renderer.enabled=false;
             }
         }
@@ -110,11 +116,15 @@ namespace FruitFlyJoust
         {
             if(!anchor)return;anchor.gameObject.SetActive(visible);if(!visible)return;
             anchor.localPosition=thorax.center+Vector3.up*thorax.extents.y+Vector3.Scale(offset,thorax.size);
-            anchor.localRotation=Quaternion.Euler(rotation);
+            bool edited=anchor.GetComponentInChildren<Renderer>(true) && Array.Exists(anchor.GetComponentsInChildren<Renderer>(true),r=>r.gameObject.name=="Fly Saddle" || r.gameObject.name=="Fly Armor");
+            anchor.localRotation=edited ? Quaternion.identity : Quaternion.Euler(rotation);
             var model=anchor.childCount>0 ? anchor.GetChild(0) : null;if(!model)return;
             model.localPosition=Vector3.zero;model.localRotation=Quaternion.identity;model.localScale=Vector3.one;
             Bounds source=RendererBounds(model,anchor);
-            Vector3 wanted=Vector3.Scale(thorax.size,sizeRatio);
+            // Edited Blender files are already rotated and sized in thorax-ratio
+            // units. Multiplying by the live thorax dimensions preserves every
+            // modeling change instead of forcing the old horse-derived envelope.
+            Vector3 wanted=edited ? Vector3.Scale(thorax.size,source.size) : Vector3.Scale(thorax.size,sizeRatio);
             Vector3 scale=new Vector3(wanted.x/Mathf.Max(.0001f,source.size.x),wanted.y/Mathf.Max(.0001f,source.size.y),wanted.z/Mathf.Max(.0001f,source.size.z));
             model.localScale=scale;
             Bounds fitted=RendererBounds(model,anchor);
