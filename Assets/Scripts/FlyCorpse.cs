@@ -38,6 +38,17 @@ namespace FruitFlyJoust
             foreach(var renderer in renderers)if(renderer && GeometryUtility.TestPlanesAABB(planes,renderer.bounds))return true;
             return false;
         }
+        void FixedUpdate()
+        {
+            if(!physicsBody || renderers==null || renderers.Length==0)return;
+            Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)if(renderer)bounds.Encapsulate(renderer.bounds);
+            if(!Physics.Raycast(bounds.center+Vector3.up*2,Vector3.down,out var ground,6,1,QueryTriggerInteraction.Ignore) || Vector3.Dot(ground.normal,Vector3.up)<.65f)return;
+            float penetration=Vector3.Dot(ground.point-bounds.min,ground.normal);
+            if(penetration<=.02f)return;
+            physicsBody.position+=ground.normal*(penetration+.025f);
+            float intoGround=Vector3.Dot(physicsBody.velocity,ground.normal);
+            if(intoGround<0)physicsBody.velocity-=ground.normal*intoGround;
+        }
         void Update(){age+=Time.deltaTime;if(age>=minimumLifetime&&!VisibleToMainCamera())Destroy(gameObject);}
     }
 }

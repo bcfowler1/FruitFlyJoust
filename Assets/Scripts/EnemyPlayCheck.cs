@@ -42,6 +42,7 @@ namespace FruitFlyJoust
                 Require(initialCompetence<.25f && jouster.Mounted,"mounted jouster begins at low competency");
                 yield return WaitClock(.25f);
                 Require(jouster.WingMotionDegrees>5,"mounted fly mirrors the animated biological wing stroke");
+                Require(jouster.GroundClearance>=.55f,"live enemy fly remains above the ground collision surface");
                 Require(jouster.RiderForwardAlignment>.9f,"opponent rider faces the lance and travel direction while mounted");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
                 Require(jouster.RiderHealth.GetComponent<Collider>() && jouster.FlyHealth.GetComponent<Collider>(),"mounted rider and fly have active lance hit volumes");

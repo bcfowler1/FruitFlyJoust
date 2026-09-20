@@ -17,6 +17,14 @@ namespace FruitFlyJoust
         public bool RiderRagdolled { get { return riderVisual && riderVisual.Ragdolled; } }
         public FlyCorpse LastFlyCorpse { get; private set; }
         public Vector3 CurrentVelocity { get { return velocity; } }
+        public float GroundClearance
+        {
+            get
+            {
+                return Physics.Raycast(transform.position+Vector3.up*.5f,Vector3.down,out var hit,100,1,QueryTriggerInteraction.Ignore) && Vector3.Dot(hit.normal,Vector3.up)>.65f ?
+                    Vector3.Dot(transform.position-hit.point,hit.normal) : float.PositiveInfinity;
+            }
+        }
         Transform flyVisual,lance,riderAnchor;
         BiologicalPoseMirror poseMirror;
         RiderAnimationVisual riderVisual;
@@ -200,7 +208,18 @@ namespace FruitFlyJoust
             Vector3 desired=(aim-transform.position).normalized;
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
             velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
-            transform.position+=velocity*dt;
+            Vector3 movement=velocity*dt;
+            if(movement.sqrMagnitude>.0001f && Physics.SphereCast(transform.position,.48f,movement.normalized,out var obstacle,movement.magnitude+.08f,1,QueryTriggerInteraction.Ignore))
+            {
+                transform.position=obstacle.point+obstacle.normal*.52f;
+                velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.5f;
+            }
+            else transform.position+=movement;
+            if(Physics.Raycast(transform.position+Vector3.up*.5f,Vector3.down,out var floor,2,1,QueryTriggerInteraction.Ignore) && Vector3.Dot(floor.normal,Vector3.up)>.65f)
+            {
+                float clearance=Vector3.Dot(transform.position-floor.point,floor.normal);
+                if(clearance<.58f){transform.position+=floor.normal*(.58f-clearance);velocity=Vector3.ProjectOnPlane(velocity,floor.normal)+floor.normal*Mathf.Max(0,Vector3.Dot(velocity,floor.normal));}
+            }
             Vector3 tip=LanceTip;
             if(player.Mounted && contactCooldown<=0 && velocity.magnitude>4)
             {
