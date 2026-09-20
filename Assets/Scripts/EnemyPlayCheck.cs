@@ -54,7 +54,13 @@ namespace FruitFlyJoust
                 jouster.RiderHealth.Hit(1000);yield return WaitClock(3.2f);
                 Require(jouster.Mounted && jouster.RespawnCount==1 && jouster.Competence>initialCompetence,
                     "defeated mounted jouster respawns one competency level stronger");
-                Require(jouster.ReceiveLanceContact(5),"solid lance contact unseats mounted opponent");
+                Require(jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
+                    "respawned opponent rider remains aligned and centered on the thorax");
+                float respawnFlyHealth=jouster.FlyHealth.Health;
+                Require(rider.TestLanceHit(jouster.FlyHealth,2) && jouster.FlyHealth.Health<respawnFlyHealth,
+                    "respawned enemy fly independently takes lance damage");
+                jouster.FlyHealth.Hit(1000);
+                Require(jouster.ReceiveFlyLanceContact(5),"destroying the enemy fly unseats its rider");
                 Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,

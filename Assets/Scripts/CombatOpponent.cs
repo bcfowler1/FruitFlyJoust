@@ -15,6 +15,7 @@ namespace FruitFlyJoust
         private Transform weaponVisual;
         private float cooldown, falling, attackGesture, strikeDelay;
         private bool strikePending, alternateCut;
+        private bool ownsVisual;
         private Vector3 spawn;
         public bool Defeated { get { return !target || target.Health<=0; } }
         public bool Ragdolled { get { return visual && visual.Ragdolled; } }
@@ -27,7 +28,7 @@ namespace FruitFlyJoust
             var primitive = GetComponent<CapsuleCollider>(); if (primitive) Destroy(primitive);
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
             visual=GetComponent<RiderAnimationVisual>();
-            if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();visual.visualScale=.6f;visual.Create(transform,material);}
+            if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.visualScale=.6f;visual.Create(transform,material);}
             visual.Pose(transform,false,0);BuildWeapon(material);
         }
         void BuildWeapon(Material material)
@@ -100,6 +101,7 @@ namespace FruitFlyJoust
             float speed=feet && feet.enabled ? feet.velocity.magnitude : 0;visual.Pose(transform,false,speed,target && target.Health<=0);
             if(style==Style.Swordsman && attackGesture>0)visual.PoseSwordAttack(alternateCut ? RiderCombat.SwordAttack.LeftToRight : RiderCombat.SwordAttack.RightToLeft,attackGesture/.55f);
         }
+        void OnDestroy(){if(weaponVisual)Destroy(weaponVisual.gameObject);if(ownsVisual && visual)Destroy(visual);}
     }
     public sealed class OpponentArrow : MonoBehaviour
     {

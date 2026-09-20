@@ -23,7 +23,8 @@ namespace FruitFlyJoust
         CharacterController feet;
         CombatOpponent groundAI;
         CombatTarget health,mountHealth;
-        Vector3 velocity,lastLanceTip,spawn;
+        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale;
+        Quaternion saddleBaseRotation;
         float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1;
 
         public void Initialize(RiderCombat rider,GameObject biologicalVisual,Transform saddleTemplate,Transform rideRoot,Material sharedRiderMaterial,Material sharedWeaponMaterial,Vector3 position)
@@ -41,6 +42,7 @@ namespace FruitFlyJoust
                 Vector3 rootScale=rideRoot.lossyScale,saddleScale=saddleTemplate.lossyScale;
                 riderAnchor.localScale=new Vector3(saddleScale.x/Mathf.Max(.0001f,rootScale.x),saddleScale.y/Mathf.Max(.0001f,rootScale.y),saddleScale.z/Mathf.Max(.0001f,rootScale.z));
             }
+            saddleBasePosition=riderAnchor.localPosition;saddleBaseRotation=riderAnchor.localRotation;saddleBaseScale=riderAnchor.localScale;
             riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=.78f;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;
             riderVisual.Create(riderAnchor,riderMaterial);riderVisual.Pose(riderAnchor,true,0);
             BuildMount();BuildHitZones();ResetPose();
@@ -50,6 +52,7 @@ namespace FruitFlyJoust
         }
         void BuildMount()
         {
+            if(riderAnchor){riderAnchor.localPosition=saddleBasePosition;riderAnchor.localRotation=saddleBaseRotation;riderAnchor.localScale=saddleBaseScale;}
             if(biologicalTemplate)
             {
                 flyVisual=Instantiate(biologicalTemplate,transform,false).transform;flyVisual.name="Enemy biological fly";
@@ -197,8 +200,13 @@ namespace FruitFlyJoust
             velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
             transform.position+=velocity*dt;
             Vector3 tip=LanceTip;
-            if(player.Mounted && contactCooldown<=0 && velocity.magnitude>4 && DistanceToSegment(player.RiderPosition+Vector3.up*.25f,lastLanceTip,tip)<.42f)
-            { player.ForceUnseat(velocity.normalized*3+Vector3.up*1.5f);contactCooldown=2; }
+            if(player.Mounted && contactCooldown<=0 && velocity.magnitude>4)
+            {
+                float flyContact=DistanceToSegment(player.FlyHitPosition,lastLanceTip,tip);
+                float riderContact=DistanceToSegment(player.RiderPosition+Vector3.up*.25f,lastLanceTip,tip);
+                if(flyContact<.62f && flyContact<=riderContact){player.TakeFlyDamage(Mathf.Clamp(velocity.magnitude*5,18,45));contactCooldown=.6f;}
+                else if(riderContact<.42f){player.ForceUnseat(velocity.normalized*3+Vector3.up*1.5f);contactCooldown=2;}
+            }
             lastLanceTip=tip;
             if(Vector3.Distance(transform.position,target)>30)transform.position=spawn;
         }
@@ -238,8 +246,9 @@ namespace FruitFlyJoust
             competencyLevel++;RespawnCount++;clock=0;
             if(riderVisual)riderVisual.ExitRagdoll();
             if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
-            if(flyVisual)Destroy(flyVisual.gameObject);if(lance)Destroy(lance.gameObject);
-            foreach(var zone in GetComponentsInChildren<MountedHitZone>())Destroy(zone.gameObject);
+            if(flyVisual){flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);}if(lance){lance.gameObject.SetActive(false);Destroy(lance.gameObject);}
+            foreach(var zone in GetComponentsInChildren<MountedHitZone>())
+            {var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;zone.gameObject.SetActive(false);Destroy(zone.gameObject);}
             BuildMount();BuildHitZones();ResetPose();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
         }
 #if UNITY_EDITOR

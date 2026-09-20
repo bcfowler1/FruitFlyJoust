@@ -62,12 +62,15 @@ namespace FruitFlyJoust
         private bool practiceEnemies;
         private bool standaloneJousterSpawned;
         private GameObject standaloneJouster;
+        private CombatTarget playerFlyHealth;
         public float defeatRespawnDelay = 3;
         private float defeatRespawnTimer = -1;
         private Vector3 combatSpawnCenter;
         public int PlayerRespawnCount { get; private set; }
         public Vector3 LastPlayerRespawnPosition { get; private set; }
         public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
+        public CombatTarget PlayerFlyHealth { get { return playerFlyHealth; } }
+        public Vector3 FlyHitPosition { get { return playerFlyHealth ? playerFlyHealth.transform.position : RideRoot.position; } }
 
         void Start()
         {
@@ -101,7 +104,20 @@ namespace FruitFlyJoust
                 var head = saddle.Find("Rider head"); if (head && head.GetComponent<Renderer>()) head.GetComponent<Renderer>().enabled = false;
                 animationVisual.Pose(saddle, true, 0);
             }
-            SetWeapon();
+            SetWeapon();BuildPlayerFlyHealth();
+        }
+        void BuildPlayerFlyHealth()
+        {
+            var zone=new GameObject("Player fly hitbox");zone.transform.SetParent(RideRoot,false);zone.transform.localPosition=new Vector3(0,-.05f,0);
+            var collider=zone.AddComponent<BoxCollider>();collider.size=new Vector3(1.15f,.8f,1.65f);collider.isTrigger=true;
+            playerFlyHealth=zone.AddComponent<CombatTarget>();playerFlyHealth.maximumHealth=120;playerFlyHealth.ResetTarget();
+        }
+        public bool TakeFlyDamage(float damage)
+        {
+            if(!Mounted || !playerFlyHealth || !playerFlyHealth.Hit(damage))return false;
+            message="Your fly took damage! "+Mathf.CeilToInt(playerFlyHealth.Health)+" HP";
+            if(playerFlyHealth.Health<=0){ForceUnseat(RideVelocity.normalized*2+Vector3.up*1.5f);message="Your fly was brought down!";}
+            return true;
         }
         void LateUpdate()
         {
@@ -364,6 +380,7 @@ namespace FruitFlyJoust
             {
                 if(animationVisual)animationVisual.CancelMountTransition();
                 Health = 100;
+                if(playerFlyHealth)playerFlyHealth.ResetTarget();
                 defeatRespawnTimer=-1;
                 foreach (var target in FindObjectsOfType<CombatTarget>()) target.ResetTarget();
                 foreach (var arrow in FindObjectsOfType<CombatArrow>()) Destroy(arrow.gameObject);
@@ -524,6 +541,7 @@ namespace FruitFlyJoust
             avatar.rotation=toward.sqrMagnitude>.01f ? Quaternion.LookRotation(toward) : Quaternion.identity;
             feet.enabled=true;footInput.enabled=true;falling=-2;unseatedFall=false;unseatVelocity=Vector3.zero;
             Health=100;defeatRespawnTimer=-1;PlayerRespawnCount++;LastPlayerRespawnPosition=position;
+            if(playerFlyHealth)playerFlyHealth.ResetTarget();
             foreach(var arrow in FindObjectsOfType<OpponentArrow>())Destroy(arrow.gameObject);
             view.fly=avatar;view.rider=footInput;view.followAnchorRotation=false;view.SetOrientationSource(null,avatar);
             weapon=Weapon.Sword;SetWeapon();message="Respawned at the safest point, farthest from opponents.";
@@ -578,7 +596,7 @@ namespace FruitFlyJoust
             GUI.color = new Color(.04f, .08f, .12f, .95f);
             GUI.DrawTexture(new Rect(16, Screen.height-198, 740, 182), Texture2D.whiteTexture); GUI.color = Color.white;
             if(animationVisual) animationVisual.mountTransitions=GUI.Toggle(new Rect(24,Screen.height-192,380,24),animationVisual.mountTransitions,"Borrowed mount transitions (experimental)");
-            GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Health: " + Mathf.CeilToInt(Health));
+            GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Rider HP: " + Mathf.CeilToInt(Health)+(Mounted && playerFlyHealth ? "   Fly HP: "+Mathf.CeilToInt(playerFlyHealth.Health) : ""));
             GUI.Label(new Rect(30, Screen.height-97, 720, 24), "C / X: mount   F / Y: weapon   Sword: X cut L-R, B cut R-L, RT thrust");
             GUI.Label(new Rect(30, Screen.height-72, 720, 24), "Bow: hold LT to draw/release   D-pad Down / H: call fly   Draw: " + Mathf.RoundToInt(charge*100) + "%");
             GUI.Label(new Rect(30, Screen.height-47, 720, 24), message);

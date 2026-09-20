@@ -162,6 +162,9 @@ namespace FruitFlyJoust
             combat.fly.SetHunger(.95f);yield return new WaitForFixedUpdate();
             Require(combat.fly.SeekingFood && combat.fly.RiderAuthority<.2f,"very hungry fly overrides the reins and seeks available food");
             combat.fly.SetHunger(.15f);
+            float playerFlyHealth=combat.PlayerFlyHealth.Health;
+            Require(combat.TakeFlyDamage(20) && combat.PlayerFlyHealth.Health<playerFlyHealth,"player fly has separate damageable health");
+            combat.PlayerFlyHealth.ResetTarget();
             walkingRequest=Vector2.zero;combat.fly.rider.reins=Vector2.zero;
             yield return new WaitForSeconds(.4f);
             Vector3 stopped=combat.fly.transform.position;
