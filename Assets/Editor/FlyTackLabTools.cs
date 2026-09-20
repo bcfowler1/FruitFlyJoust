@@ -12,6 +12,7 @@ public sealed class FlyTackLabWindow : EditorWindow
     Vector2 scroll;
     [MenuItem("Fruit Fly/Fly Tack Lab/Open Tack Lab")]
     public static void Open(){var window=GetWindow<FlyTackLabWindow>("Fly Tack Lab");window.minSize=new Vector2(390,690);window.Show();}
+    public static void RebuildOpenWindows(){foreach(var window in Resources.FindObjectsOfTypeAll<FlyTackLabWindow>()){window.BuildPreview();window.Repaint();}}
     void OnEnable(){BuildPreview();}
     void OnDisable(){if(preview!=null)preview.Cleanup();preview=null;previewRoot=null;fitter=null;}
     void BuildPreview()
@@ -62,7 +63,7 @@ public sealed class FlyTackLabWindow : EditorWindow
         }
         fitter.fit.saddleOffset=EditorGUILayout.Vector3Field("Saddle offset",fitter.fit.saddleOffset);
         fitter.fit.saddleRotation=EditorGUILayout.Vector3Field("Saddle rotation",fitter.fit.saddleRotation);
-        fitter.fit.saddleSize=EditorGUILayout.Vector3Field("Saddle size",fitter.fit.saddleSize);
+        using(new EditorGUI.DisabledScope(true))fitter.fit.saddleSize=EditorGUILayout.Vector3Field("Saddle size (edit in Blender)",fitter.fit.saddleSize);
         fitter.fit.showArmour=EditorGUILayout.Toggle("Show armour",fitter.fit.showArmour);
         using(new EditorGUI.IndentLevelScope())
         {
@@ -71,7 +72,7 @@ public sealed class FlyTackLabWindow : EditorWindow
         }
         fitter.fit.armourOffset=EditorGUILayout.Vector3Field("Armour offset",fitter.fit.armourOffset);
         fitter.fit.armourRotation=EditorGUILayout.Vector3Field("Armour rotation",fitter.fit.armourRotation);
-        fitter.fit.armourSize=EditorGUILayout.Vector3Field("Armour size",fitter.fit.armourSize);
+        using(new EditorGUI.DisabledScope(true))fitter.fit.armourSize=EditorGUILayout.Vector3Field("Armour size (edit in Blender)",fitter.fit.armourSize);
         if(EditorGUI.EndChangeCheck())
         {
             fitter.Apply();Repaint();
