@@ -126,11 +126,16 @@ namespace FruitFlyJoust
             var model=anchor.childCount>0 ? anchor.GetChild(0) : null;if(!model)return;
             model.localPosition=Vector3.zero;model.localRotation=Quaternion.identity;model.localScale=Vector3.one;
             Bounds source=RendererBounds(model,anchor);
-            // Edited Blender files are already rotated and sized in thorax-ratio
-            // units. Multiplying by the live thorax dimensions preserves every
-            // modeling change instead of forcing the old horse-derived envelope.
-            Vector3 wanted=edited ? Vector3.Scale(thorax.size,source.size) : Vector3.Scale(thorax.size,sizeRatio);
-            Vector3 scale=new Vector3(wanted.x/Mathf.Max(.0001f,source.size.x),wanted.y/Mathf.Max(.0001f,source.size.y),wanted.z/Mathf.Max(.0001f,source.size.z));
+            // Edited Blender files carry their final proportions. Use one scale
+            // for every axis so a wider saddle stays wider in Unity instead of
+            // being squeezed independently by the thorax X/Y/Z dimensions.
+            Vector3 scale;
+            if(edited)scale=Vector3.one*thorax.size.x;
+            else
+            {
+                Vector3 wanted=Vector3.Scale(thorax.size,sizeRatio);
+                scale=new Vector3(wanted.x/Mathf.Max(.0001f,source.size.x),wanted.y/Mathf.Max(.0001f,source.size.y),wanted.z/Mathf.Max(.0001f,source.size.z));
+            }
             model.localScale=scale;
             Bounds fitted=RendererBounds(model,anchor);
             model.localPosition-=fitted.center;
