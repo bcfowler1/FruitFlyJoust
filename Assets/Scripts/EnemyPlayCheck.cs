@@ -59,8 +59,11 @@ namespace FruitFlyJoust
                 float respawnFlyHealth=jouster.FlyHealth.Health;
                 Require(rider.TestLanceHit(jouster.FlyHealth,2) && jouster.FlyHealth.Health<respawnFlyHealth,
                     "respawned enemy fly independently takes lance damage");
+                yield return WaitClock(.3f);Vector3 flyVelocity=jouster.CurrentVelocity;
                 jouster.FlyHealth.Hit(1000);
                 Require(jouster.ReceiveFlyLanceContact(5),"destroying the enemy fly unseats its rider");
+                Require(jouster.LastFlyCorpse && (flyVelocity.sqrMagnitude<.01f || Vector3.Dot(jouster.LastFlyCorpse.Velocity,flyVelocity.normalized)>.1f),
+                    "dead moving fly becomes a ragdoll corpse retaining forward velocity");
                 Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,

@@ -42,6 +42,7 @@ namespace FruitFlyJoust
         public float RiderAuthority { get; private set; }=1;
         public int FoodEatenCount { get; private set; }
         FlyFood foodTarget;
+        public bool Dead { get; private set; }
         public RidePhase Phase { get { return landing.Phase; } }
         public string SurfaceName { get { return perchSurface ? perchSurface.name : ""; } }
         [Min(.5f)] public float surfaceProbeDistance = 5;
@@ -142,6 +143,7 @@ namespace FruitFlyJoust
 
         void FixedUpdate()
         {
+            if(Dead){rb.velocity=Vector3.zero;return;}
             float dt = Time.fixedDeltaTime;
             hunger=Mathf.Clamp01(hunger+hungerPerMinute/60*dt);
             cornerGripGrace=Mathf.Max(0,cornerGripGrace-dt);
@@ -313,6 +315,7 @@ namespace FruitFlyJoust
 
         public void ResetRide()
         {
+            ReviveAfterDeath();
             rb.position = new Vector3(0, 1.2f, -18);
             rb.rotation = Quaternion.identity;
             rb.velocity = Vector3.zero;
@@ -332,9 +335,17 @@ namespace FruitFlyJoust
         }
         public bool RequestRecall(Vector3 groundTarget)
         {
+            if(Dead)return false;
             if(float.IsNaN(groundTarget.x)||float.IsNaN(groundTarget.y)||float.IsNaN(groundTarget.z))return false;
             recallTarget=groundTarget;recallActive=true;recallLanding=false;idleClock=0;return true;
         }
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
+        public FlyCorpse SpawnCorpse(Vector3 inheritedVelocity)
+        {
+            if(Dead)return null;Dead=true;
+            Transform source=transform.Find("Detailed NeuroMechFly appearance");if(!source)source=bodyVisual;
+            var corpse=FlyCorpse.Create(source,inheritedVelocity,true);if(bodyVisual)bodyVisual.gameObject.SetActive(false);rb.velocity=Vector3.zero;return corpse;
+        }
+        public void ReviveAfterDeath(){Dead=false;if(bodyVisual)bodyVisual.gameObject.SetActive(true);}
     }
 }

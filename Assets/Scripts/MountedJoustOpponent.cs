@@ -15,6 +15,8 @@ namespace FruitFlyJoust
         public float LastFallDamage { get; private set; }
         public int RespawnCount { get; private set; }
         public bool RiderRagdolled { get { return riderVisual && riderVisual.Ragdolled; } }
+        public FlyCorpse LastFlyCorpse { get; private set; }
+        public Vector3 CurrentVelocity { get { return velocity; } }
         Transform flyVisual,lance,riderAnchor;
         BiologicalPoseMirror poseMirror;
         RiderAnimationVisual riderVisual;
@@ -218,7 +220,11 @@ namespace FruitFlyJoust
             Mounted=false;verticalSpeed=2;peakFallSpeed=0;
             if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*2);
             if(riderVisual)riderVisual.BeginMountTransition(false);
-            if(flyVisual){flyVisual.SetParent(null,true);Destroy(flyVisual.gameObject,2);flyVisual=null;}
+            if(flyVisual)
+            {
+                if(mountHealth && mountHealth.Health<=0)LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
+                flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
+            }
             if(lance){lance.SetParent(null,true);Destroy(lance.gameObject,2);lance=null;}
             feet.enabled=true;return true;
         }

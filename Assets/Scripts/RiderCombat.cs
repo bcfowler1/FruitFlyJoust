@@ -116,7 +116,7 @@ namespace FruitFlyJoust
         {
             if(!Mounted || !playerFlyHealth || !playerFlyHealth.Hit(damage))return false;
             message="Your fly took damage! "+Mathf.CeilToInt(playerFlyHealth.Health)+" HP";
-            if(playerFlyHealth.Health<=0){ForceUnseat(RideVelocity.normalized*2+Vector3.up*1.5f);message="Your fly was brought down!";}
+            if(playerFlyHealth.Health<=0){fly.SpawnCorpse(RideVelocity);ForceUnseat(RideVelocity.normalized*2+Vector3.up*1.5f);message="Your fly was brought down!";}
             return true;
         }
         void LateUpdate()
@@ -541,7 +541,7 @@ namespace FruitFlyJoust
             avatar.rotation=toward.sqrMagnitude>.01f ? Quaternion.LookRotation(toward) : Quaternion.identity;
             feet.enabled=true;footInput.enabled=true;falling=-2;unseatedFall=false;unseatVelocity=Vector3.zero;
             Health=100;defeatRespawnTimer=-1;PlayerRespawnCount++;LastPlayerRespawnPosition=position;
-            if(playerFlyHealth)playerFlyHealth.ResetTarget();
+            if(playerFlyHealth)playerFlyHealth.ResetTarget();if(fly)fly.ReviveAfterDeath();
             foreach(var arrow in FindObjectsOfType<OpponentArrow>())Destroy(arrow.gameObject);
             view.fly=avatar;view.rider=footInput;view.followAnchorRotation=false;view.SetOrientationSource(null,avatar);
             weapon=Weapon.Sword;SetWeapon();message="Respawned at the safest point, farthest from opponents.";
