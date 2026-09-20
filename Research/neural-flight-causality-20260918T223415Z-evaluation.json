@@ -1,0 +1,341 @@
+{
+  "engineering_qualified": true,
+  "biologically_validated": false,
+  "controller": "Neutral native neck position target; unchanged trained wing/abdomen/frequency policy plus experimental neural wing residuals",
+  "tests": [
+    {
+      "disabled": {
+        "trajectory": 0,
+        "influence": 0.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389836085509573,
+        "maximum_tracking_error_m": 0.004415198503590878,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 277.35042735042737,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "enabled": {
+        "trajectory": 0,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389836085509573,
+        "maximum_tracking_error_m": 0.004420832961588829,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.00626068376068376,
+        "maximum_population_rate_hz": 277.35042735042737,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "zero_readout": {
+        "trajectory": 0,
+        "influence": 1.0,
+        "zero_readout_ablation": true,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389836085509573,
+        "maximum_tracking_error_m": 0.004455151463372799,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.01,
+        "maximum_population_rate_hz": 282.47863247863245,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "repeat_enabled": {
+        "trajectory": 0,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389836085509573,
+        "maximum_tracking_error_m": 0.004420832961588829,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.00626068376068376,
+        "maximum_population_rate_hz": 277.35042735042737,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "maximum_final_qpos_difference": 0.0028452308811234006,
+      "maximum_zero_readout_difference": 1.1351100787840325,
+      "maximum_repeat_difference": 0.0,
+      "spike_readout_motor_effect_verified": true,
+      "passed": true
+    },
+    {
+      "disabled": {
+        "trajectory": 1,
+        "influence": 0.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367233994139379,
+        "maximum_tracking_error_m": 0.0015395730265040336,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "enabled": {
+        "trajectory": 1,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367233994139379,
+        "maximum_tracking_error_m": 0.0015710864496915142,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.01017094017094017,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "zero_readout": {
+        "trajectory": 1,
+        "influence": 1.0,
+        "zero_readout_ablation": true,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367233994139379,
+        "maximum_tracking_error_m": 0.0015240357785566681,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.01,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "repeat_enabled": {
+        "trajectory": 1,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367233994139379,
+        "maximum_tracking_error_m": 0.0015710864496915142,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.01017094017094017,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "maximum_final_qpos_difference": 0.3934409031929012,
+      "maximum_zero_readout_difference": 1.3108173701171366,
+      "maximum_repeat_difference": 0.0,
+      "spike_readout_motor_effect_verified": true,
+      "passed": true
+    },
+    {
+      "disabled": {
+        "trajectory": 2,
+        "influence": 0.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367058107099686,
+        "maximum_tracking_error_m": 0.0006757043896823997,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "enabled": {
+        "trajectory": 2,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367058107099686,
+        "maximum_tracking_error_m": 0.0006755937386310947,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.010512820512820514,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "zero_readout": {
+        "trajectory": 2,
+        "influence": 1.0,
+        "zero_readout_ablation": true,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367058107099686,
+        "maximum_tracking_error_m": 0.0006735101616216473,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.01,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "repeat_enabled": {
+        "trajectory": 2,
+        "influence": 1.0,
+        "zero_readout_ablation": false,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367058107099686,
+        "maximum_tracking_error_m": 0.0006755937386310947,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.010512820512820514,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "maximum_final_qpos_difference": 0.0030524903348531085,
+      "maximum_zero_readout_difference": 0.011782555846909931,
+      "maximum_repeat_difference": 0.0,
+      "spike_readout_motor_effect_verified": true,
+      "passed": true
+    }
+  ],
+  "limits": "Existing trained-flight limits: >=.1 s, height >=.002 m, tracking error <.02 m, no action clipping. Synthetic descending excitation and arbitrary decoder gains; trained policy remains stabilizer."
+}

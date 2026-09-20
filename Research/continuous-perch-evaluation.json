@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "surface": "floor",
+      "cycles": [
+        {
+          "moved_cm": 0.23865342068333167,
+          "held_claws": 6,
+          "launched": true
+        },
+        {
+          "moved_cm": 0.4768281329958012,
+          "held_claws": 6,
+          "launched": true
+        }
+      ],
+      "finite": true
+    },
+    {
+      "surface": "wall",
+      "cycles": [
+        {
+          "moved_cm": 0.23863321154647682,
+          "held_claws": 4,
+          "launched": true
+        },
+        {
+          "moved_cm": 0.47680089673010323,
+          "held_claws": 4,
+          "launched": true
+        }
+      ],
+      "finite": true
+    },
+    {
+      "surface": "ceiling",
+      "cycles": [
+        {
+          "moved_cm": 0.23862089654251328,
+          "held_claws": 4,
+          "launched": true
+        },
+        {
+          "moved_cm": 0.47678912398465584,
+          "held_claws": 4,
+          "launched": true
+        }
+      ],
+      "finite": true
+    }
+  ],
+  "limits": "Engineering surface-relative flight wrench and yaw, fixed leg targets, infinite flat surface, no neural or wing policy control"
+}

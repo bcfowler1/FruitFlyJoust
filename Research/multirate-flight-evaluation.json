@@ -1,0 +1,41 @@
+{
+  "trials": [
+    {
+      "policy_stride": 1,
+      "sim_seconds": 1.9988000000020059,
+      "wall_seconds": 30.01017170000705,
+      "minimum_height_m": 0.010084948852762888,
+      "reference_end": true,
+      "clips": 0,
+      "finite": true
+    },
+    {
+      "policy_stride": 5,
+      "sim_seconds": 1.9988000000020059,
+      "wall_seconds": 22.79386170001817,
+      "minimum_height_m": 0.010061655889617016,
+      "reference_end": true,
+      "clips": 0,
+      "finite": true
+    },
+    {
+      "policy_stride": 10,
+      "sim_seconds": 0.07759999999999961,
+      "wall_seconds": 0.9111830999900121,
+      "minimum_height_m": 0.0019531906881198593,
+      "reference_end": false,
+      "clips": 12,
+      "finite": true
+    },
+    {
+      "policy_stride": 25,
+      "sim_seconds": 0.07360000000000005,
+      "wall_seconds": 0.7854062000114936,
+      "minimum_height_m": 0.0019910625391569414,
+      "reference_end": false,
+      "clips": 1,
+      "finite": true
+    }
+  ],
+  "experimental": true
+}

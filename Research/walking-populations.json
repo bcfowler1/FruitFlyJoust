@@ -1,0 +1,38 @@
+{
+  "dataset_version": "783",
+  "annotation_source": "flyconnectome/flywire_annotations 8587524c1748ce5ef2080822a2fc890fc03bf597",
+  "populations": {
+    "left": [
+      {
+        "root_id": "720575940629327659",
+        "cell_type": "DNa02"
+      },
+      {
+        "root_id": "720575940627787609",
+        "cell_type": "DNa01"
+      }
+    ],
+    "right": [
+      {
+        "root_id": "720575940604737708",
+        "cell_type": "DNa02"
+      },
+      {
+        "root_id": "720575940644438551",
+        "cell_type": "DNa01"
+      }
+    ]
+  },
+  "encoder": "synthetic direct descending excitation",
+  "decoder": "uncalibrated rate difference to gait drive",
+  "oDN1_mapped": false,
+  "feedback": {
+    "measured": [
+      "speed_mmps",
+      "yaw_rate_radps",
+      "contacting_claws"
+    ],
+    "encoder": "synthetic direct descending excitation with contact-gated yaw correction",
+    "biologically_validated": false
+  }
+}

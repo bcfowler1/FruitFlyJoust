@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checked_frames": 7,
+  "visual_geoms": 85,
+  "synchronized_clocks": true,
+  "pause_resume": true,
+  "sensory_rate_request": true,
+  "server_log": "RESEARCH_READY: full GPU brain + passive articulated body; UDP loopback\n{\"frames\": 65, \"simulated_seconds\": 0.9299999999999139, \"neural_seconds\": 0.93}",
+  "stderr": "",
+  "unity_play_test": false
+}

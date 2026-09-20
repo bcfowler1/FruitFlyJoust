@@ -1,0 +1,219 @@
+{
+  "dataset_version": "783",
+  "annotation_source": "https://github.com/flyconnectome/flywire_annotations/tree/8587524c1748ce5ef2080822a2fc890fc03bf597",
+  "annotation_commit": "8587524c1748ce5ef2080822a2fc890fc03bf597",
+  "annotation_sha256": "9a4f8b2f843196074431ebd7cd883536afa1be86c8a4ce90970441e8be81d1be",
+  "candidate": "DNg02",
+  "decoder_enabled": false,
+  "calibration": null,
+  "evidence": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9206711/",
+  "populations": {
+    "left": [
+      "720575940612014131",
+      "720575940626278129",
+      "720575940622681864",
+      "720575940639201443",
+      "720575940622042603",
+      "720575940627850622",
+      "720575940626904219",
+      "720575940628942586",
+      "720575940630289804",
+      "720575940626377349",
+      "720575940613668620",
+      "720575940641305229",
+      "720575940613793170"
+    ],
+    "right": [
+      "720575940612804606",
+      "720575940647964281",
+      "720575940615679282",
+      "720575940617922439",
+      "720575940632573887",
+      "720575940625482954",
+      "720575940617498507",
+      "720575940622910188",
+      "720575940627414887",
+      "720575940625144061",
+      "720575940610863310",
+      "720575940630492714"
+    ]
+  },
+  "neurons": [
+    {
+      "root_id": "720575940612014131",
+      "cell_type": "DNg02_a",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940612804606",
+      "cell_type": "DNg02_a",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940647964281",
+      "cell_type": "DNg02_b",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940615679282",
+      "cell_type": "DNg02_h",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940626278129",
+      "cell_type": "DNg02_f",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940617922439",
+      "cell_type": "DNg02_g",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940622681864",
+      "cell_type": "DNg02_b",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940639201443",
+      "cell_type": "DNg02_a",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940622042603",
+      "cell_type": "DNg02_c",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940632573887",
+      "cell_type": "DNg02_a",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940627850622",
+      "cell_type": "DNg02_g",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940625482954",
+      "cell_type": "DNg02_e",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940626904219",
+      "cell_type": "DNg02_b",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940628942586",
+      "cell_type": "DNg02_e",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940630289804",
+      "cell_type": "DNg02_a",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940617498507",
+      "cell_type": "DNg02_b",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940622910188",
+      "cell_type": "DNg02_f",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940627414887",
+      "cell_type": "DNg02_b",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940625144061",
+      "cell_type": "DNg02_c",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940626377349",
+      "cell_type": "DNg02_h",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940613668620",
+      "cell_type": "DNg02_b",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940610863310",
+      "cell_type": "DNg02_a",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940641305229",
+      "cell_type": "DNg02_d",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940613793170",
+      "cell_type": "DNg02_b",
+      "side": "left",
+      "flow": "efferent",
+      "super_class": "descending"
+    },
+    {
+      "root_id": "720575940630492714",
+      "cell_type": "DNg02_d",
+      "side": "right",
+      "flow": "efferent",
+      "super_class": "descending"
+    }
+  ],
+  "limitation": "Anatomical identity and published amplitude/steering evidence do not provide a quantitative decoder or pitch control."
+}

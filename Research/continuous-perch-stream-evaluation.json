@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "trials": [
+    {
+      "surface": "wall",
+      "airborne_start": true,
+      "actual_contact_landing": true,
+      "half_second_hold": true,
+      "launch_releases_claws": true,
+      "reset_airborne": true,
+      "finite": true
+    },
+    {
+      "surface": "ceiling",
+      "airborne_start": true,
+      "actual_contact_landing": true,
+      "half_second_hold": true,
+      "launch_releases_claws": true,
+      "reset_airborne": true,
+      "finite": true
+    }
+  ],
+  "biologically_validated": false
+}

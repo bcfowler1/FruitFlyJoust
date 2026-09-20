@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "full_neural_reset": true,
+  "repeatable_after_reset": true,
+  "finite": true,
+  "spikes": 41
+}

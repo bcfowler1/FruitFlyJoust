@@ -1,0 +1,28 @@
+{
+  "qualified": false,
+  "status": "completed failed recovery and six-second walking evaluation; summary retained",
+  "seed": 45,
+  "landing_passed": true,
+  "held_stance_passed": true,
+  "recovery_completed_seconds": 1,
+  "observed_recovery": {
+    "initial_height_cm": 0.11796943085,
+    "at_52ms_height_cm": 0.0892559752,
+    "at_52ms_up": 0.89977229065,
+    "at_52ms_claws": 6,
+    "at_52ms_non_claw_contacts": 2,
+    "at_952ms_height_cm": 0.07465929921,
+    "at_952ms_non_claw_contacts": 1
+  },
+  "root_force": false,
+  "pose_reset": false,
+  "mass_fraction": 0.3333333333333333,
+  "limits": "Failed recovery/contact and walking qualification. Original detailed report was inadvertently replaced while recording assumed interruption; this corrected summary reflects actual completed process output. No pass or playable qualification.",
+  "walking_completed_seconds": 6,
+  "observed_walking_final_sample": {
+    "seconds": 5.95,
+    "up": 0.6025784226845159,
+    "claws": 1,
+    "other_contacts": 2
+  }
+}

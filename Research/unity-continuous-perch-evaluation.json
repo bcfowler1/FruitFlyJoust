@@ -1,0 +1,14 @@
+{
+  "observed_in_unity": true,
+  "surface": "wall",
+  "animated_rider_attached": true,
+  "perched_claw_contacts": 4,
+  "perched_simulated_time_seconds": 7.740,
+  "space_launch_observed": true,
+  "flying_claw_contacts": 0,
+  "flying_simulated_time_seconds": 9.255,
+  "excursion_limit_observed": true,
+  "stopped_after_test": true,
+  "landing_input": "Research UDP protocol cue; hardware B hold not tested",
+  "limits": "Infinite flat wall, fixed leg stance, engineering flight wrench and yaw, no neural or trained wing control; no combat in this scene"
+}

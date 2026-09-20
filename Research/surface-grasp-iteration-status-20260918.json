@@ -1,0 +1,97 @@
+{
+  "timestamp_utc": "2026-09-18T23:36:57.438693+00:00",
+  "results": [
+    {
+      "report": "grasp-motor-feedback025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "stable_seconds": 0.0,
+      "final_up": -0.9916379430579566,
+      "final_claws": 0,
+      "body_contacts": 3,
+      "hold_qualified": null,
+      "completed_walking_seconds": null
+    },
+    {
+      "report": "grasp-motor-bias025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "stable_seconds": 0.0,
+      "final_up": 0.027660564365730462,
+      "final_claws": 3,
+      "body_contacts": 1,
+      "hold_qualified": null,
+      "completed_walking_seconds": null
+    },
+    {
+      "report": "loaded-grasp-reach025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "stable_seconds": 0.0,
+      "final_up": 0.22576965278541883,
+      "final_claws": 5,
+      "body_contacts": 1,
+      "hold_qualified": null,
+      "completed_walking_seconds": null
+    },
+    {
+      "report": "supported-loaded-reach025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "stable_seconds": 0.22060000000000426,
+      "final_up": 0.9679066346819284,
+      "final_claws": 6,
+      "body_contacts": 0,
+      "hold_qualified": false,
+      "completed_walking_seconds": 6.0
+    },
+    {
+      "report": "supported-grasp-hold025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "stable_seconds": 0.22060000000000426,
+      "final_up": 0.9679066346819284,
+      "final_claws": 6,
+      "body_contacts": 0,
+      "hold_qualified": false,
+      "completed_walking_seconds": 0.002
+    },
+    {
+      "report": "retained-grasp-hold025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "stable_seconds": 0.22060000000000426,
+      "final_up": 0.9679066346819284,
+      "final_claws": 6,
+      "body_contacts": 0,
+      "hold_qualified": false,
+      "completed_walking_seconds": 0.002
+    },
+    {
+      "report": "native-grasp-hold025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "stable_seconds": 0.22060000000000426,
+      "final_up": 0.9679066346819284,
+      "final_claws": 6,
+      "body_contacts": 0,
+      "hold_qualified": false,
+      "completed_walking_seconds": 0.002
+    },
+    {
+      "report": "continuous-grasp-hold025-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "stable_seconds": 0.0,
+      "final_up": -0.8005747482853607,
+      "final_claws": 1,
+      "body_contacts": 3,
+      "hold_qualified": null,
+      "completed_walking_seconds": null
+    }
+  ],
+  "current_process": "none; all listed trials stopped",
+  "finding": "Surface reach plus contact-load compensation and front/rear support before wing folding improved touchdown; stable two-second hold remains unqualified. No failed extension enabled.",
+  "next_step": "Instrument the continuous grasp trial at every motor update: support identities, actual native actuator force, ctrl versus act, constrained reaction residual and first lost-contact time. Diagnose the first divergence after stable landing before another controller variant.",
+  "preserved": "One-third rider mass, unchanged qualification limits, frozen qualified baseline sources; engineering motor mapping is not biological brain validation."
+}

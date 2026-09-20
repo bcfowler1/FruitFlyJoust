@@ -1,0 +1,105 @@
+{
+  "experiments": [
+    {
+      "report": "unified-partial-pitch-loaded-landing-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "held_and_recovery_qualified": null,
+      "completed_walking_seconds": null,
+      "minimum_walking_up": null,
+      "forward_cm": null,
+      "contact_completion_steps": null,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-capsule-clearance-loaded-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "held_and_recovery_qualified": null,
+      "completed_walking_seconds": null,
+      "minimum_walking_up": null,
+      "forward_cm": null,
+      "contact_completion_steps": null,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-measured-wing-phase-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": false,
+      "held_and_recovery_qualified": null,
+      "completed_walking_seconds": null,
+      "minimum_walking_up": null,
+      "forward_cm": null,
+      "contact_completion_steps": null,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-phase-contact-completion-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "held_and_recovery_qualified": true,
+      "completed_walking_seconds": 0.242,
+      "minimum_walking_up": 0.8483256174234254,
+      "forward_cm": -0.05245666086433047,
+      "contact_completion_steps": 666,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-phase-all-foot-recovery-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "held_and_recovery_qualified": true,
+      "completed_walking_seconds": 0.2,
+      "minimum_walking_up": 0.8379143239315943,
+      "forward_cm": 0.09760151336617276,
+      "contact_completion_steps": 666,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-measured-loaded-stance-recovery-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "held_and_recovery_qualified": true,
+      "completed_walking_seconds": 0.224,
+      "minimum_walking_up": 0.8250558590719916,
+      "forward_cm": 0.15743810162418703,
+      "contact_completion_steps": 666,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-nullspace-swing-stance-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "held_and_recovery_qualified": true,
+      "completed_walking_seconds": 0.228,
+      "minimum_walking_up": 0.8403000658867388,
+      "forward_cm": 0.16493887741702032,
+      "contact_completion_steps": 666,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-restored-loaded-controls-seed42-evaluation.json",
+      "qualified": false,
+      "landing_qualified": true,
+      "held_and_recovery_qualified": false,
+      "completed_walking_seconds": 0.20400000000000001,
+      "minimum_walking_up": 0.8461974233549652,
+      "forward_cm": 0.05540402138309887,
+      "contact_completion_steps": 666,
+      "physical_continuity_preserved": true,
+      "rider_fraction": 0.3333333333333333
+    }
+  ],
+  "all_qualified": false,
+  "limitations": "Offline trained-policy/physical IK engineering experiments. Failed whole-sequence experiments are not enabled in Unity. Original numeric landing/hold/walking qualification limits preserved; no biological/connectome motor validation.",
+  "latest_controller_qualified": true,
+  "latest_qualification": "unified-contact-qualification-20260918T213219801072Z-summary.json",
+  "qualification_scope": "Repeatable controlled floor launch/landing/native six-second walking. Measured phase alignment gives identical launch states; arbitrary airborne states and connectome motor mapping not qualified."
+}

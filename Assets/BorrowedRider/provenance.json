@@ -1,0 +1,47 @@
+{
+  "source_project": "Silverspur",
+  "assets": [
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Etra Games\\Etra'sStarterAssets\\2-Source\\ThirdParty\\StarterAssets-TPC\\StarterAssets\\ThirdPersonController\\Character\\Models\\Armature.fbx",
+      "asset": "Armature.fbx",
+      "sha256": "855e05c72da761ccd2bfb2ec8e77599677d327d627ee51c0bf6a818ce958b7f1"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Etra Games\\Etra'sStarterAssets\\2-Source\\ThirdParty\\StarterAssets-TPC\\StarterAssets\\ThirdPersonController\\Character\\Models\\AlteredAndroid.fbx",
+      "asset": "AlteredAndroid.fbx",
+      "sha256": "9a2acf55bb148bea7086a9be8dd32973f4d0687193e90f52e38a1c20528b1759"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Etra Games\\Etra'sStarterAssets\\2-Source\\ThirdParty\\StarterAssets-TPC\\StarterAssets\\ThirdPersonController\\Character\\Animations\\Stand--Idle.anim.fbx",
+      "asset": "Stand--Idle.anim.fbx",
+      "sha256": "22338f453bfd818ee35b6b4cf463c16f2257a7b61d4911ef9fffdbe342e36c6d"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Etra Games\\Etra'sStarterAssets\\2-Source\\ThirdParty\\StarterAssets-TPC\\StarterAssets\\ThirdPersonController\\Character\\Animations\\Locomotion--Walk_N.anim.fbx",
+      "asset": "Locomotion--Walk_N.anim.fbx",
+      "sha256": "d5d9574fb98cc9d44e654d47ea6af766c3955e4c477d289644f25dbfb52cda92"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Silverspur\\Animation\\Mixamo\\SaberSlash.fbx",
+      "asset": "SaberSlash.fbx",
+      "sha256": "728b674ed3311fda3340a1ae2046710dbb01936f8d8331c556047faac22df087"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Silverspur\\Animation\\Mixamo\\ShootingArrow.fbx",
+      "asset": "ShootingArrow.fbx",
+      "sha256": "ff8f17889064c27c6b47cad2f934b8483e6ab8550e61bfb5b3ab2340a4398ef5"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Malbers Animations\\Horse AnimSet Pro\\2 - Animations\\Animations Clips\\Rider\\Rider_Idle_01.FBX",
+      "asset": "Rider_Idle_01.FBX",
+      "sha256": "8f7ccdfc95fe4cb9e4a71bfb0f40a05c2461b26ed0527c4310a9b5d0b1d26664"
+    },
+    {
+      "source": "D:\\Unity Projects\\Silverspur\\Assets\\Malbers Animations\\Horse AnimSet Pro\\2 - Animations\\Animations Clips\\Rider\\Mount Dismount\\Rider_Mount_Dismount_Left.FBX",
+      "asset": "Rider_Mount_Dismount_Left.FBX",
+      "sha256": "38774e66d830c88c65740e325e418cde16d170f53e8ec4002eb24cc167b00765",
+      "usage": "Optional mount/dismount visual experiment; original project unchanged"
+    }
+  ],
+  "scope": "Local reuse authorized by owner; source project untouched; animation and visual assets only, no gameplay scripts."
+}

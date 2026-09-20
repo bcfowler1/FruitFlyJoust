@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "revision": "a3db62f9436074e485c0278290c2164ed6150808",
+  "neurons": 138639,
+  "directed_connection_rows": 15091983,
+  "stimulation": "upstream sugar GRNs at 200 Hz; random seed 42",
+  "stimulated_neurons": 21,
+  "simulated_seconds": 0.02,
+  "setup_seconds": 2.065622499998426,
+  "simulation_wall_seconds": 1.654839599999832,
+  "real_time_ratio": 0.012085763478225944,
+  "spike_count": 158,
+  "active_neurons": 83,
+  "downstream_active_neurons": 62,
+  "finite_membrane_state": true,
+  "backend": "Brian2 NumPy CPU",
+  "adaptation": "removed undefined neuronal reset assignment w=0",
+  "interpretation": "load/stimulation/propagation smoke test, not reproduction of biological accuracy"
+}

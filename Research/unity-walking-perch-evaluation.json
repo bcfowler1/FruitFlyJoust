@@ -1,0 +1,28 @@
+{
+  "new_controls_visible": true,
+  "surface": "wall",
+  "brain_enabled": false,
+  "perched_contacts": 6,
+  "keyboard_space_launch_passed": true,
+  "airborne_contacts": 0,
+  "animated_rider_attached": true,
+  "actual_controller_hardware_tested": false,
+  "wing_driven_flight": false,
+  "stop_ports_free": [
+    55370,
+    55371
+  ],
+  "ceiling_full_brain": {
+    "neurons": 138639,
+    "clocks_matched": true,
+    "observed_time_seconds": 0.405,
+    "perched_contacts": 6,
+    "live_zero_grip_detached_contacts": 0,
+    "grip_restored_to_one": true,
+    "rider_attached": true,
+    "stop_ports_free": [
+      55370,
+      55371
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Connection to channel LicenseClient-lov3n refused
+[Licensing::Module] Successfully launched the LicensingClient (PId: 11672)

@@ -1,0 +1,95 @@
+{
+  "cases": [
+    {
+      "report": "unified-slew-5-resume-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": -0.9992998565534126,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-slew-1-resume-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": 0.6843623549780647,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-slew-0.5-two-second-resume-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": -0.9999689978584619,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-landed-height-resume-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": -0.999886678344707,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-three-axis-head-held-resume-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": -0.9894698476072346,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-contact-guard-two-second-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": 0.9482192208310221,
+      "forward_cm": -6.459378491658709e-05,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-adaptive-contact-guard-two-second-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": true,
+      "minimum_walking_up": 0.9388538011147899,
+      "forward_cm": 0.00011916377608721298,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-retrying-contact-guard-two-second-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": 0.8254682622978956,
+      "forward_cm": 0.016699101923330073,
+      "tail_forward_cm": -1.7216125883273555e-06,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-posture-ik-guard-two-second-evaluation.json",
+      "landing_passed": false,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": null,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "usable_walking_handoff": false
+    },
+    {
+      "report": "unified-posture-ik-fixed-two-second-evaluation.json",
+      "landing_passed": true,
+      "legacy_report_qualified": false,
+      "minimum_walking_up": 0.3914990897858536,
+      "forward_cm": 0.006559848087419607,
+      "tail_forward_cm": 0.001963430414801088,
+      "usable_walking_handoff": false
+    }
+  ],
+  "conclusion": "No usable sustained walking handoff qualified. One legacy radial-displacement pass was posture shift and stopped motion, not resumed walking. Future probes enforce original stability gates plus forward and sustained progress. Failed probes remain offline; production walking solver/defaults preserved."
+}

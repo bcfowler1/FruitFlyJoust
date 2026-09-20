@@ -1,0 +1,415 @@
+{
+  "cases": [
+    {
+      "report": "unified-native-speed-six-second-evaluation.json",
+      "seed": 44,
+      "qualified": true,
+      "grip_time": 2.5406000000007483,
+      "touchdown_time": 2.727400000000313,
+      "rows": [
+        {
+          "time": 1.7002000000013757,
+          "contacts": 0,
+          "body_contacts": 0,
+          "up_cosine": 0.6810255533288735,
+          "speed_cm_s": 1.0797427059617553
+        },
+        {
+          "time": 1.8002000000015868,
+          "contacts": 1,
+          "body_contacts": 0,
+          "up_cosine": 0.6674501429880614,
+          "speed_cm_s": 2.8189242583019105
+        },
+        {
+          "time": 1.9002000000017978,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.6024404756723498,
+          "speed_cm_s": 2.864856574571911
+        },
+        {
+          "time": 2.0002000000020077,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5624847695129106,
+          "speed_cm_s": 0.8759289721518287
+        },
+        {
+          "time": 2.1002000000017746,
+          "contacts": 1,
+          "body_contacts": 0,
+          "up_cosine": 0.5387938925296983,
+          "speed_cm_s": 2.4678229020366
+        },
+        {
+          "time": 2.2002000000015416,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5446745645930282,
+          "speed_cm_s": 1.6944409791296007
+        },
+        {
+          "time": 2.3002000000013085,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5200934963154266,
+          "speed_cm_s": 1.8266163251755998
+        },
+        {
+          "time": 2.4002000000010755,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.49835354743245286,
+          "speed_cm_s": 0.8840493625292594
+        },
+        {
+          "time": 2.5002000000008424,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.4694852712790395,
+          "speed_cm_s": 2.051637662224238
+        },
+        {
+          "time": 2.6002000000006094,
+          "contacts": 4,
+          "body_contacts": 0,
+          "up_cosine": 0.4087453383657619,
+          "speed_cm_s": 2.677398687952921
+        },
+        {
+          "time": 2.7002000000003763,
+          "contacts": 0,
+          "body_contacts": 0,
+          "up_cosine": 0.5901509371374797,
+          "speed_cm_s": 8.89764101922414
+        },
+        {
+          "time": 2.8002000000001432,
+          "contacts": 5,
+          "body_contacts": 2,
+          "up_cosine": 0.9122649515494654,
+          "speed_cm_s": 0.3564535188991504
+        },
+        {
+          "time": 2.90019999999991,
+          "contacts": 5,
+          "body_contacts": 1,
+          "up_cosine": 0.9065832156336715,
+          "speed_cm_s": 0.2970396961693306
+        },
+        {
+          "time": 3.000199999999677,
+          "contacts": 5,
+          "body_contacts": 3,
+          "up_cosine": 0.831359625920223,
+          "speed_cm_s": 0.08211210163829481
+        },
+        {
+          "time": 3.100199999999444,
+          "contacts": 5,
+          "body_contacts": 2,
+          "up_cosine": 0.8335855811325554,
+          "speed_cm_s": 0.13975173418993503
+        },
+        {
+          "time": 3.200199999999211,
+          "contacts": 5,
+          "body_contacts": 0,
+          "up_cosine": 0.9066798374410661,
+          "speed_cm_s": 0.2484148403163585
+        }
+      ]
+    },
+    {
+      "report": "unified-native-speed-seed45-evaluation.json",
+      "seed": 45,
+      "qualified": false,
+      "grip_time": 2.482400000000884,
+      "touchdown_time": null,
+      "rows": [
+        {
+          "time": 1.7002000000013757,
+          "contacts": 0,
+          "body_contacts": 0,
+          "up_cosine": 0.6538087374144923,
+          "speed_cm_s": 0.9129091846085032
+        },
+        {
+          "time": 1.8002000000015868,
+          "contacts": 0,
+          "body_contacts": 0,
+          "up_cosine": 0.66685293431653,
+          "speed_cm_s": 3.0981439734183005
+        },
+        {
+          "time": 1.9002000000017978,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5903806098858678,
+          "speed_cm_s": 2.32943555338847
+        },
+        {
+          "time": 2.0002000000020077,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5687638036632426,
+          "speed_cm_s": 0.9905509230222224
+        },
+        {
+          "time": 2.1002000000017746,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5578553950343588,
+          "speed_cm_s": 2.69996359216537
+        },
+        {
+          "time": 2.2002000000015416,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.5085642149642149,
+          "speed_cm_s": 0.6117289934065878
+        },
+        {
+          "time": 2.3002000000013085,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.47608698523098236,
+          "speed_cm_s": 2.1187706837296645
+        },
+        {
+          "time": 2.4002000000010755,
+          "contacts": 2,
+          "body_contacts": 0,
+          "up_cosine": 0.4966369307651436,
+          "speed_cm_s": 1.384008926883962
+        },
+        {
+          "time": 2.5002000000008424,
+          "contacts": 4,
+          "body_contacts": 0,
+          "up_cosine": 0.36100607104605975,
+          "speed_cm_s": 1.0147994700870437
+        },
+        {
+          "time": 2.6002000000006094,
+          "contacts": 4,
+          "body_contacts": 0,
+          "up_cosine": 0.4278565850246748,
+          "speed_cm_s": 1.4880967620991423
+        },
+        {
+          "time": 2.7002000000003763,
+          "contacts": 4,
+          "body_contacts": 3,
+          "up_cosine": 0.056915863215934975,
+          "speed_cm_s": 0.07460380707787248
+        },
+        {
+          "time": 2.8002000000001432,
+          "contacts": 3,
+          "body_contacts": 2,
+          "up_cosine": -0.0243605630265268,
+          "speed_cm_s": 0.8954640612226176
+        },
+        {
+          "time": 2.90019999999991,
+          "contacts": 2,
+          "body_contacts": 3,
+          "up_cosine": -0.5179678312025976,
+          "speed_cm_s": 1.2791500484539051
+        },
+        {
+          "time": 3.000199999999677,
+          "contacts": 2,
+          "body_contacts": 3,
+          "up_cosine": -0.6848312847947348,
+          "speed_cm_s": 0.1635796054710792
+        },
+        {
+          "time": 3.100199999999444,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7310441021869143,
+          "speed_cm_s": 0.000176435356978059
+        },
+        {
+          "time": 3.200199999999211,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7264545647333569,
+          "speed_cm_s": 0.009073832459269949
+        },
+        {
+          "time": 3.300199999998978,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7262729183974359,
+          "speed_cm_s": 0.0013408444769679312
+        },
+        {
+          "time": 3.400199999998745,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.726655249097273,
+          "speed_cm_s": 0.0007533196713724315
+        },
+        {
+          "time": 3.500199999998512,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7272156800653636,
+          "speed_cm_s": 0.0004288769020887652
+        },
+        {
+          "time": 3.6001999999982788,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7275528497459939,
+          "speed_cm_s": 0.00010606207780205952
+        },
+        {
+          "time": 3.7001999999980457,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7277355711896955,
+          "speed_cm_s": 8.587877484755022e-05
+        },
+        {
+          "time": 3.8001999999978127,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.727849921219511,
+          "speed_cm_s": 0.00015444599944269952
+        },
+        {
+          "time": 3.9001999999975796,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7279351620802715,
+          "speed_cm_s": 0.00019383124113700882
+        },
+        {
+          "time": 4.0001999999973465,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.727997639997167,
+          "speed_cm_s": 0.00020780992927131576
+        },
+        {
+          "time": 4.1001999999971135,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7280473886478498,
+          "speed_cm_s": 0.00020892412854419125
+        },
+        {
+          "time": 4.20019999999688,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7280903903035939,
+          "speed_cm_s": 0.00020302722634869702
+        },
+        {
+          "time": 4.300199999996647,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7281301325093562,
+          "speed_cm_s": 0.0001935441680761481
+        },
+        {
+          "time": 4.400199999996414,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7281685759326312,
+          "speed_cm_s": 0.00018188696904138213
+        },
+        {
+          "time": 4.500199999996181,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7282067557584275,
+          "speed_cm_s": 0.0001692918750504641
+        },
+        {
+          "time": 4.600199999995948,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7282451395656767,
+          "speed_cm_s": 0.00015614424883976795
+        },
+        {
+          "time": 4.700199999995715,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.72828382057724,
+          "speed_cm_s": 0.0001427069225974222
+        },
+        {
+          "time": 4.800199999995482,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7283226640462602,
+          "speed_cm_s": 0.0001291957617502415
+        },
+        {
+          "time": 4.900199999995249,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7283613867061606,
+          "speed_cm_s": 0.00011563255017357341
+        },
+        {
+          "time": 5.000199999995016,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7283996181875673,
+          "speed_cm_s": 0.00010222949230026764
+        },
+        {
+          "time": 5.100199999994783,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.728436942109664,
+          "speed_cm_s": 8.833734660140776e-05
+        },
+        {
+          "time": 5.20019999999455,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7284729294654675,
+          "speed_cm_s": 7.486189893384731e-05
+        },
+        {
+          "time": 5.300199999994317,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7285071881350512,
+          "speed_cm_s": 6.153256101490621e-05
+        },
+        {
+          "time": 5.400199999994084,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7285393310850725,
+          "speed_cm_s": 4.9029149371695495e-05
+        },
+        {
+          "time": 5.500199999993851,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7285690563231959,
+          "speed_cm_s": 3.601095306430905e-05
+        },
+        {
+          "time": 5.600199999993618,
+          "contacts": 2,
+          "body_contacts": 4,
+          "up_cosine": -0.7285961589103209,
+          "speed_cm_s": 2.4827554124700553e-05
+        }
+      ]
+    }
+  ],
+  "finding": "Grip begins before body is upright in both cases; seed45 subsequently tips into non-claw collision. Causal sufficiency of contact trigger not established. Testing optional measured attitude gate, not relaxed qualification."
+}

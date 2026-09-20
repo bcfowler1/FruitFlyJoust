@@ -1,0 +1,37 @@
+{
+  "cases": [
+    {
+      "report": "unified-ramped-claw-resume-evaluation.json",
+      "slew_rate": 0,
+      "seconds": 0.5,
+      "qualified": false,
+      "minimum_up": -0.9992369442491513,
+      "displacement_cm": 0.4181802023610002
+    },
+    {
+      "report": "unified-slew-5-resume-evaluation.json",
+      "slew_rate": 5.0,
+      "seconds": 0.5,
+      "qualified": false,
+      "minimum_up": -0.9992998565534126,
+      "displacement_cm": 0.23121860331563251
+    },
+    {
+      "report": "unified-slew-1-resume-evaluation.json",
+      "slew_rate": 1.0,
+      "seconds": 0.5,
+      "qualified": false,
+      "minimum_up": 0.6843623549780647,
+      "displacement_cm": 0.10000951576096216
+    },
+    {
+      "report": "unified-slew-0.5-two-second-resume-evaluation.json",
+      "slew_rate": 0.5,
+      "seconds": 2.0,
+      "qualified": false,
+      "minimum_up": -0.9999689978584619,
+      "displacement_cm": 0.24903350521240641
+    }
+  ],
+  "conclusion": "Rate limiting delays instability but has not qualified sustained walking. No playable handoff enabled."
+}

@@ -1,0 +1,24 @@
+{
+  "qualified": true,
+  "qualification": "higher-landing-qualification-20260918-summary.json",
+  "log": "higher-landing-stream-20260919T041354652584Z.log",
+  "frames": 1262,
+  "exact_paused_geometry_and_clock": true,
+  "paused_wall_seconds": 1,
+  "resumed": true,
+  "completed_physical_trial": "higher-landing-live-6255c905f39a44f69d4d421602f84979.json",
+  "explicit_replay_new_session": true,
+  "maximum_stream_time_gap": 0.016799999999960846,
+  "observed_phases": [
+    "claw grip started",
+    "complete: qualification passed",
+    "landing",
+    "standing before launch",
+    "walking before launch",
+    "walking handoff",
+    "walking resume",
+    "walking resumed",
+    "wing takeoff and hover"
+  ],
+  "limitations": "Engineering stance bridge; native walking policy; no connectome-derived limb controller or live rein qualification."
+}

@@ -1,0 +1,283 @@
+{
+  "timestamp_utc": "2026-09-19T04:03:50.062639+00:00",
+  "current_process": "none",
+  "verified_advance": {
+    "report": "six-claw-attitude-support-loss025-evaluation.json",
+    "landing_qualified": true,
+    "continuous_hold_seconds": 2.1001999999998016,
+    "final_up": 0.9949038046335064,
+    "final_claws": 6,
+    "body_contacts": 0,
+    "final_speed_cm_s": 0.011468030148738746
+  },
+  "walking_takeover_qualified": false,
+  "results": [
+    {
+      "report": "six-claw-attitude-support-loss025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.044
+    },
+    {
+      "report": "settled-six-claw-hold025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.024
+    },
+    {
+      "report": "blended-native-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.058
+    },
+    {
+      "report": "matched-height-native-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.06
+    },
+    {
+      "report": "guarded-native-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.19
+    },
+    {
+      "report": "guarded-stable-stance-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.276
+    },
+    {
+      "report": "slow-native-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.128
+    },
+    {
+      "report": "restored-loaded-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": false,
+      "walking": false,
+      "walking_seconds": 0.01
+    },
+    {
+      "report": "slow-loaded-restore025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": false,
+      "walking": false,
+      "walking_seconds": 0.008
+    },
+    {
+      "report": "partial-loaded-restore025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.122
+    },
+    {
+      "report": "replanted-walking-stance025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": false,
+      "walking": false,
+      "walking_seconds": 0.002
+    },
+    {
+      "report": "level-reach-grip025-evaluation.json",
+      "overall": false,
+      "landing": false,
+      "stable_seconds": 0.0,
+      "final_up": 0.046881903817962145,
+      "final_claws": 0,
+      "hold": null,
+      "walking": false,
+      "walking_seconds": null
+    },
+    {
+      "report": "synchronized-action-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.276
+    },
+    {
+      "report": "slew-limited-handoff025-evaluation.json",
+      "overall": false,
+      "landing": true,
+      "stable_seconds": 2.1001999999998016,
+      "final_up": 0.9949038046335064,
+      "final_claws": 6,
+      "hold": true,
+      "walking": false,
+      "walking_seconds": 0.132
+    }
+  ],
+  "source_snapshot": "outputs\\FruitFlyJoust\\Research\\source-snapshots\\six-claw-hold025-20260918",
+  "source_sha256": {
+    "evaluate_continuous_grasp_hold.py": "3c9ec4317f555822f23951609a653fb2994b87d7d843cd9be4098e828a6ffd74",
+    "grasp_motor_feedback.py": "b95f894c3d02040f215d917ae2526e855665356be8673e7f358bec553e544eee",
+    "loaded_landing_reach_ik.py": "90190e21eae4a315138355701c6e92b7efe5246825bedd0287175691d8bdc002"
+  },
+  "preserved": "Existing qualified 0.15 cm playable landing, one-third rider mass, physical continuity and numerical qualification thresholds unchanged. Experimental .25 cm landing is not live-enabled.",
+  "next_step": "Integrate the frozen higher-landing controller as a separately gated playable option, then run live transport and Unity viewer/gameplay regressions before enabling it by default.",
+  "latest_interactive_work": {
+    "verified": "The .25 cm pitched landing still passes 2.1002 seconds on six claws.",
+    "walking_distribution_mismatch": {
+      "leg_joint_rms_rad": 0.43740242388297174,
+      "largest_joint_error_rad": 1.4726316930453471
+    },
+    "cartesian_transition": {
+      "qualified": false,
+      "T1_left": {
+        "safe": true,
+        "up": 0.9888862177202655,
+        "claws": 6,
+        "target_error_cm": 0.0348906592762241
+      },
+      "T1_right": {
+        "safe": true,
+        "up": 0.9678246416317493,
+        "claws": 5,
+        "target_error_cm": 0.144104189170038
+      },
+      "T3_left": {
+        "safe": false,
+        "up": 0.9934287027335255,
+        "claws_after_settle": 4,
+        "target_error_cm": 0.11444693183601282
+      }
+    },
+    "report_error": "The failed Cartesian experiment reached a non-JSON ndarray during final report serialization; physical stage rows were preserved in work/cartesian-walking-transition025.log."
+  },
+  "qualification": {
+    "qualified": true,
+    "timestamp_utc": "2026-09-19T04:03:50.062639+00:00",
+    "experiments": [
+      {
+        "report": "base-contact-complete-cartesian025-evaluation.json",
+        "qualified": true,
+        "seed": 42,
+        "hover_height_cm": 0.25,
+        "landing_stable_seconds": 2.1001999999998016,
+        "landing_claws": 6,
+        "landing_body_contacts": 0,
+        "landing_up": 0.9949038046335064,
+        "hold_qualified": true,
+        "walking_qualified": true,
+        "walking_seconds": 6.0,
+        "minimum_walking_up": 0.9398983517610862,
+        "forward_cm": 5.863035996303758,
+        "final_quarter_forward_cm": 0.24972622535267658,
+        "pose_jump": 0.0,
+        "velocity_jump": 0.0,
+        "time_reset": false,
+        "one_third_rider": 0.3333333333333333
+      },
+      {
+        "report": "base-contact-complete-cartesian025-seed43-evaluation.json",
+        "qualified": true,
+        "seed": 43,
+        "hover_height_cm": 0.25,
+        "landing_stable_seconds": 2.1001999999998016,
+        "landing_claws": 6,
+        "landing_body_contacts": 0,
+        "landing_up": 0.9949038046335064,
+        "hold_qualified": true,
+        "walking_qualified": true,
+        "walking_seconds": 6.0,
+        "minimum_walking_up": 0.9398983517610862,
+        "forward_cm": 5.863035996303758,
+        "final_quarter_forward_cm": 0.24972622535267658,
+        "pose_jump": 0.0,
+        "velocity_jump": 0.0,
+        "time_reset": false,
+        "one_third_rider": 0.3333333333333333
+      },
+      {
+        "report": "base-contact-complete-cartesian025-seed44-evaluation.json",
+        "qualified": true,
+        "seed": 44,
+        "hover_height_cm": 0.25,
+        "landing_stable_seconds": 2.1001999999998016,
+        "landing_claws": 6,
+        "landing_body_contacts": 0,
+        "landing_up": 0.9949038046335064,
+        "hold_qualified": true,
+        "walking_qualified": true,
+        "walking_seconds": 6.0,
+        "minimum_walking_up": 0.9398983517610862,
+        "forward_cm": 5.863035996303758,
+        "final_quarter_forward_cm": 0.24972622535267658,
+        "pose_jump": 0.0,
+        "velocity_jump": 0.0,
+        "time_reset": false,
+        "one_third_rider": 0.3333333333333333
+      }
+    ],
+    "source_sha256": {
+      "evaluate_cartesian_walking_transition.py": "188ba4b1ffe0482ab19da61afb07b0a60b54df5cdb754831ff440d3e5ace28f7",
+      "grasp_motor_feedback.py": "b95f894c3d02040f215d917ae2526e855665356be8673e7f358bec553e544eee",
+      "loaded_landing_reach_ik.py": "90190e21eae4a315138355701c6e92b7efe5246825bedd0287175691d8bdc002",
+      "landing_leg_ik.py": "da1cf6717903dea08793e03a5d8b83e50241e20c05a812fa22c03a0b754b150a"
+    },
+    "controller": "Reach/grip landing; six-claw native-motor attitude correction; one ungripped foot at a time moves at most .04 cm toward a demonstrated walking handoff; the same claw must physically reacquire before another foot releases; native walking policy then resumes.",
+    "limits": "Unchanged landing, hold, walking posture and displacement limits. No root pose/velocity/time assignment and no external body wrench.",
+    "provenance": "Engineering stance-to-gait bridge using the qualified walking demonstration. Not validated biological limb control or a connectome-derived leg decoder.",
+    "integration": "Qualified offline extension only; existing playable .15 cm mode remains live and unchanged. Higher .25 cm extension not live-enabled yet."
+  }
+}

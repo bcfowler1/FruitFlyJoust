@@ -1,0 +1,1 @@
+{"status":"passed","humanoid_retarget":true,"root_motion_disabled":true,"sword_arm_degrees":55.71276,"bow_arm_degrees":57.83316,"walk_leg_degrees":24.31607,"mounted_leg_difference_degrees":0,"mount_transition_clips":2,"limits":"Pose sampling; IK requires separate Play-mode checks. Mount transitions are an artistic horse-to-fly transfer"}

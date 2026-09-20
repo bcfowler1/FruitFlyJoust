@@ -1,0 +1,115 @@
+{
+  "geometry": {
+    "meshes": 69,
+    "geoms": 69,
+    "path": "C:\\Users\\lov3n\\Documents\\Codex\\2026-09-16\\c\\outputs\\FruitFlyJoust\\Assets\\Resources\\FlyWalkingGeometry.bytes"
+  },
+  "rider_load": {
+    "mass_fraction": 0.3333333333333333,
+    "attachment": "rigid thorax load; isotropic small-rider inertia approximation",
+    "fly_mass_native": 0.0010265275447127182,
+    "rider_mass_native": 0.00034217584823757275,
+    "mass_units": "upstream scaled MuJoCo units; physical conversion not asserted"
+  },
+  "loaded_walk": {
+    "simulated_seconds": 1.4999999999998512,
+    "wall_seconds": 28.852765099989483,
+    "displacement_mm": [
+      14.468168258666992,
+      1.8351924419403076,
+      -0.640235185623169
+    ],
+    "finite": true
+  },
+  "brain_reset_passed": true,
+  "body_reset_passed": true,
+  "limitations": [
+    "synthetic direct descending stimulation",
+    "uncalibrated rate-to-gait steering",
+    "engineering forward drive, no identified oDN1 mapping",
+    "walking only, no biological validation"
+  ],
+  "neural_samples_before_steering_sign_correction": [
+    {
+      "body_time": 0.014999999999999965,
+      "brain": {
+        "neural_time": 0.015,
+        "rates": {
+          "left": 33.333333333333336,
+          "right": 100.0
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 15.0,
+          "spike_count": 4,
+          "active_neurons": 3,
+          "downstream_active_neurons": 3,
+          "finite_membrane_state": true
+        },
+        "encoder": "synthetic direct descending excitation with body-speed feedback; unvalidated"
+      }
+    },
+    {
+      "body_time": 0.029999999999999874,
+      "brain": {
+        "neural_time": 0.03,
+        "rates": {
+          "left": 0.0,
+          "right": 133.33333333333334
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 30.0,
+          "spike_count": 8,
+          "active_neurons": 3,
+          "downstream_active_neurons": 3,
+          "finite_membrane_state": true
+        },
+        "encoder": "synthetic direct descending excitation with body-speed feedback; unvalidated"
+      }
+    },
+    {
+      "body_time": 0.04500000000000026,
+      "brain": {
+        "neural_time": 0.045,
+        "rates": {
+          "left": 0.0,
+          "right": 200.0
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 45.0,
+          "spike_count": 19,
+          "active_neurons": 8,
+          "downstream_active_neurons": 8,
+          "finite_membrane_state": true
+        },
+        "encoder": "synthetic direct descending excitation with body-speed feedback; unvalidated"
+      }
+    },
+    {
+      "body_time": 0.06000000000000069,
+      "brain": {
+        "neural_time": 0.06,
+        "rates": {
+          "left": 0.0,
+          "right": 166.66666666666669
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 60.0,
+          "spike_count": 25,
+          "active_neurons": 8,
+          "downstream_active_neurons": 8,
+          "finite_membrane_state": true
+        },
+        "encoder": "synthetic direct descending excitation with body-speed feedback; unvalidated"
+      }
+    }
+  ],
+  "steering_sign_qualification": "walking-steering-evaluation.json"
+}

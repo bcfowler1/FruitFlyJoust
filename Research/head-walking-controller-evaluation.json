@@ -1,0 +1,67 @@
+{
+  "trials": [
+    {
+      "drive": 0.5,
+      "cue": -0.5,
+      "target_yaw_radps": -0.42723020675359774,
+      "measured_yaw_radps": -0.4240700933668349,
+      "error_radps": 0.003160113386762864,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "cue": 0.5,
+      "target_yaw_radps": 0.42723020675359774,
+      "measured_yaw_radps": 0.398878984981113,
+      "error_radps": -0.028351221772484725,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.7,
+      "cue": -0.5,
+      "target_yaw_radps": -0.620698292185225,
+      "measured_yaw_radps": -0.7255428367190891,
+      "error_radps": -0.10484454453386416,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.7,
+      "cue": 0.5,
+      "target_yaw_radps": 0.620698292185225,
+      "measured_yaw_radps": 0.5253503057691786,
+      "error_radps": -0.09534798641604636,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "cue": -0.5,
+      "target_yaw_radps": -0.8280617234373246,
+      "measured_yaw_radps": -1.001861360337999,
+      "error_radps": -0.17379963690067446,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "cue": 0.5,
+      "target_yaw_radps": 0.8280617234373246,
+      "measured_yaw_radps": 0.8174575699700249,
+      "error_radps": -0.010604153467299704,
+      "finite": true,
+      "ended": false
+    }
+  ],
+  "rms_radps": 0.09239061729263252,
+  "max_radps": 0.17379963690067446,
+  "limits": {
+    "rms_radps": 0.35,
+    "max_radps": 0.5
+  },
+  "qualified": true,
+  "trained_head_control": true,
+  "biologically_validated": false
+}

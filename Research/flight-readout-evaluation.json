@@ -1,0 +1,58 @@
+{
+  "status": "readout executed",
+  "full_network": {
+    "neurons": 138639,
+    "directed_connection_rows": 15091983,
+    "simulated_ms": 360.0,
+    "spike_count": 3493,
+    "active_neurons": 378,
+    "downstream_active_neurons": 357,
+    "finite_membrane_state": true
+  },
+  "populations": {
+    "left": {
+      "spike_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "window_seconds": 0.195,
+      "mean_rate_hz": 0.0
+    },
+    "right": {
+      "spike_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "window_seconds": 0.195,
+      "mean_rate_hz": 0.0
+    }
+  },
+  "diagnostic": "sugar sensory stimulus, not flight sensory input",
+  "direct_excitation_counting_check": {
+    "left": 380,
+    "right": 363
+  },
+  "decoder_enabled": false,
+  "limitation": "Readout execution does not establish flight activation, calibration, or neural control."
+}

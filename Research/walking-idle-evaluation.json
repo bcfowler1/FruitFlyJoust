@@ -1,0 +1,10 @@
+{
+  "qualified": true,
+  "live_articulated_gait": true,
+  "unloaded": true,
+  "maximum_excursion_mm": 2.174462115895157,
+  "maximum_joint_change_rad": 0.6070807895527539,
+  "final_claws": 6,
+  "remount_load_restored": true,
+  "biological_decision_making": false
+}

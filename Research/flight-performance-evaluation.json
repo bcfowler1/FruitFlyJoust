@@ -1,0 +1,57 @@
+{
+  "action_parity": true,
+  "inference_seconds_per_call": {
+    "original": 0.0009984865000005811,
+    "compiled": 0.0003104306000022916
+  },
+  "inference_speedup": 3.216456431786075,
+  "rollout": {
+    "trajectory": 48,
+    "trained_policy": true,
+    "steps": 2875,
+    "simulated_seconds": 0.5749999999999449,
+    "wall_seconds": 9.661162500007777,
+    "mean_tracking_error_m": 0.00024318295499613056,
+    "max_tracking_error_m": 0.0008611072891449539,
+    "minimum_thorax_height_m": 0.005176284639873208,
+    "final_thorax_height_m": 0.007295938197089199,
+    "episode_terminated": true,
+    "reference_end": true,
+    "max_raw_action": 0.6658645272254944,
+    "clipped_action_entries": 0,
+    "clipped_action_indices": [],
+    "maximum_action_overshoot": 0.0,
+    "action_minimum": [
+      -0.2,
+      -3.0,
+      -0.5,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -0.7,
+      -1.05,
+      -1.0
+    ],
+    "action_maximum": [
+      0.2,
+      3.0,
+      0.3,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.7,
+      0.7,
+      1.0
+    ],
+    "finite": true
+  },
+  "whole_body_realtime_ratio": 0.0595166471943187,
+  "neural_coupling": false,
+  "checkpoint_unchanged": true
+}

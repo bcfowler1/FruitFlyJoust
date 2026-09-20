@@ -1,0 +1,108 @@
+{
+  "qualified": true,
+  "seeds_requested": [
+    46,
+    42,
+    43,
+    44,
+    45
+  ],
+  "experiments": [
+    {
+      "seed": 46,
+      "qualified": true,
+      "report": "unified-contact-qualification-20260918T213219801072Z-seed46.json",
+      "physical_continuity_and_mass_verified": true,
+      "continuity_mass_and_limits_verified": true,
+      "landing_qualified": true,
+      "hold_qualified": true,
+      "walking_seconds": 6.0,
+      "minimum_walking_up": 0.9661534721720566,
+      "forward_cm": 5.866619819301324,
+      "final_quarter_forward_cm": 0.24412650056472315,
+      "selected_handoff": "native handoff"
+    },
+    {
+      "seed": 42,
+      "qualified": true,
+      "report": "unified-contact-qualification-20260918T213219801072Z-seed42.json",
+      "physical_continuity_and_mass_verified": true,
+      "continuity_mass_and_limits_verified": true,
+      "landing_qualified": true,
+      "hold_qualified": true,
+      "walking_seconds": 6.0,
+      "minimum_walking_up": 0.9661534721720566,
+      "forward_cm": 5.866619819301324,
+      "final_quarter_forward_cm": 0.24412650056472315,
+      "selected_handoff": "native handoff"
+    },
+    {
+      "seed": 43,
+      "qualified": true,
+      "report": "unified-contact-qualification-20260918T213219801072Z-seed43.json",
+      "physical_continuity_and_mass_verified": true,
+      "continuity_mass_and_limits_verified": true,
+      "landing_qualified": true,
+      "hold_qualified": true,
+      "walking_seconds": 6.0,
+      "minimum_walking_up": 0.9661534721720566,
+      "forward_cm": 5.866619819301324,
+      "final_quarter_forward_cm": 0.24412650056472315,
+      "selected_handoff": "native handoff"
+    },
+    {
+      "seed": 44,
+      "qualified": true,
+      "report": "unified-contact-qualification-20260918T213219801072Z-seed44.json",
+      "physical_continuity_and_mass_verified": true,
+      "continuity_mass_and_limits_verified": true,
+      "landing_qualified": true,
+      "hold_qualified": true,
+      "walking_seconds": 6.0,
+      "minimum_walking_up": 0.9661534721720566,
+      "forward_cm": 5.866619819301324,
+      "final_quarter_forward_cm": 0.24412650056472315,
+      "selected_handoff": "native handoff"
+    },
+    {
+      "seed": 45,
+      "qualified": true,
+      "report": "unified-contact-qualification-20260918T213219801072Z-seed45.json",
+      "physical_continuity_and_mass_verified": true,
+      "continuity_mass_and_limits_verified": true,
+      "landing_qualified": true,
+      "hold_qualified": true,
+      "walking_seconds": 6.0,
+      "minimum_walking_up": 0.9661534721720566,
+      "forward_cm": 5.866619819301324,
+      "final_quarter_forward_cm": 0.24412650056472315,
+      "selected_handoff": "native handoff"
+    }
+  ],
+  "source_sha256": {
+    "evaluate_unified_policies.py": "7192e73857216f14c96f77b1089776c2891963246e0de44f0afbb58f033a4de3",
+    "landing_leg_ik.py": "da1cf6717903dea08793e03a5d8b83e50241e20c05a812fa22c03a0b754b150a",
+    "handoff_prediction.py": "b05f4d8c720f7d3e861f1b287c31bbbdee483dfd55a07643a6e89e528dc946d0",
+    "qualify_unified_handoff.py": "e5de5db6de89d114ce94241ba8d1463f037fcb230f4e47dd255e1d1353b57088"
+  },
+  "controller_parameters": {
+    "wing_cut_seconds": 0.2,
+    "stance_blend_seconds": 0.2,
+    "grip_max_speed_cm_s": 2,
+    "rear_pair_min_up": 0.45,
+    "other_grip_min_up": 0.65,
+    "walking_reference_cm_s": 1,
+    "walking_blend_seconds": 0.0,
+    "restore_loaded_controls": false,
+    "claw_release_seconds": 0.0,
+    "swing_posture_gain": 0,
+    "all_foot_replant": false,
+    "measured_stance_recovery": false,
+    "unsupported_contact_completion": true,
+    "synchronized_wing_phase": true,
+    "capsule_floor_clearance": false,
+    "heading_relative_leg_ik": false,
+    "loaded_stance_handover": true
+  },
+  "limitations": "Trained-policy and copied-physics engineering floor transitions; no connectome motor or biological qualification. No playable integration established by this offline suite."
+}

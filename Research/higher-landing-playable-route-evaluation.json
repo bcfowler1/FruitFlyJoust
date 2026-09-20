@@ -1,0 +1,33 @@
+{
+  "qualified": true,
+  "checks": {
+    "simulation_controls_button": true,
+    "opens_unified_floor_lab": true,
+    "sets_one_shot_launch_flag": true,
+    "startup_consumes_launch_flag": true,
+    "higher_backend_selected_only_when_flagged": true,
+    "qualified_summary_gate": true,
+    "separate_server": true,
+    "live_transport_passed": true,
+    "exact_pause_passed": true,
+    "replay_passed": true,
+    "unity_roslyn_syntax_simulation_controls": true,
+    "unity_roslyn_syntax_research_tools": true
+  },
+  "default_changed": false,
+  "one_third_rider_verified_by": "higher-landing-live-integration-20260918-summary.json",
+  "limitations": "Route, Unity Roslyn syntax and Unity-compatible transport verified. Native Editor semantic compilation/menu click awaits a targetable existing Unity window; isolated batch Editor was blocked by licensing IPC.",
+  "source_sha256": {
+    "Assets/Editor/SimulationControlWindow.cs": "c7ea410de6662671739d09ec4639db248dfafac8df37805bd2e59a2953271561",
+    "Assets/Editor/ResearchTools.cs": "2c57dd3319a4e08e3e6c08b6dd024f4f3191b88e32ef0304a1bf4e2f36c28e61",
+    "Research/serve_higher_landing.py": "c55cb3b680f773cbc6699beb5852e9dbb522f85c4930effb1be61c4597aa0368"
+  },
+  "unity_batch_compile": {
+    "completed": false,
+    "unity_log_return_code": 199,
+    "post_restart": true,
+    "reason": "After a full computer restart with no Unity/Hub/licensing process active, Unity started a fresh LicensingClient PID 15296 but the LicenseClient-lov3n IPC channel never appeared. Unity exited before loading the project. Launching Hub from this task did not leave Hub running.",
+    "source_error_observed": false,
+    "user_action": "Open Unity Hub interactively, verify the account is signed in/licensed, then open the FruitFlyJoust project or ask Codex to retry batch compilation."
+  }
+}

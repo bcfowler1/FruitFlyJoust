@@ -1,0 +1,8 @@
+rootForward=(-0.0175, -0.0026, -0.9998) lanceForward=(-0.0175, -0.0026, -0.9998)
+0/Head=missing
+0/Thorax=missing
+0/A1A2=missing
+0/A3=missing
+0/A4=missing
+0/A5=missing
+0/A6=missing

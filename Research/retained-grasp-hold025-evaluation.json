@@ -1,0 +1,4198 @@
+{
+  "wing_phase_alignment": {
+    "phase": 0.6102255999999999,
+    "measured_angles": [
+      1.4999369331163157,
+      0.7614982981607885,
+      -0.9853969033437454,
+      1.4998833049981737,
+      0.761399270476095,
+      -0.9851982366225396
+    ],
+    "command_angles": [
+      0.9605411528587346,
+      -0.21775502948761002,
+      -0.5606765644550324,
+      0.9605411528587346,
+      -0.21775502948761002,
+      -0.5606765644550324
+    ],
+    "command_error_rad": 1.6911901147084563,
+    "physical_state_unchanged": true
+  },
+  "qualified": false,
+  "random_seed": 42,
+  "qualification_limits": {
+    "final_quarter_second_rms_cm": 0.15,
+    "maximum_ground_contacts": 0,
+    "maximum_reference_attitude_error_rad": 0.15
+  },
+  "reference_quaternion": [
+    0.9153114791194471,
+    0.0,
+    -0.40274668985873724,
+    0.0
+  ],
+  "maximum_reference_attitude_error_rad": 0.08837979268715858,
+  "final_quarter_second_rms_cm": 0.01603023898081784,
+  "maximum_ground_contacts": 0,
+  "minimum_up_cosine": 0.6506394320072988,
+  "same_physics_instance": true,
+  "pose_handover_jump": 0.0,
+  "velocity_handover_jump": 0.0,
+  "root_external_force": false,
+  "walking_displacement_cm": [
+    0.41264862150443954,
+    0.0016680040226541098,
+    -0.009556576485049317
+  ],
+  "flight_displacement_cm": [
+    0.008566337028929227,
+    -0.004481351129151262,
+    0.23901669562400885
+  ],
+  "launch_height_cm": 0.15,
+  "hover_height_cm": 0.25,
+  "rider_load": {
+    "fly_mass_mg": 0.9846214691323193,
+    "rider_mass_mg": 0.32820715637743975,
+    "mass_fraction": 0.3333333333333333,
+    "total_mass_mg": 1.312828625509759,
+    "attachment": "rigid thorax inertia; spherical rider approximation",
+    "offset_cm": [
+      0.0,
+      0.0,
+      0.05
+    ]
+  },
+  "rows": [
+    {
+      "time": 0.7001999999999311,
+      "position_cm": [
+        0.4126663764608405,
+        0.0016552725906406177,
+        0.13402311527430738
+      ],
+      "ground_contacts": 6,
+      "reference_error_cm": 0.14997030983205112,
+      "up_cosine": 0.99573085434227
+    },
+    {
+      "time": 0.7501999999999256,
+      "position_cm": [
+        0.43422631950836593,
+        0.037387676198804,
+        0.2903964454686917
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.04221955378329282,
+      "up_cosine": 0.6231190364758463
+    },
+    {
+      "time": 0.8001999999999201,
+      "position_cm": [
+        0.4191937383883082,
+        0.012674474739166164,
+        0.26197985656814976
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.02546719620174603,
+      "up_cosine": 0.6383050323337186
+    },
+    {
+      "time": 0.8501999999999146,
+      "position_cm": [
+        0.4486600804620403,
+        -0.03522476535514,
+        0.25363394859665506
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.05982975284866795,
+      "up_cosine": 0.6005393333179654
+    },
+    {
+      "time": 0.9001999999999091,
+      "position_cm": [
+        0.43858926586800767,
+        0.009995451475367704,
+        0.27256855789712914
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.02954303581997129,
+      "up_cosine": 0.6039404433808083
+    },
+    {
+      "time": 0.9501999999999036,
+      "position_cm": [
+        0.4274482011827911,
+        0.014981390321831784,
+        0.2720801938095643
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.02319911324642194,
+      "up_cosine": 0.5792188052433603
+    },
+    {
+      "time": 1.0001999999998985,
+      "position_cm": [
+        0.4354945435031168,
+        -0.022665958708917824,
+        0.27563268308148897
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.038094549261753104,
+      "up_cosine": 0.6444909219563429
+    },
+    {
+      "time": 1.050200000000004,
+      "position_cm": [
+        0.430265653640487,
+        0.0006315279183962369,
+        0.2923601826182253
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.021136849286458783,
+      "up_cosine": 0.6371131108497405
+    },
+    {
+      "time": 1.1002000000001095,
+      "position_cm": [
+        0.4208895358584583,
+        0.008694100283247675,
+        0.30351337901565717
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.015070170229979866,
+      "up_cosine": 0.6444899738237926
+    },
+    {
+      "time": 1.150200000000215,
+      "position_cm": [
+        0.4287657946112093,
+        -0.013061040950091212,
+        0.30893252947227967
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.026524301388110107,
+      "up_cosine": 0.6440870436596645
+    },
+    {
+      "time": 1.2002000000003206,
+      "position_cm": [
+        0.42725343472260235,
+        -0.0028011853530366063,
+        0.3227376870144998
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.018972765401511535,
+      "up_cosine": 0.6407073843830785
+    },
+    {
+      "time": 1.250200000000426,
+      "position_cm": [
+        0.4198092362699451,
+        0.0026894646059430647,
+        0.3324298916364272
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.01363939350003578,
+      "up_cosine": 0.6698161739106171
+    },
+    {
+      "time": 1.3002000000005316,
+      "position_cm": [
+        0.42448039527028,
+        -0.007464306540084429,
+        0.3406780272859124
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.020017236157787176,
+      "up_cosine": 0.6564098565142711
+    },
+    {
+      "time": 1.3502000000006371,
+      "position_cm": [
+        0.4246163074075421,
+        -0.00366369624909831,
+        0.3514840187665801
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.01811457260941259,
+      "up_cosine": 0.6621350997011952
+    },
+    {
+      "time": 1.4002000000007426,
+      "position_cm": [
+        0.419432623484679,
+        -0.0007252475774516516,
+        0.3621447399026186
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.013861516491150935,
+      "up_cosine": 0.6813214495241694
+    },
+    {
+      "time": 1.4502000000008481,
+      "position_cm": [
+        0.4241791633990484,
+        -0.005405389933980393,
+        0.3718211071975129
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.018197570798896372,
+      "up_cosine": 0.6569869758623991
+    },
+    {
+      "time": 1.5002000000009537,
+      "position_cm": [
+        0.4231484399877877,
+        -0.004068032332690325,
+        0.3725476582381638
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.016557591733835936,
+      "up_cosine": 0.6723312498234543
+    },
+    {
+      "time": 1.5502000000010592,
+      "position_cm": [
+        0.42036722350995614,
+        -0.0020055473441357875,
+        0.3730396975966737
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.013894456018741496,
+      "up_cosine": 0.6749830470181961
+    },
+    {
+      "time": 1.6002000000011647,
+      "position_cm": [
+        0.42440614933004733,
+        -0.004383499274005625,
+        0.3726789945111232
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.017403346126595262,
+      "up_cosine": 0.6551145505232367
+    },
+    {
+      "time": 1.6502000000012702,
+      "position_cm": [
+        0.42185948798860723,
+        -0.003952955957895405,
+        0.37262718726413624
+      ],
+      "ground_contacts": 0,
+      "reference_error_cm": 0.015672478393713978,
+      "up_cosine": 0.676647306313805
+    }
+  ],
+  "wall_seconds": 52.9810989999969,
+  "limitations": "Experimental policy transfer to active legs/wings; upstream flight actuator filtering, 30 ms wing-force ramp and monotonic clearance-dependent leg targets. Launch reference is 1.5 mm; hover commands change smoothly after 250 ms. Attitude is measured against the published 47.5 degree reference pitch, not vertical. Synthetic ghost command; no connectome, neural landing, or biological qualification.",
+  "landing": {
+    "engineering_contact_motor_feedback": true,
+    "motor_feedback_updates": 554,
+    "motor_feedback": {
+      "supports": 6,
+      "clipped_motor_targets": 0,
+      "desired_support_wrench": [
+        -0.008841888175912542,
+        0.003696086229064427,
+        0.7782940394885188,
+        0.0036384694052777563,
+        0.015058414044018288,
+        -0.0003757649911926967
+      ],
+      "allocated_contact_reactions": [
+        [
+          -0.0010143767407420484,
+          0.0003713831895190415,
+          0.118072680494784
+        ],
+        [
+          -0.0021172115097709554,
+          0.0006456628022689235,
+          0.15866898792531042
+        ],
+        [
+          -0.002014365410684449,
+          0.0005848577702572399,
+          0.1563048967370929
+        ],
+        [
+          -0.0005519249894414546,
+          -0.000736152675681643,
+          0.14110791917352916
+        ],
+        [
+          -0.001026208145851193,
+          0.001351022097628486,
+          0.0790884485747882
+        ],
+        [
+          -0.0021169770290095924,
+          0.0014783706827732378,
+          0.1250496655093735
+        ]
+      ],
+      "allocation_residual": 6.532774591398639e-06,
+      "native_adhesion_strength_preserved": true,
+      "native_motor_limits_preserved": true,
+      "no_external_wrenches": true
+    },
+    "wing_transition": "native angle-error torque conversion; measured grip to measured folded wing targets",
+    "individual_contact_grip": true,
+    "loaded_stance_transfer_supported_legs_only": true,
+    "front_reach_nearest_hip_floor_point": true,
+    "reacquire_lost_contacts": true,
+    "preserve_front_xyz_reach": true,
+    "wing_shutdown_requires_front_rear_four_claw_support": false,
+    "first_reach_time": 2.599000000000612,
+    "reached_claws": [
+      "walker/tarsal_claw_T1_left_collision",
+      "walker/tarsal_claw_T1_right_collision",
+      "walker/tarsal_claw_T2_left_collision",
+      "walker/tarsal_claw_T2_right_collision",
+      "walker/tarsal_claw_T3_left_collision",
+      "walker/tarsal_claw_T3_right_collision"
+    ],
+    "approach_seconds": 0.8,
+    "approach_legs_tucked": true,
+    "qualified": true,
+    "contact_transition_completed": true,
+    "stable_seconds": 0.22060000000000426,
+    "landing_pitch_reference_degrees": null,
+    "upright_reference": false,
+    "stance_before_launch": true,
+    "loaded_stance_handover": true,
+    "loaded_stance_targets": {
+      "coxa_abduct_T1_left": 0.11604328606567589,
+      "coxa_twist_T1_left": -0.07465094908818833,
+      "coxa_T1_left": -0.19999999999999007,
+      "femur_twist_T1_left": 0.1252283494803363,
+      "femur_T1_left": -0.1499999999990384,
+      "tibia_T1_left": -0.03483537118554332,
+      "tarsus_T1_left": -0.3973142362042836,
+      "tarsus2_T1_left": 0.08992469983097874,
+      "coxa_abduct_T1_right": 0.08194603432210201,
+      "coxa_twist_T1_right": 0.006415624136716265,
+      "coxa_T1_right": -0.19999999999999724,
+      "femur_twist_T1_right": 0.2247542757518853,
+      "femur_T1_right": -0.14999999999998062,
+      "tibia_T1_right": -0.22510636175426868,
+      "tarsus_T1_right": -0.008871777374154037,
+      "tarsus2_T1_right": 0.08992469983097874,
+      "coxa_abduct_T2_left": -0.13996653325553474,
+      "coxa_twist_T2_left": -0.5467830187078183,
+      "coxa_T2_left": -0.19999999999999724,
+      "femur_twist_T2_left": -0.0016459445843283824,
+      "femur_T2_left": -0.14999999999999725,
+      "tibia_T2_left": -0.581732964009453,
+      "tarsus_T2_left": -0.21634306647034793,
+      "tarsus2_T2_left": 0.08992469983097874,
+      "coxa_abduct_T2_right": -0.1399665332581931,
+      "coxa_twist_T2_right": -0.6825003768488377,
+      "coxa_T2_right": -0.19999999999965262,
+      "femur_twist_T2_right": 0.4322685318803959,
+      "femur_T2_right": -0.14999999999998972,
+      "tibia_T2_right": -0.27615302999380376,
+      "tarsus_T2_right": -0.3190875626839768,
+      "tarsus2_T2_right": 0.08992469983097874,
+      "coxa_abduct_T3_left": 0.20996637190385628,
+      "coxa_twist_T3_left": -0.14999999999982663,
+      "coxa_T3_left": 0.18842725110471234,
+      "femur_twist_T3_left": 0.06257035580745628,
+      "femur_T3_left": 0.6589960157106818,
+      "tibia_T3_left": 0.739537594510475,
+      "tarsus_T3_left": -0.3154051959191024,
+      "tarsus2_T3_left": -0.08992469983097874,
+      "coxa_abduct_T3_right": 0.08747314694840698,
+      "coxa_twist_T3_right": -0.14999999998879054,
+      "coxa_T3_right": -0.1372034999484502,
+      "femur_twist_T3_right": 0.0029107153541097137,
+      "femur_T3_right": 0.1464373874316756,
+      "tibia_T3_right": 0.14418236360234266,
+      "tarsus_T3_right": -0.3227053181997593,
+      "tarsus2_T3_right": -0.08992469983097874
+    },
+    "heading_relative_leg_ik": false,
+    "contact_handover": false,
+    "walking_policy_handover_time": null,
+    "physical_leg_ik": true,
+    "capsule_floor_clearance": false,
+    "unsupported_contact_completion": true,
+    "contact_completion_steps": 900,
+    "contact_only_claw_hold": true,
+    "claw_hold_started": 3.503999999998503,
+    "diagnostic_adaptive_grip": true,
+    "diagnostic_touchdown_recovery": false,
+    "touchdown_recovery_controller": null,
+    "diagnostic_balanced_grip": false,
+    "diagnostic_grip_min_up": -1,
+    "diagnostic_grip_max_speed_cm_s": 2.0,
+    "grip_start_state": {
+      "up_cosine": 0.9380755806273199,
+      "claws": [
+        "walker/tarsal_claw_T1_left_collision",
+        "walker/tarsal_claw_T2_left_collision",
+        "walker/tarsal_claw_T2_right_collision",
+        "walker/tarsal_claw_T3_left_collision",
+        "walker/tarsal_claw_T3_right_collision"
+      ],
+      "root": [
+        0.518642188379812,
+        -0.03444337710325252,
+        0.22329352664654945,
+        0.9794888087548393,
+        -0.05315759251980423,
+        -0.1677393216983971,
+        -0.09818077122168849
+      ],
+      "speed_cm_s": 0.13985568438232385,
+      "root_velocity": [
+        0.0494006566149182,
+        -0.08331774780445357,
+        -0.10088280567498406,
+        0.31146332509738317,
+        1.2503403920414193,
+        0.0293860271450897
+      ],
+      "wing_velocity": [
+        1.382011667433097,
+        1.5954327096210341,
+        -2.1649556879293694,
+        1.3896336149817203,
+        1.1342665528253122,
+        -2.0533980255928754
+      ]
+    },
+    "wing_cut_seconds": 0.2,
+    "stance_blend_seconds": 0.02,
+    "touchdown_time": 3.438799999998655,
+    "final_up_cosine": 0.9679066346819284,
+    "final_speed_cm_s": 0.18220512935465655,
+    "final_contacts": 6,
+    "final_body_contacts": 0,
+    "elapsed_simulation_seconds": 2.0041999999966613,
+    "rows": [
+      {
+        "time": 1.7002000000013757,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.664410664811136,
+        "speed_cm_s": 3.1320319784425106
+      },
+      {
+        "time": 1.8002000000015868,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6792098392755571,
+        "speed_cm_s": 1.7425891772640045
+      },
+      {
+        "time": 1.9002000000017978,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6624651174487235,
+        "speed_cm_s": 1.9682312185390916
+      },
+      {
+        "time": 2.0002000000020077,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6544274576175103,
+        "speed_cm_s": 1.27678957406755
+      },
+      {
+        "time": 2.1002000000017746,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6749291176778087,
+        "speed_cm_s": 2.217287649506524
+      },
+      {
+        "time": 2.2002000000015416,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6763713351926157,
+        "speed_cm_s": 2.67561584311797
+      },
+      {
+        "time": 2.3002000000013085,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6545057221273709,
+        "speed_cm_s": 0.9680155124561102
+      },
+      {
+        "time": 2.4002000000010755,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6566178666223559,
+        "speed_cm_s": 2.5839601769872496
+      },
+      {
+        "time": 2.5002000000008424,
+        "contacts": 0,
+        "body_contacts": 0,
+        "up_cosine": 0.6816586301513861,
+        "speed_cm_s": 0.544090204138688
+      },
+      {
+        "time": 2.6002000000006094,
+        "contacts": 1,
+        "body_contacts": 0,
+        "up_cosine": 0.6686279015818564,
+        "speed_cm_s": 3.2396060220717295
+      },
+      {
+        "time": 2.7002000000003763,
+        "contacts": 2,
+        "body_contacts": 0,
+        "up_cosine": 0.6434195027291839,
+        "speed_cm_s": 1.5015483528513138
+      },
+      {
+        "time": 2.8002000000001432,
+        "contacts": 2,
+        "body_contacts": 0,
+        "up_cosine": 0.6454395152427925,
+        "speed_cm_s": 2.1287309773172423
+      },
+      {
+        "time": 2.90019999999991,
+        "contacts": 2,
+        "body_contacts": 0,
+        "up_cosine": 0.6392154512040114,
+        "speed_cm_s": 0.6277578001118361
+      },
+      {
+        "time": 3.000199999999677,
+        "contacts": 2,
+        "body_contacts": 0,
+        "up_cosine": 0.6451441356552186,
+        "speed_cm_s": 2.473550213087036
+      },
+      {
+        "time": 3.100199999999444,
+        "contacts": 2,
+        "body_contacts": 0,
+        "up_cosine": 0.6711182139115356,
+        "speed_cm_s": 1.6214016261155182
+      },
+      {
+        "time": 3.200199999999211,
+        "contacts": 3,
+        "body_contacts": 0,
+        "up_cosine": 0.6757161235575482,
+        "speed_cm_s": 2.0699737900948305
+      },
+      {
+        "time": 3.300199999998978,
+        "contacts": 3,
+        "body_contacts": 0,
+        "up_cosine": 0.6041009371270282,
+        "speed_cm_s": 3.195847923329281
+      },
+      {
+        "time": 3.400199999998745,
+        "contacts": 1,
+        "body_contacts": 0,
+        "up_cosine": 0.7698927501601013,
+        "speed_cm_s": 5.495456262523188
+      },
+      {
+        "time": 3.500199999998512,
+        "contacts": 4,
+        "body_contacts": 0,
+        "up_cosine": 0.9363226240184956,
+        "speed_cm_s": 0.13481540000244996
+      },
+      {
+        "time": 3.6001999999982788,
+        "contacts": 6,
+        "body_contacts": 0,
+        "up_cosine": 0.953054041182875,
+        "speed_cm_s": 0.13966533519604765
+      },
+      {
+        "time": 3.7001999999980457,
+        "contacts": 6,
+        "body_contacts": 0,
+        "up_cosine": 0.9672668797265963,
+        "speed_cm_s": 0.182297213913279
+      }
+    ],
+    "limits": {
+      "minimum_contacts": 4,
+      "minimum_up_cosine": 0.9,
+      "maximum_speed_cm_s": 0.5,
+      "minimum_stable_seconds": 0.1
+    },
+    "limitations": "Engineering floor descent and leg extension; distinct claw contacts required and non-claw collisions excluded from stable hold. No walking resume or biological landing validation."
+  },
+  "walking_resume": {
+    "native_handoff_prediction": {
+      "qualified": false,
+      "completed_seconds": 0.002,
+      "minimum_up": -0.960301775992713,
+      "forward_cm": -0.0002091541995112629,
+      "final_quarter_forward_cm": 0.0,
+      "filter_settle_qualified": false,
+      "reference_heading_quaternion": [
+        0.8661843945512678,
+        0.0,
+        0.0,
+        0.49972451874593216
+      ],
+      "selection": "physical posture/front-foot recovery",
+      "limitations": "Copied-model engineering prediction; no neural controller or biological validation.",
+      "real_physical_state_unchanged": true
+    },
+    "recovery_requested": true,
+    "diagnostic_foot_replant": true,
+    "all_foot_replant": false,
+    "measured_stance_recovery": false,
+    "swing_posture_gain": 0,
+    "restored_loaded_controls": false,
+    "loaded_restore_grip": null,
+    "loaded_restore_rows": [],
+    "foot_replant_rows": [],
+    "recovery_controller": {
+      "integral_gain": 0.1,
+      "maximum_command_step_rad": 0.001,
+      "control_seconds": 0.002,
+      "posture_gain": 0,
+      "foot_lift_cm": 0.02,
+      "foot_swing_seconds": 0.5,
+      "foot_settle_seconds": 0.2
+    },
+    "diagnostic_body_posture_recovery": true,
+    "body_recovery_target_height_cm": 0.14355,
+    "body_recovery_rows": [
+      {
+        "seconds": 0.002,
+        "up": 0.15046101970267797,
+        "claws": 0,
+        "other_contacts": 0,
+        "height": 0.1055363823461459
+      }
+    ],
+    "completed_recovery_seconds": 0.002,
+    "body_recovery_support_bias": {
+      "11": -0.0005536651815364613,
+      "12": -0.008046167116651959,
+      "13": -0.0018023390669134332,
+      "14": 0.004426156713109086,
+      "15": 0.020413952548988812,
+      "16": 0.052579033359607896,
+      "17": 0.012626061572384717,
+      "18": 0.0026640212891461718,
+      "19": 0.001757313134015448,
+      "20": -0.009304758690205417,
+      "21": -0.0018635084170410543,
+      "22": 0.00275134065541896,
+      "23": 0.022561597220179808,
+      "24": 0.05293955408759721,
+      "25": 0.015929216045834027,
+      "26": 0.008154441602695345,
+      "27": 0.0001518226056162475,
+      "28": 0.000502429047371411,
+      "29": -0.004258931609763553,
+      "30": -0.0016728674406231159,
+      "31": 0.014555927312483563,
+      "32": 0.022891262585449212,
+      "33": -0.004077514656735837,
+      "34": -0.007788990588367269,
+      "35": -0.018441132307881858,
+      "36": 0.009523366174690073,
+      "37": 0.0015988365183719246,
+      "38": -0.017988966276093643,
+      "39": 0.022829178103840553,
+      "40": 0.08569880788255407,
+      "41": -0.00782869421326593,
+      "42": 0.015832697559001536,
+      "43": -0.003805332782975568,
+      "44": 0.0010822577944646916,
+      "45": 0.0002111597523297426,
+      "46": -0.004607935488094461,
+      "47": 0.0006407197060811498,
+      "48": -0.0015228945237835134,
+      "49": -0.001044649469797737,
+      "50": 0.0008586221944760217,
+      "51": -0.0033409872396124307,
+      "52": 0.0012078451108281235,
+      "53": -0.0007965973642469759,
+      "54": -0.003359918876941259,
+      "55": 0.001051143407202415,
+      "56": -0.004293573739044598,
+      "57": -0.0011653637156727736,
+      "58": 0.0028665174322977326
+    },
+    "legacy_stability_displacement_qualified": false,
+    "final_quarter_second_forward_cm": 0.0,
+    "walking_limits": {
+      "minimum_up_cosine": 0.85,
+      "minimum_displacement_cm": 0.01,
+      "minimum_forward_displacement_cm": 0.01,
+      "minimum_final_quarter_second_forward_cm": 0.005
+    },
+    "qualified": false,
+    "hold_qualified": false,
+    "preflight_state": {
+      "joints": {
+        "head_abduct": {
+          "position": [
+            0.01498772119337454
+          ],
+          "velocity": [
+            0.0255017835582282
+          ]
+        },
+        "head_twist": {
+          "position": [
+            0.006511384590479956
+          ],
+          "velocity": [
+            -6.573322521956131
+          ]
+        },
+        "head": {
+          "position": [
+            0.017994188791053814
+          ],
+          "velocity": [
+            -1.9960063580583314
+          ]
+        },
+        "rostrum": {
+          "position": [
+            0.07220736808253957
+          ],
+          "velocity": [
+            -0.004944237062578803
+          ]
+        },
+        "haustellum_abduct": {
+          "position": [
+            -0.00017823644471315792
+          ],
+          "velocity": [
+            0.0516598883276376
+          ]
+        },
+        "haustellum": {
+          "position": [
+            0.17255561645336215
+          ],
+          "velocity": [
+            0.004676338323844692
+          ]
+        },
+        "labrum_left": {
+          "position": [
+            0.05268234710688346
+          ],
+          "velocity": [
+            0.007282493160231143
+          ]
+        },
+        "labrum_right": {
+          "position": [
+            0.05176368272446755
+          ],
+          "velocity": [
+            -0.007482240496602088
+          ]
+        },
+        "antenna_abduct_left": {
+          "position": [
+            -0.020472668396575612
+          ],
+          "velocity": [
+            -0.027974432910500127
+          ]
+        },
+        "antenna_twist_left": {
+          "position": [
+            0.0001844652157797088
+          ],
+          "velocity": [
+            0.00034722597881605354
+          ]
+        },
+        "antenna_left": {
+          "position": [
+            -0.01376370982507966
+          ],
+          "velocity": [
+            -0.019072045396304135
+          ]
+        },
+        "antenna_abduct_right": {
+          "position": [
+            -0.017770932120378072
+          ],
+          "velocity": [
+            -0.022423448568957994
+          ]
+        },
+        "antenna_twist_right": {
+          "position": [
+            0.00029173369874876097
+          ],
+          "velocity": [
+            -0.0011896781091257852
+          ]
+        },
+        "antenna_right": {
+          "position": [
+            -0.013509802269378323
+          ],
+          "velocity": [
+            -0.020683658486682816
+          ]
+        },
+        "wing_yaw_left": {
+          "position": [
+            1.4999369331163157
+          ],
+          "velocity": [
+            -0.014687187530683508
+          ]
+        },
+        "wing_roll_left": {
+          "position": [
+            0.7614982981607885
+          ],
+          "velocity": [
+            0.20217336155797233
+          ]
+        },
+        "wing_pitch_left": {
+          "position": [
+            -0.9853969033437454
+          ],
+          "velocity": [
+            0.04588510110583374
+          ]
+        },
+        "wing_yaw_right": {
+          "position": [
+            1.4998833049981737
+          ],
+          "velocity": [
+            0.0022301957680865986
+          ]
+        },
+        "wing_roll_right": {
+          "position": [
+            0.761399270476095
+          ],
+          "velocity": [
+            0.010093082385101065
+          ]
+        },
+        "wing_pitch_right": {
+          "position": [
+            -0.9851982366225396
+          ],
+          "velocity": [
+            -0.035667705774027725
+          ]
+        },
+        "abdomen_abduct": {
+          "position": [
+            -0.049886954991245035
+          ],
+          "velocity": [
+            -0.7626891771396437
+          ]
+        },
+        "abdomen": {
+          "position": [
+            0.10025307184104307
+          ],
+          "velocity": [
+            0.7451805819544042
+          ]
+        },
+        "abdomen_abduct_2": {
+          "position": [
+            -0.009336215217462002
+          ],
+          "velocity": [
+            -0.5169655336867338
+          ]
+        },
+        "abdomen_2": {
+          "position": [
+            0.09486693308988528
+          ],
+          "velocity": [
+            0.6322112144396677
+          ]
+        },
+        "abdomen_abduct_3": {
+          "position": [
+            0.09634036352173793
+          ],
+          "velocity": [
+            0.15443566819335794
+          ]
+        },
+        "abdomen_3": {
+          "position": [
+            -0.06717974207647401
+          ],
+          "velocity": [
+            -0.4774293012125626
+          ]
+        },
+        "abdomen_abduct_4": {
+          "position": [
+            0.018520463354570686
+          ],
+          "velocity": [
+            -0.3480983036180977
+          ]
+        },
+        "abdomen_4": {
+          "position": [
+            -0.07520815301041947
+          ],
+          "velocity": [
+            -0.6806509437303055
+          ]
+        },
+        "abdomen_abduct_5": {
+          "position": [
+            0.012228718717995865
+          ],
+          "velocity": [
+            -0.42244840174940207
+          ]
+        },
+        "abdomen_5": {
+          "position": [
+            -0.01912451012132916
+          ],
+          "velocity": [
+            -0.49808215360368124
+          ]
+        },
+        "abdomen_abduct_6": {
+          "position": [
+            0.012224547853943984
+          ],
+          "velocity": [
+            -0.40871676236126425
+          ]
+        },
+        "abdomen_6": {
+          "position": [
+            0.009356080136049556
+          ],
+          "velocity": [
+            -0.3434294175078992
+          ]
+        },
+        "abdomen_abduct_7": {
+          "position": [
+            0.012470295616982496
+          ],
+          "velocity": [
+            -0.4042804717876258
+          ]
+        },
+        "abdomen_7": {
+          "position": [
+            0.017425565592992312
+          ],
+          "velocity": [
+            -0.28657293791271876
+          ]
+        },
+        "haltere_left": {
+          "position": [
+            3.426677148989305e-06
+          ],
+          "velocity": [
+            -0.002576913286776083
+          ]
+        },
+        "haltere_right": {
+          "position": [
+            2.144335615564544e-06
+          ],
+          "velocity": [
+            0.0008521767075145016
+          ]
+        },
+        "coxa_abduct_T1_left": {
+          "position": [
+            0.11058035832277528
+          ],
+          "velocity": [
+            -2.1592965319776725
+          ]
+        },
+        "coxa_twist_T1_left": {
+          "position": [
+            0.0011957521309855451
+          ],
+          "velocity": [
+            -1.4839195166898227
+          ]
+        },
+        "coxa_T1_left": {
+          "position": [
+            -0.18784585322921726
+          ],
+          "velocity": [
+            -2.6490688478317135
+          ]
+        },
+        "femur_twist_T1_left": {
+          "position": [
+            0.07437873275099519
+          ],
+          "velocity": [
+            -0.7611688336262674
+          ]
+        },
+        "femur_T1_left": {
+          "position": [
+            -0.1508409537669374
+          ],
+          "velocity": [
+            0.18689689731810052
+          ]
+        },
+        "tibia_T1_left": {
+          "position": [
+            -0.16602959159294003
+          ],
+          "velocity": [
+            -0.03401667567506976
+          ]
+        },
+        "tarsus_T1_left": {
+          "position": [
+            -0.4325058446970382
+          ],
+          "velocity": [
+            -1.20458576401411
+          ]
+        },
+        "tarsus2_T1_left": {
+          "position": [
+            -0.011558353220049283
+          ],
+          "velocity": [
+            7.360759795532527
+          ]
+        },
+        "tarsus3_T1_left": {
+          "position": [
+            -0.02169196262114218
+          ],
+          "velocity": [
+            2.873134162310068
+          ]
+        },
+        "tarsus4_T1_left": {
+          "position": [
+            -0.008630259631455469
+          ],
+          "velocity": [
+            3.6992698276515945
+          ]
+        },
+        "tarsus5_T1_left": {
+          "position": [
+            0.008780328054055738
+          ],
+          "velocity": [
+            4.603530355068564
+          ]
+        },
+        "coxa_abduct_T1_right": {
+          "position": [
+            0.14333671294389574
+          ],
+          "velocity": [
+            -5.728234085851975
+          ]
+        },
+        "coxa_twist_T1_right": {
+          "position": [
+            0.03315421187321187
+          ],
+          "velocity": [
+            -0.3751002322306905
+          ]
+        },
+        "coxa_T1_right": {
+          "position": [
+            -0.13963636658523165
+          ],
+          "velocity": [
+            -2.8358926547401646
+          ]
+        },
+        "femur_twist_T1_right": {
+          "position": [
+            0.1513327839387591
+          ],
+          "velocity": [
+            3.1635387616480335
+          ]
+        },
+        "femur_T1_right": {
+          "position": [
+            -0.15259249701656483
+          ],
+          "velocity": [
+            0.2772442054141
+          ]
+        },
+        "tibia_T1_right": {
+          "position": [
+            -0.26179544822513734
+          ],
+          "velocity": [
+            0.3276140833976139
+          ]
+        },
+        "tarsus_T1_right": {
+          "position": [
+            0.051926015776295714
+          ],
+          "velocity": [
+            -2.7344910135581597
+          ]
+        },
+        "tarsus2_T1_right": {
+          "position": [
+            0.02042826958252508
+          ],
+          "velocity": [
+            6.817685938393112
+          ]
+        },
+        "tarsus3_T1_right": {
+          "position": [
+            0.029596765328519715
+          ],
+          "velocity": [
+            2.7069429012071433
+          ]
+        },
+        "tarsus4_T1_right": {
+          "position": [
+            0.0005258294528713674
+          ],
+          "velocity": [
+            3.470669872329405
+          ]
+        },
+        "tarsus5_T1_right": {
+          "position": [
+            -0.025708496327762193
+          ],
+          "velocity": [
+            4.270694403653864
+          ]
+        },
+        "coxa_abduct_T2_left": {
+          "position": [
+            -0.0596776401999666
+          ],
+          "velocity": [
+            -3.9748000094879297
+          ]
+        },
+        "coxa_twist_T2_left": {
+          "position": [
+            -0.6158555212849529
+          ],
+          "velocity": [
+            -0.7952949901241745
+          ]
+        },
+        "coxa_T2_left": {
+          "position": [
+            -0.12369869444646564
+          ],
+          "velocity": [
+            -2.150076065221665
+          ]
+        },
+        "femur_twist_T2_left": {
+          "position": [
+            0.1450333102763512
+          ],
+          "velocity": [
+            -4.927159056740507
+          ]
+        },
+        "femur_T2_left": {
+          "position": [
+            -0.15248928715431626
+          ],
+          "velocity": [
+            0.3498803159227208
+          ]
+        },
+        "tibia_T2_left": {
+          "position": [
+            -0.47647706850713145
+          ],
+          "velocity": [
+            -0.17467364734914026
+          ]
+        },
+        "tarsus_T2_left": {
+          "position": [
+            -0.11131249078208703
+          ],
+          "velocity": [
+            -0.17188295956663666
+          ]
+        },
+        "tarsus2_T2_left": {
+          "position": [
+            0.04666360365617108
+          ],
+          "velocity": [
+            8.584082305461347
+          ]
+        },
+        "tarsus3_T2_left": {
+          "position": [
+            0.06437389685118848
+          ],
+          "velocity": [
+            3.9977186237404507
+          ]
+        },
+        "tarsus4_T2_left": {
+          "position": [
+            0.008414771900455354
+          ],
+          "velocity": [
+            4.405962068602674
+          ]
+        },
+        "tarsus5_T2_left": {
+          "position": [
+            -0.04997785408602013
+          ],
+          "velocity": [
+            4.831762119226439
+          ]
+        },
+        "coxa_abduct_T2_right": {
+          "position": [
+            -0.0851482309187537
+          ],
+          "velocity": [
+            -4.374405025528731
+          ]
+        },
+        "coxa_twist_T2_right": {
+          "position": [
+            -0.6283174026005011
+          ],
+          "velocity": [
+            2.500510975942106
+          ]
+        },
+        "coxa_T2_right": {
+          "position": [
+            -0.16031349644926585
+          ],
+          "velocity": [
+            -2.2141577837637776
+          ]
+        },
+        "femur_twist_T2_right": {
+          "position": [
+            0.33377525041275724
+          ],
+          "velocity": [
+            1.3806929788810427
+          ]
+        },
+        "femur_T2_right": {
+          "position": [
+            -0.15232215757803125
+          ],
+          "velocity": [
+            0.13143219662999453
+          ]
+        },
+        "tibia_T2_right": {
+          "position": [
+            -0.2965574377596302
+          ],
+          "velocity": [
+            0.07478600472205121
+          ]
+        },
+        "tarsus_T2_right": {
+          "position": [
+            -0.27747211882549183
+          ],
+          "velocity": [
+            -1.3168607127339718
+          ]
+        },
+        "tarsus2_T2_right": {
+          "position": [
+            0.013246507005243527
+          ],
+          "velocity": [
+            7.311339721930874
+          ]
+        },
+        "tarsus3_T2_right": {
+          "position": [
+            0.020502592711955748
+          ],
+          "velocity": [
+            3.17154706178856
+          ]
+        },
+        "tarsus4_T2_right": {
+          "position": [
+            0.0019519853054830593
+          ],
+          "velocity": [
+            3.811475226944977
+          ]
+        },
+        "tarsus5_T2_right": {
+          "position": [
+            -0.017383876963442103
+          ],
+          "velocity": [
+            4.481795235819375
+          ]
+        },
+        "coxa_abduct_T3_left": {
+          "position": [
+            0.1364286282432593
+          ],
+          "velocity": [
+            2.2081244358969045
+          ]
+        },
+        "coxa_twist_T3_left": {
+          "position": [
+            -0.08363097885985314
+          ],
+          "velocity": [
+            -1.4672671182632415
+          ]
+        },
+        "coxa_T3_left": {
+          "position": [
+            0.2244591713083468
+          ],
+          "velocity": [
+            -0.4200730097175287
+          ]
+        },
+        "femur_twist_T3_left": {
+          "position": [
+            0.11221984391370048
+          ],
+          "velocity": [
+            -5.483357691757087
+          ]
+        },
+        "femur_T3_left": {
+          "position": [
+            0.6004886632182737
+          ],
+          "velocity": [
+            1.0916910490040255
+          ]
+        },
+        "tibia_T3_left": {
+          "position": [
+            0.6917568417506827
+          ],
+          "velocity": [
+            2.9216974054311993
+          ]
+        },
+        "tarsus_T3_left": {
+          "position": [
+            -0.3140180443740122
+          ],
+          "velocity": [
+            0.7548818975289233
+          ]
+        },
+        "tarsus2_T3_left": {
+          "position": [
+            -0.012585761152583157
+          ],
+          "velocity": [
+            -5.970669388524301
+          ]
+        },
+        "tarsus3_T3_left": {
+          "position": [
+            -0.03835635883359088
+          ],
+          "velocity": [
+            -2.4212246600998606
+          ]
+        },
+        "tarsus4_T3_left": {
+          "position": [
+            -0.011283798095483867
+          ],
+          "velocity": [
+            -3.2890908005621067
+          ]
+        },
+        "tarsus5_T3_left": {
+          "position": [
+            0.022184299474309645
+          ],
+          "velocity": [
+            -4.155418621386204
+          ]
+        },
+        "coxa_abduct_T3_right": {
+          "position": [
+            0.08811488032081234
+          ],
+          "velocity": [
+            2.9200724959715685
+          ]
+        },
+        "coxa_twist_T3_right": {
+          "position": [
+            -0.1492454966694323
+          ],
+          "velocity": [
+            -0.6930266074124307
+          ]
+        },
+        "coxa_T3_right": {
+          "position": [
+            -0.06391245881751238
+          ],
+          "velocity": [
+            1.0323993429100238
+          ]
+        },
+        "femur_twist_T3_right": {
+          "position": [
+            0.11284821634319678
+          ],
+          "velocity": [
+            -2.688388374295825
+          ]
+        },
+        "femur_T3_right": {
+          "position": [
+            0.03209886472855893
+          ],
+          "velocity": [
+            3.267355365235649
+          ]
+        },
+        "tibia_T3_right": {
+          "position": [
+            0.2891146154230098
+          ],
+          "velocity": [
+            1.0803874337322095
+          ]
+        },
+        "tarsus_T3_right": {
+          "position": [
+            -0.2537708679106763
+          ],
+          "velocity": [
+            2.121095863397293
+          ]
+        },
+        "tarsus2_T3_right": {
+          "position": [
+            0.032787733038226546
+          ],
+          "velocity": [
+            -6.905372641699729
+          ]
+        },
+        "tarsus3_T3_right": {
+          "position": [
+            0.031131826727804013
+          ],
+          "velocity": [
+            -2.9103837602265186
+          ]
+        },
+        "tarsus4_T3_right": {
+          "position": [
+            -8.896055387023859e-05
+          ],
+          "velocity": [
+            -3.6795876027663206
+          ]
+        },
+        "tarsus5_T3_right": {
+          "position": [
+            -0.028790972339813557
+          ],
+          "velocity": [
+            -4.475314427661682
+          ]
+        }
+      },
+      "activation": [
+        0.002488374329460509,
+        -0.2997489994365952,
+        0.04776009860055988,
+        0.054497494348444295,
+        0.03756214738100991,
+        0.11604328606567589,
+        -0.07465094908818833,
+        -0.19999999999999007,
+        0.1252283494803363,
+        -0.1499999999990384,
+        -0.03483537118554332,
+        -0.3973142362042836,
+        0.08992469983097874,
+        0.08194603432210201,
+        0.006415624136716265,
+        -0.19999999999999724,
+        0.2247542757518853,
+        -0.14999999999998062,
+        -0.22510636175426868,
+        -0.008871777374154037,
+        0.08992469983097874,
+        -0.13996653325553474,
+        -0.5467830187078183,
+        -0.19999999999999724,
+        -0.0016459445843283824,
+        -0.14999999999999725,
+        -0.581732964009453,
+        -0.21634306647034793,
+        0.08992469983097874,
+        -0.1399665332581931,
+        -0.6825003768488377,
+        -0.19999999999965262,
+        0.4322685318803959,
+        -0.14999999999998972,
+        -0.27615302999380376,
+        -0.3190875626839768,
+        0.08992469983097874,
+        0.20996637190385628,
+        -0.14999999999982663,
+        0.18842725110471234,
+        0.06257035580745628,
+        0.6589960157106818,
+        0.739537594510475,
+        -0.3154051959191024,
+        -0.08992469983097874,
+        0.08747314694840698,
+        -0.14999999998879054,
+        -0.1372034999484502,
+        0.0029107153541097137,
+        0.1464373874316756,
+        0.14418236360234266,
+        -0.3227053181997593,
+        -0.08992469983097874,
+        1.3857918363853312e-23,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999801975,
+        0.9999999999999922
+      ],
+      "controls": [
+        -0.2,
+        -3.0,
+        0.3,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.24216026067733765,
+        -0.268710196018219,
+        0.07560345530509949,
+        -0.8,
+        -0.2,
+        0.5250765681266785,
+        -0.15,
+        0.6754796504974365,
+        -0.43836355209350586,
+        0.9,
+        -0.4769299030303955,
+        -0.5263649821281433,
+        -0.2,
+        1.0,
+        -0.15,
+        0.6174628138542175,
+        0.005427747964859009,
+        0.9,
+        -0.5,
+        -0.75,
+        -0.2,
+        -0.4635063111782074,
+        -0.15,
+        0.03846824914216995,
+        0.20024347305297852,
+        0.9,
+        -0.5,
+        -0.75,
+        -0.2,
+        1.0,
+        -0.15,
+        0.5511366724967957,
+        -0.15117719769477844,
+        0.9,
+        0.25,
+        -0.15,
+        -0.3,
+        -1.0,
+        1.070892333984375,
+        0.20550447702407837,
+        -0.47156956791877747,
+        -0.9,
+        0.25,
+        -0.15,
+        -0.3,
+        -0.7057164907455444,
+        0.761583149433136,
+        -0.49439001083374023,
+        -0.2021332085132599,
+        -0.9,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "applied_leg_targets": {
+        "coxa_abduct_T1_left": 0.11604328606567589,
+        "coxa_twist_T1_left": -0.07465094908818833,
+        "coxa_T1_left": -0.19999999999999007,
+        "femur_twist_T1_left": 0.1252283494803363,
+        "femur_T1_left": -0.1499999999990384,
+        "tibia_T1_left": -0.03483537118554332,
+        "tarsus_T1_left": -0.3973142362042836,
+        "tarsus2_T1_left": 0.08992469983097874,
+        "coxa_abduct_T1_right": 0.08194603432210201,
+        "coxa_twist_T1_right": 0.006415624136716265,
+        "coxa_T1_right": -0.19999999999999724,
+        "femur_twist_T1_right": 0.2247542757518853,
+        "femur_T1_right": -0.14999999999998062,
+        "tibia_T1_right": -0.22510636175426868,
+        "tarsus_T1_right": -0.008871777374154037,
+        "tarsus2_T1_right": 0.08992469983097874,
+        "coxa_abduct_T2_left": -0.13996653325553474,
+        "coxa_twist_T2_left": -0.5467830187078183,
+        "coxa_T2_left": -0.19999999999999724,
+        "femur_twist_T2_left": -0.0016459445843283824,
+        "femur_T2_left": -0.14999999999999725,
+        "tibia_T2_left": -0.581732964009453,
+        "tarsus_T2_left": -0.21634306647034793,
+        "tarsus2_T2_left": 0.08992469983097874,
+        "coxa_abduct_T2_right": -0.1399665332581931,
+        "coxa_twist_T2_right": -0.6825003768488377,
+        "coxa_T2_right": -0.19999999999965262,
+        "femur_twist_T2_right": 0.4322685318803959,
+        "femur_T2_right": -0.14999999999998972,
+        "tibia_T2_right": -0.27615302999380376,
+        "tarsus_T2_right": -0.3190875626839768,
+        "tarsus2_T2_right": 0.08992469983097874,
+        "coxa_abduct_T3_left": 0.20996637190385628,
+        "coxa_twist_T3_left": -0.14999999999982663,
+        "coxa_T3_left": 0.18842725110471234,
+        "femur_twist_T3_left": 0.06257035580745628,
+        "femur_T3_left": 0.6589960157106818,
+        "tibia_T3_left": 0.739537594510475,
+        "tarsus_T3_left": -0.3154051959191024,
+        "tarsus2_T3_left": -0.08992469983097874,
+        "coxa_abduct_T3_right": 0.08747314694840698,
+        "coxa_twist_T3_right": -0.14999999998879054,
+        "coxa_T3_right": -0.1372034999484502,
+        "femur_twist_T3_right": 0.0029107153541097137,
+        "femur_T3_right": 0.1464373874316756,
+        "tibia_T3_right": 0.14418236360234266,
+        "tarsus_T3_right": -0.3227053181997593,
+        "tarsus2_T3_right": -0.08992469983097874
+      }
+    },
+    "landed_state": {
+      "joints": {
+        "head_abduct": {
+          "position": [
+            -0.029230337825644073
+          ],
+          "velocity": [
+            -0.29829830393573226
+          ]
+        },
+        "head_twist": {
+          "position": [
+            0.044490236350024394
+          ],
+          "velocity": [
+            -0.026873303279185072
+          ]
+        },
+        "head": {
+          "position": [
+            -0.037334143370802604
+          ],
+          "velocity": [
+            1.5548024322515974
+          ]
+        },
+        "rostrum": {
+          "position": [
+            0.07554905993123402
+          ],
+          "velocity": [
+            -0.010456753573360478
+          ]
+        },
+        "haustellum_abduct": {
+          "position": [
+            -0.0004125911276491219
+          ],
+          "velocity": [
+            -0.015327320551723488
+          ]
+        },
+        "haustellum": {
+          "position": [
+            0.16872399105792366
+          ],
+          "velocity": [
+            0.012547226941627708
+          ]
+        },
+        "labrum_left": {
+          "position": [
+            0.053217636475429264
+          ],
+          "velocity": [
+            -0.0014908889640132688
+          ]
+        },
+        "labrum_right": {
+          "position": [
+            0.051184230379088126
+          ],
+          "velocity": [
+            0.0012459764544164975
+          ]
+        },
+        "antenna_abduct_left": {
+          "position": [
+            0.7937680428067039
+          ],
+          "velocity": [
+            0.07162047587457851
+          ]
+        },
+        "antenna_twist_left": {
+          "position": [
+            0.02938968863941087
+          ],
+          "velocity": [
+            0.0009582487656650947
+          ]
+        },
+        "antenna_left": {
+          "position": [
+            -0.19940991465044866
+          ],
+          "velocity": [
+            0.005072225359268009
+          ]
+        },
+        "antenna_abduct_right": {
+          "position": [
+            0.8000027379425421
+          ],
+          "velocity": [
+            -0.00020629984852483008
+          ]
+        },
+        "antenna_twist_right": {
+          "position": [
+            -0.034018279548352334
+          ],
+          "velocity": [
+            0.0022666056735360664
+          ]
+        },
+        "antenna_right": {
+          "position": [
+            -0.19619283433208398
+          ],
+          "velocity": [
+            0.013234314046603869
+          ]
+        },
+        "wing_yaw_left": {
+          "position": [
+            -0.36829892952000687
+          ],
+          "velocity": [
+            2.3987501245010807
+          ]
+        },
+        "wing_roll_left": {
+          "position": [
+            1.4122303902503237
+          ],
+          "velocity": [
+            -0.946786567586465
+          ]
+        },
+        "wing_pitch_left": {
+          "position": [
+            -1.240960435143567
+          ],
+          "velocity": [
+            0.3055638910790076
+          ]
+        },
+        "wing_yaw_right": {
+          "position": [
+            -0.3992168937064769
+          ],
+          "velocity": [
+            2.444199975672536
+          ]
+        },
+        "wing_roll_right": {
+          "position": [
+            1.414175546232891
+          ],
+          "velocity": [
+            -0.9517324821010628
+          ]
+        },
+        "wing_pitch_right": {
+          "position": [
+            -1.2433483136224401
+          ],
+          "velocity": [
+            0.31104441773359104
+          ]
+        },
+        "abdomen_abduct": {
+          "position": [
+            0.006799389785228077
+          ],
+          "velocity": [
+            -0.05699037408815725
+          ]
+        },
+        "abdomen": {
+          "position": [
+            0.10022426274536009
+          ],
+          "velocity": [
+            -0.2655010856665632
+          ]
+        },
+        "abdomen_abduct_2": {
+          "position": [
+            0.001833187459263802
+          ],
+          "velocity": [
+            -0.03593746787433568
+          ]
+        },
+        "abdomen_2": {
+          "position": [
+            0.09983394566380278
+          ],
+          "velocity": [
+            -0.4570239880619435
+          ]
+        },
+        "abdomen_abduct_3": {
+          "position": [
+            0.023872689412961553
+          ],
+          "velocity": [
+            -0.178513838068728
+          ]
+        },
+        "abdomen_3": {
+          "position": [
+            0.09011743981830342
+          ],
+          "velocity": [
+            -0.6742009922850005
+          ]
+        },
+        "abdomen_abduct_4": {
+          "position": [
+            0.06751552273834148
+          ],
+          "velocity": [
+            -0.4345956117382441
+          ]
+        },
+        "abdomen_4": {
+          "position": [
+            0.08027838571747274
+          ],
+          "velocity": [
+            -0.8553144453743797
+          ]
+        },
+        "abdomen_abduct_5": {
+          "position": [
+            -0.008397339785573598
+          ],
+          "velocity": [
+            -0.07662806807784316
+          ]
+        },
+        "abdomen_5": {
+          "position": [
+            -0.017184463564624736
+          ],
+          "velocity": [
+            -0.45684361303975196
+          ]
+        },
+        "abdomen_abduct_6": {
+          "position": [
+            0.0009223941765939392
+          ],
+          "velocity": [
+            -0.1277693726535562
+          ]
+        },
+        "abdomen_6": {
+          "position": [
+            -0.07953207839897598
+          ],
+          "velocity": [
+            -0.15607548632997076
+          ]
+        },
+        "abdomen_abduct_7": {
+          "position": [
+            0.0007772026130049372
+          ],
+          "velocity": [
+            -0.12813593916735605
+          ]
+        },
+        "abdomen_7": {
+          "position": [
+            -0.09290938083164278
+          ],
+          "velocity": [
+            -0.07724414807697783
+          ]
+        },
+        "haltere_left": {
+          "position": [
+            1.3258397629283317e-07
+          ],
+          "velocity": [
+            -0.0019180509218348634
+          ]
+        },
+        "haltere_right": {
+          "position": [
+            1.871376545539714e-07
+          ],
+          "velocity": [
+            -0.0008006724497177984
+          ]
+        },
+        "coxa_abduct_T1_left": {
+          "position": [
+            -0.1275020382239966
+          ],
+          "velocity": [
+            -0.047645316723319155
+          ]
+        },
+        "coxa_twist_T1_left": {
+          "position": [
+            -0.6173315357097429
+          ],
+          "velocity": [
+            0.02150785730057197
+          ]
+        },
+        "coxa_T1_left": {
+          "position": [
+            -0.09385591742460525
+          ],
+          "velocity": [
+            -0.005028969321961451
+          ]
+        },
+        "femur_twist_T1_left": {
+          "position": [
+            0.30254807305156295
+          ],
+          "velocity": [
+            -0.03306399824441003
+          ]
+        },
+        "femur_T1_left": {
+          "position": [
+            1.5461638667039876
+          ],
+          "velocity": [
+            -0.0006010293414806209
+          ]
+        },
+        "tibia_T1_left": {
+          "position": [
+            0.8022084494662424
+          ],
+          "velocity": [
+            -0.01350124975076804
+          ]
+        },
+        "tarsus_T1_left": {
+          "position": [
+            0.2593220150001164
+          ],
+          "velocity": [
+            -0.0017659965507092815
+          ]
+        },
+        "tarsus2_T1_left": {
+          "position": [
+            0.0021030929052505737
+          ],
+          "velocity": [
+            -0.0013731929906231324
+          ]
+        },
+        "tarsus3_T1_left": {
+          "position": [
+            0.0010503754249335416
+          ],
+          "velocity": [
+            -0.0006658550193416524
+          ]
+        },
+        "tarsus4_T1_left": {
+          "position": [
+            0.0010466853159251663
+          ],
+          "velocity": [
+            -0.00025352671631591285
+          ]
+        },
+        "tarsus5_T1_left": {
+          "position": [
+            0.0010448934696518947
+          ],
+          "velocity": [
+            3.9196337051067864e-05
+          ]
+        },
+        "coxa_abduct_T1_right": {
+          "position": [
+            0.03733781661984367
+          ],
+          "velocity": [
+            -0.05112419017502628
+          ]
+        },
+        "coxa_twist_T1_right": {
+          "position": [
+            -0.7312688315298987
+          ],
+          "velocity": [
+            0.012266220174243244
+          ]
+        },
+        "coxa_T1_right": {
+          "position": [
+            -0.13557105959176005
+          ],
+          "velocity": [
+            -0.015317788686397833
+          ]
+        },
+        "femur_twist_T1_right": {
+          "position": [
+            0.17461100294038245
+          ],
+          "velocity": [
+            -0.02911815691587909
+          ]
+        },
+        "femur_T1_right": {
+          "position": [
+            1.7182148217176556
+          ],
+          "velocity": [
+            0.005638700110377822
+          ]
+        },
+        "tibia_T1_right": {
+          "position": [
+            0.8182880539283613
+          ],
+          "velocity": [
+            -0.014693554977173662
+          ]
+        },
+        "tarsus_T1_right": {
+          "position": [
+            0.38571960214423695
+          ],
+          "velocity": [
+            0.0003219443892838695
+          ]
+        },
+        "tarsus2_T1_right": {
+          "position": [
+            0.008499810130696504
+          ],
+          "velocity": [
+            -0.0015723208797449447
+          ]
+        },
+        "tarsus3_T1_right": {
+          "position": [
+            0.004247967018345448
+          ],
+          "velocity": [
+            -0.000768481886803889
+          ]
+        },
+        "tarsus4_T1_right": {
+          "position": [
+            0.004239252934185717
+          ],
+          "velocity": [
+            -0.00030466709224256206
+          ]
+        },
+        "tarsus5_T1_right": {
+          "position": [
+            0.004233934997592147
+          ],
+          "velocity": [
+            1.1620603982068773e-05
+          ]
+        },
+        "coxa_abduct_T2_left": {
+          "position": [
+            -0.28479604374473433
+          ],
+          "velocity": [
+            -0.04356583151365503
+          ]
+        },
+        "coxa_twist_T2_left": {
+          "position": [
+            -0.659513732123186
+          ],
+          "velocity": [
+            0.03607213133382444
+          ]
+        },
+        "coxa_T2_left": {
+          "position": [
+            0.10280133391847236
+          ],
+          "velocity": [
+            -0.021413684482403075
+          ]
+        },
+        "femur_twist_T2_left": {
+          "position": [
+            0.42852961864250405
+          ],
+          "velocity": [
+            -0.03617371215898841
+          ]
+        },
+        "femur_T2_left": {
+          "position": [
+            1.4036029643958199
+          ],
+          "velocity": [
+            0.017277253002703778
+          ]
+        },
+        "tibia_T2_left": {
+          "position": [
+            -0.39438899927662846
+          ],
+          "velocity": [
+            -0.02095537620407494
+          ]
+        },
+        "tarsus_T2_left": {
+          "position": [
+            0.4318118217754066
+          ],
+          "velocity": [
+            -0.0010846399467409808
+          ]
+        },
+        "tarsus2_T2_left": {
+          "position": [
+            -0.007544355885848739
+          ],
+          "velocity": [
+            -0.0027004974623527573
+          ]
+        },
+        "tarsus3_T2_left": {
+          "position": [
+            -0.0037741820237474116
+          ],
+          "velocity": [
+            -0.0010083321857850742
+          ]
+        },
+        "tarsus4_T2_left": {
+          "position": [
+            -0.003777330979707901
+          ],
+          "velocity": [
+            -0.0001944682960311504
+          ]
+        },
+        "tarsus5_T2_left": {
+          "position": [
+            -0.0037789251618139895
+          ],
+          "velocity": [
+            0.0003491953617125625
+          ]
+        },
+        "coxa_abduct_T2_right": {
+          "position": [
+            -0.46046575290311237
+          ],
+          "velocity": [
+            -0.06197690327006431
+          ]
+        },
+        "coxa_twist_T2_right": {
+          "position": [
+            -0.6179724753724418
+          ],
+          "velocity": [
+            0.026723472696315944
+          ]
+        },
+        "coxa_T2_right": {
+          "position": [
+            0.010917122108374724
+          ],
+          "velocity": [
+            -0.04030622301126519
+          ]
+        },
+        "femur_twist_T2_right": {
+          "position": [
+            0.2550516447489061
+          ],
+          "velocity": [
+            -0.03292480912027394
+          ]
+        },
+        "femur_T2_right": {
+          "position": [
+            1.6847358061459141
+          ],
+          "velocity": [
+            0.033835876298379246
+          ]
+        },
+        "tibia_T2_right": {
+          "position": [
+            -0.29804217033662744
+          ],
+          "velocity": [
+            -0.018718046108251354
+          ]
+        },
+        "tarsus_T2_right": {
+          "position": [
+            0.5915628290753753
+          ],
+          "velocity": [
+            -0.006162076195542071
+          ]
+        },
+        "tarsus2_T2_right": {
+          "position": [
+            0.011661572753303932
+          ],
+          "velocity": [
+            -0.001520377418240373
+          ]
+        },
+        "tarsus3_T2_right": {
+          "position": [
+            0.0058707829882642375
+          ],
+          "velocity": [
+            -0.0024839108269473172
+          ]
+        },
+        "tarsus4_T2_right": {
+          "position": [
+            0.005853803887730234
+          ],
+          "velocity": [
+            -0.0007320195853095286
+          ]
+        },
+        "tarsus5_T2_right": {
+          "position": [
+            0.005850970445935648
+          ],
+          "velocity": [
+            5.332853791765714e-05
+          ]
+        },
+        "coxa_abduct_T3_left": {
+          "position": [
+            -0.27653369045612264
+          ],
+          "velocity": [
+            -0.04015244166003793
+          ]
+        },
+        "coxa_twist_T3_left": {
+          "position": [
+            0.07155764207936466
+          ],
+          "velocity": [
+            0.025741324370338634
+          ]
+        },
+        "coxa_T3_left": {
+          "position": [
+            0.12425831239618515
+          ],
+          "velocity": [
+            -0.043448483304925185
+          ]
+        },
+        "femur_twist_T3_left": {
+          "position": [
+            0.21743102269009443
+          ],
+          "velocity": [
+            -0.028886713065963018
+          ]
+        },
+        "femur_T3_left": {
+          "position": [
+            0.39775700966702676
+          ],
+          "velocity": [
+            0.02107150896730129
+          ]
+        },
+        "tibia_T3_left": {
+          "position": [
+            -0.32935823235778533
+          ],
+          "velocity": [
+            -0.029586940408780252
+          ]
+        },
+        "tarsus_T3_left": {
+          "position": [
+            0.21539825205463647
+          ],
+          "velocity": [
+            -0.0017776216237313527
+          ]
+        },
+        "tarsus2_T3_left": {
+          "position": [
+            0.0009220020472067697
+          ],
+          "velocity": [
+            -0.0037726840055847797
+          ]
+        },
+        "tarsus3_T3_left": {
+          "position": [
+            0.00045320275782005675
+          ],
+          "velocity": [
+            -0.0014493107275043247
+          ]
+        },
+        "tarsus4_T3_left": {
+          "position": [
+            0.00044210833101162466
+          ],
+          "velocity": [
+            -0.00042504873955391716
+          ]
+        },
+        "tarsus5_T3_left": {
+          "position": [
+            0.0004357216487973313
+          ],
+          "velocity": [
+            0.0002628524328981295
+          ]
+        },
+        "coxa_abduct_T3_right": {
+          "position": [
+            -0.2194091559254989
+          ],
+          "velocity": [
+            -0.026245104426228
+          ]
+        },
+        "coxa_twist_T3_right": {
+          "position": [
+            0.06713662999380378
+          ],
+          "velocity": [
+            0.00854130532948482
+          ]
+        },
+        "coxa_T3_right": {
+          "position": [
+            0.05832240153819351
+          ],
+          "velocity": [
+            -0.05074646655494602
+          ]
+        },
+        "femur_twist_T3_right": {
+          "position": [
+            0.3224664249530367
+          ],
+          "velocity": [
+            -0.018552182076493676
+          ]
+        },
+        "femur_T3_right": {
+          "position": [
+            0.4115309858930949
+          ],
+          "velocity": [
+            0.025748626721149945
+          ]
+        },
+        "tibia_T3_right": {
+          "position": [
+            -0.43985770264127566
+          ],
+          "velocity": [
+            -0.03406944727389968
+          ]
+        },
+        "tarsus_T3_right": {
+          "position": [
+            0.213109458614129
+          ],
+          "velocity": [
+            -0.0017416916109404606
+          ]
+        },
+        "tarsus2_T3_right": {
+          "position": [
+            0.0033073645229374196
+          ],
+          "velocity": [
+            -0.00363665519707848
+          ]
+        },
+        "tarsus3_T3_right": {
+          "position": [
+            0.0016454910318179131
+          ],
+          "velocity": [
+            -0.0013606341655760152
+          ]
+        },
+        "tarsus4_T3_right": {
+          "position": [
+            0.0016328749731142154
+          ],
+          "velocity": [
+            -0.0003533776096348376
+          ]
+        },
+        "tarsus5_T3_right": {
+          "position": [
+            0.0016256206933832939
+          ],
+          "velocity": [
+            0.00032510252153850365
+          ]
+        }
+      },
+      "activation": [
+        -0.033201798056761045,
+        0.05854799758727272,
+        -0.07230961658460476,
+        0.08099995927018604,
+        0.12848594530440813,
+        -0.12957127836890994,
+        -0.6247962851410175,
+        -0.09561361127309703,
+        0.30590614491579016,
+        1.5674683406857313,
+        0.854470758354657,
+        0.2718203665559991,
+        0.004198771931166299,
+        0.037022675082007406,
+        -0.7402981631776884,
+        -0.13837617906991195,
+        0.17645233230471105,
+        1.741856612709597,
+        0.870889343901683,
+        0.4014208974453319,
+        0.016978859971355783,
+        -0.2850866142809664,
+        -0.6579351872459265,
+        0.09900049523357579,
+        0.4257272773109879,
+        1.4188240141247348,
+        -0.3705810836186611,
+        0.42742713258734016,
+        -0.015091758422470914,
+        -0.46285830509522546,
+        -0.616224539495985,
+        0.005897745602609401,
+        0.25039512854786455,
+        1.7034948200518478,
+        -0.27173011720348217,
+        0.591063703070262,
+        0.02337983577569246,
+        -0.28036016228376487,
+        0.07256139135819864,
+        0.1230191618822643,
+        0.2129432373428601,
+        0.40018846295871663,
+        -0.3302611789307152,
+        0.2143197538221838,
+        0.0018122478116355636,
+        -0.2223399863868555,
+        0.06786897148780177,
+        0.056098577740951644,
+        0.3193936479399358,
+        0.414197541637458,
+        -0.4436038862659844,
+        0.2119695266283755,
+        0.006579284078794068,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999999922,
+        0.9999999999999922
+      ],
+      "controls": [
+        -0.033203378319740295,
+        0.05856386199593544,
+        -0.07231493294239044,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.08100113272666931,
+        0.12848997116088867,
+        -0.12957125480361664,
+        -0.6247963213723843,
+        -0.0956136475044641,
+        0.3059061811471574,
+        1.5674683044543634,
+        0.8544707221232902,
+        0.2718203303246319,
+        0.004198735699799208,
+        0.0370227113133745,
+        -0.7402981994090552,
+        -0.13837617679462877,
+        0.17645236853607818,
+        1.741856576478229,
+        0.8708893076703162,
+        0.40142093367669907,
+        0.016978896202722873,
+        -0.28508657804959914,
+        -0.6579352234772933,
+        0.09900045900220872,
+        0.42572731354235516,
+        1.4188240503561027,
+        -0.37058111985002834,
+        0.42742716881870735,
+        -0.015091732343529974,
+        -0.4628582688638582,
+        -0.6162245511584318,
+        0.005897781833976493,
+        0.2503951647792318,
+        1.70349478382048,
+        -0.2717301534348494,
+        0.5910637393016288,
+        0.02337987200705955,
+        -0.2803601260523977,
+        0.07256135512683157,
+        0.12301919811363138,
+        0.21294327357422727,
+        0.40018842672734944,
+        -0.3302612151620824,
+        0.21431979005355092,
+        0.001812259547568004,
+        -0.22234002261822267,
+        0.06786900771916886,
+        0.05609861397231873,
+        0.3193936117085686,
+        0.4141975054060908,
+        -0.44360392249735164,
+        0.21196956285974264,
+        0.006579320310161159,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "actuator_names": [
+      "walker/head_abduct",
+      "walker/head_twist",
+      "walker/head",
+      "walker/wing_yaw_left",
+      "walker/wing_roll_left",
+      "walker/wing_pitch_left",
+      "walker/wing_yaw_right",
+      "walker/wing_roll_right",
+      "walker/wing_pitch_right",
+      "walker/abdomen_abduct",
+      "walker/abdomen",
+      "walker/coxa_abduct_T1_left",
+      "walker/coxa_twist_T1_left",
+      "walker/coxa_T1_left",
+      "walker/femur_twist_T1_left",
+      "walker/femur_T1_left",
+      "walker/tibia_T1_left",
+      "walker/tarsus_T1_left",
+      "walker/tarsus2_T1_left",
+      "walker/coxa_abduct_T1_right",
+      "walker/coxa_twist_T1_right",
+      "walker/coxa_T1_right",
+      "walker/femur_twist_T1_right",
+      "walker/femur_T1_right",
+      "walker/tibia_T1_right",
+      "walker/tarsus_T1_right",
+      "walker/tarsus2_T1_right",
+      "walker/coxa_abduct_T2_left",
+      "walker/coxa_twist_T2_left",
+      "walker/coxa_T2_left",
+      "walker/femur_twist_T2_left",
+      "walker/femur_T2_left",
+      "walker/tibia_T2_left",
+      "walker/tarsus_T2_left",
+      "walker/tarsus2_T2_left",
+      "walker/coxa_abduct_T2_right",
+      "walker/coxa_twist_T2_right",
+      "walker/coxa_T2_right",
+      "walker/femur_twist_T2_right",
+      "walker/femur_T2_right",
+      "walker/tibia_T2_right",
+      "walker/tarsus_T2_right",
+      "walker/tarsus2_T2_right",
+      "walker/coxa_abduct_T3_left",
+      "walker/coxa_twist_T3_left",
+      "walker/coxa_T3_left",
+      "walker/femur_twist_T3_left",
+      "walker/femur_T3_left",
+      "walker/tibia_T3_left",
+      "walker/tarsus_T3_left",
+      "walker/tarsus2_T3_left",
+      "walker/coxa_abduct_T3_right",
+      "walker/coxa_twist_T3_right",
+      "walker/coxa_T3_right",
+      "walker/femur_twist_T3_right",
+      "walker/femur_T3_right",
+      "walker/tibia_T3_right",
+      "walker/tarsus_T3_right",
+      "walker/tarsus2_T3_right",
+      "walker/adhere_claw_T1_left",
+      "walker/adhere_claw_T1_right",
+      "walker/adhere_claw_T2_left",
+      "walker/adhere_claw_T2_right",
+      "walker/adhere_claw_T3_left",
+      "walker/adhere_claw_T3_right"
+    ],
+    "command_trace": [
+      {
+        "seconds": 0.002,
+        "feet": [],
+        "other_contacts": 1,
+        "up": -0.9852449896582763,
+        "native_controls": [
+          -0.2,
+          0.5807918310165405,
+          -0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          -0.7,
+          0.7,
+          -1.0,
+          0.8,
+          1.7,
+          -1.0,
+          -0.15,
+          1.3,
+          1.2,
+          -0.9,
+          0.7,
+          0.8,
+          1.7,
+          0.7497519254684448,
+          2.0,
+          1.3,
+          1.2,
+          -0.9,
+          -0.5,
+          -0.75,
+          -0.2,
+          1.0,
+          -0.15,
+          1.3,
+          -1.0,
+          -0.9,
+          0.3,
+          0.8,
+          0.9,
+          1.0,
+          2.0,
+          -1.35,
+          -1.0,
+          -0.9,
+          0.25,
+          -0.15,
+          -0.3,
+          -1.0,
+          1.5,
+          -1.35,
+          1.2,
+          0.9,
+          -0.9,
+          0.8,
+          1.3,
+          -1.0,
+          1.5,
+          1.3,
+          1.2,
+          -0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "applied_state": {
+          "joints": {
+            "head_abduct": {
+              "position": [
+                -0.03123045192261971
+              ],
+              "velocity": [
+                -2.003635784790809
+              ]
+            },
+            "head_twist": {
+              "position": [
+                0.048226562403795976
+              ],
+              "velocity": [
+                4.7912109394502265
+              ]
+            },
+            "head": {
+              "position": [
+                -0.03821185148293545
+              ],
+              "velocity": [
+                -3.100741965510643
+              ]
+            },
+            "rostrum": {
+              "position": [
+                0.075507170416235
+              ],
+              "velocity": [
+                -0.027835952688267943
+              ]
+            },
+            "haustellum_abduct": {
+              "position": [
+                -0.00047053753315072185
+              ],
+              "velocity": [
+                -0.041416947250606476
+              ]
+            },
+            "haustellum": {
+              "position": [
+                0.16877310042130514
+              ],
+              "velocity": [
+                0.03219733895397112
+              ]
+            },
+            "labrum_left": {
+              "position": [
+                0.05321077022571162
+              ],
+              "velocity": [
+                -0.005289193843534434
+              ]
+            },
+            "labrum_right": {
+              "position": [
+                0.05119046860651062
+              ],
+              "velocity": [
+                0.004658782877423337
+              ]
+            },
+            "antenna_abduct_left": {
+              "position": [
+                0.7939102899703855
+              ],
+              "velocity": [
+                0.07099652980311986
+              ]
+            },
+            "antenna_twist_left": {
+              "position": [
+                0.029391846148789674
+              ],
+              "velocity": [
+                0.0010881285937875105
+              ]
+            },
+            "antenna_left": {
+              "position": [
+                -0.19939726422858167
+              ],
+              "velocity": [
+                0.0072739877631331495
+              ]
+            },
+            "antenna_abduct_right": {
+              "position": [
+                0.8000024708396909
+              ],
+              "velocity": [
+                -7.459027199860539e-05
+              ]
+            },
+            "antenna_twist_right": {
+              "position": [
+                -0.03401326570169391
+              ],
+              "velocity": [
+                0.0027370818649710736
+              ]
+            },
+            "antenna_right": {
+              "position": [
+                -0.19616255320905918
+              ],
+              "velocity": [
+                0.01700009744646254
+              ]
+            },
+            "wing_yaw_left": {
+              "position": [
+                -0.3635163698662468
+              ],
+              "velocity": [
+                2.3825637230156778
+              ]
+            },
+            "wing_roll_left": {
+              "position": [
+                1.410315526721539
+              ],
+              "velocity": [
+                -0.9594740515703308
+              ]
+            },
+            "wing_pitch_left": {
+              "position": [
+                -1.240358378640159
+              ],
+              "velocity": [
+                0.29782960811266435
+              ]
+            },
+            "wing_yaw_right": {
+              "position": [
+                -0.39431691704460164
+              ],
+              "velocity": [
+                2.445105350876679
+              ]
+            },
+            "wing_roll_right": {
+              "position": [
+                1.4123050161071184
+              ],
+              "velocity": [
+                -0.9397237195425292
+              ]
+            },
+            "wing_pitch_right": {
+              "position": [
+                -1.2427144739780855
+              ],
+              "velocity": [
+                0.3156015962873436
+              ]
+            },
+            "abdomen_abduct": {
+              "position": [
+                0.005759582927043629
+              ],
+              "velocity": [
+                -1.0965373759345605
+              ]
+            },
+            "abdomen": {
+              "position": [
+                0.10017080344973761
+              ],
+              "velocity": [
+                0.16264015703062626
+              ]
+            },
+            "abdomen_abduct_2": {
+              "position": [
+                0.0008372799077724552
+              ],
+              "velocity": [
+                -1.0759129194286792
+              ]
+            },
+            "abdomen_2": {
+              "position": [
+                0.09973140069142747
+              ],
+              "velocity": [
+                0.3935261059667951
+              ]
+            },
+            "abdomen_abduct_3": {
+              "position": [
+                0.022545610162941633
+              ],
+              "velocity": [
+                -1.2506706696471384
+              ]
+            },
+            "abdomen_3": {
+              "position": [
+                0.08959378092916803
+              ],
+              "velocity": [
+                0.1970455876379986
+              ]
+            },
+            "abdomen_abduct_4": {
+              "position": [
+                0.06558766258655728
+              ],
+              "velocity": [
+                -1.5627768711216232
+              ]
+            },
+            "abdomen_4": {
+              "position": [
+                0.07943809832092677
+              ],
+              "velocity": [
+                0.05463638957995709
+              ]
+            },
+            "abdomen_abduct_5": {
+              "position": [
+                -0.009693720245529539
+              ],
+              "velocity": [
+                -1.2564632247410377
+              ]
+            },
+            "abdomen_5": {
+              "position": [
+                -0.017186448028331188
+              ],
+              "velocity": [
+                0.4792369528338787
+              ]
+            },
+            "abdomen_abduct_6": {
+              "position": [
+                -0.0005255050056499835
+              ],
+              "velocity": [
+                -1.3352194009654141
+              ]
+            },
+            "abdomen_6": {
+              "position": [
+                -0.07889864838519908
+              ],
+              "velocity": [
+                0.7988778058137462
+              ]
+            },
+            "abdomen_abduct_7": {
+              "position": [
+                -0.000698866061746018
+              ],
+              "velocity": [
+                -1.350733590715406
+              ]
+            },
+            "abdomen_7": {
+              "position": [
+                -0.09209647688597436
+              ],
+              "velocity": [
+                0.889613805240803
+              ]
+            },
+            "haltere_left": {
+              "position": [
+                -1.200640399557798e-06
+              ],
+              "velocity": [
+                0.002196511876529098
+              ]
+            },
+            "haltere_right": {
+              "position": [
+                -1.429919828730008e-06
+              ],
+              "velocity": [
+                0.0014064859139317073
+              ]
+            },
+            "coxa_abduct_T1_left": {
+              "position": [
+                -0.1387107455662099
+              ],
+              "velocity": [
+                -11.066920133438988
+              ]
+            },
+            "coxa_twist_T1_left": {
+              "position": [
+                -0.5992543410711331
+              ],
+              "velocity": [
+                17.98605681851197
+              ]
+            },
+            "coxa_T1_left": {
+              "position": [
+                -0.07125088724229317
+              ],
+              "velocity": [
+                22.582987461941777
+              ]
+            },
+            "femur_twist_T1_left": {
+              "position": [
+                0.28599188781504314
+              ],
+              "velocity": [
+                -16.481321914702
+              ]
+            },
+            "femur_T1_left": {
+              "position": [
+                1.5244357966451905
+              ],
+              "velocity": [
+                -21.648707131879668
+              ]
+            },
+            "tibia_T1_left": {
+              "position": [
+                0.8082871130862551
+              ],
+              "velocity": [
+                6.468155570573642
+              ]
+            },
+            "tarsus_T1_left": {
+              "position": [
+                0.26535307640203365
+              ],
+              "velocity": [
+                6.064950120234546
+              ]
+            },
+            "tarsus2_T1_left": {
+              "position": [
+                -0.016615770271850783
+              ],
+              "velocity": [
+                -20.291878810822183
+              ]
+            },
+            "tarsus3_T1_left": {
+              "position": [
+                -0.008308625577781293
+              ],
+              "velocity": [
+                -10.145631466802605
+              ]
+            },
+            "tarsus4_T1_left": {
+              "position": [
+                -0.008308818931419375
+              ],
+              "velocity": [
+                -10.143414273815335
+              ]
+            },
+            "tarsus5_T1_left": {
+              "position": [
+                -0.008308299236626383
+              ],
+              "velocity": [
+                -10.141973836766683
+              ]
+            },
+            "coxa_abduct_T1_right": {
+              "position": [
+                0.04550975519028705
+              ],
+              "velocity": [
+                8.262786801876087
+              ]
+            },
+            "coxa_twist_T1_right": {
+              "position": [
+                -0.7116210054355381
+              ],
+              "velocity": [
+                19.492630513670225
+              ]
+            },
+            "coxa_T1_right": {
+              "position": [
+                -0.11240784221860436
+              ],
+              "velocity": [
+                23.136269658617092
+              ]
+            },
+            "femur_twist_T1_right": {
+              "position": [
+                0.18186105050629506
+              ],
+              "velocity": [
+                7.226772473681249
+              ]
+            },
+            "femur_T1_right": {
+              "position": [
+                1.7216609740337507
+              ],
+              "velocity": [
+                3.3367790636503125
+              ]
+            },
+            "tibia_T1_right": {
+              "position": [
+                0.8241067509609966
+              ],
+              "velocity": [
+                6.211874423281783
+              ]
+            },
+            "tarsus_T1_right": {
+              "position": [
+                0.3909098755123028
+              ],
+              "velocity": [
+                5.218790552067433
+              ]
+            },
+            "tarsus2_T1_right": {
+              "position": [
+                -0.010485788457158297
+              ],
+              "velocity": [
+                -20.579815258403002
+              ]
+            },
+            "tarsus3_T1_right": {
+              "position": [
+                -0.005244309643728757
+              ],
+              "velocity": [
+                -10.289540676957863
+              ]
+            },
+            "tarsus4_T1_right": {
+              "position": [
+                -0.005248906410685654
+              ],
+              "velocity": [
+                -10.286938363532506
+              ]
+            },
+            "tarsus5_T1_right": {
+              "position": [
+                -0.0052515115400431365
+              ],
+              "velocity": [
+                -10.285240974937508
+              ]
+            },
+            "coxa_abduct_T2_left": {
+              "position": [
+                -0.2878114253890556
+              ],
+              "velocity": [
+                -5.031690833750254
+              ]
+            },
+            "coxa_twist_T2_left": {
+              "position": [
+                -0.6605493896810106
+              ],
+              "velocity": [
+                -0.2248218209581171
+              ]
+            },
+            "coxa_T2_left": {
+              "position": [
+                0.09878523721057957
+              ],
+              "velocity": [
+                -5.597125406127801
+              ]
+            },
+            "femur_twist_T2_left": {
+              "position": [
+                0.435704034721793
+              ],
+              "velocity": [
+                6.233188826617959
+              ]
+            },
+            "femur_T2_left": {
+              "position": [
+                1.3838208490160506
+              ],
+              "velocity": [
+                -17.58870854129463
+              ]
+            },
+            "tibia_T2_left": {
+              "position": [
+                -0.3713980738557455
+              ],
+              "velocity": [
+                24.412018438788216
+              ]
+            },
+            "tarsus_T2_left": {
+              "position": [
+                0.4225098016953341
+              ],
+              "velocity": [
+                -9.324463731598756
+              ]
+            },
+            "tarsus2_T2_left": {
+              "position": [
+                -0.025867083284947984
+              ],
+              "velocity": [
+                -19.853215629289572
+              ]
+            },
+            "tarsus3_T2_left": {
+              "position": [
+                -0.012933745640937019
+              ],
+              "velocity": [
+                -9.92605415017155
+              ]
+            },
+            "tarsus4_T2_left": {
+              "position": [
+                -0.012932726027282475
+              ],
+              "velocity": [
+                -9.925101393841546
+              ]
+            },
+            "tarsus5_T2_left": {
+              "position": [
+                -0.012931595813312177
+              ],
+              "velocity": [
+                -9.92452303106021
+              ]
+            },
+            "coxa_abduct_T2_right": {
+              "position": [
+                -0.4509093242510697
+              ],
+              "velocity": [
+                9.571554735896026
+              ]
+            },
+            "coxa_twist_T2_right": {
+              "position": [
+                -0.5998766696848198
+              ],
+              "velocity": [
+                17.940115207693953
+              ]
+            },
+            "coxa_T2_right": {
+              "position": [
+                0.022164037709203256
+              ],
+              "velocity": [
+                11.245178361620434
+              ]
+            },
+            "femur_twist_T2_right": {
+              "position": [
+                0.2645514487625116
+              ],
+              "velocity": [
+                9.453824026798316
+              ]
+            },
+            "femur_T2_right": {
+              "position": [
+                1.6886342850205562
+              ],
+              "velocity": [
+                3.8043092276340724
+              ]
+            },
+            "tibia_T2_right": {
+              "position": [
+                -0.31298790484092515
+              ],
+              "velocity": [
+                -15.76909685913459
+              ]
+            },
+            "tarsus_T2_right": {
+              "position": [
+                0.5811946301183701
+              ],
+              "velocity": [
+                -10.411653853273497
+              ]
+            },
+            "tarsus2_T2_right": {
+              "position": [
+                -0.007442884684333165
+              ],
+              "velocity": [
+                -20.715257633254932
+              ]
+            },
+            "tarsus3_T2_right": {
+              "position": [
+                -0.003684409024690304
+              ],
+              "velocity": [
+                -10.358975687337821
+              ]
+            },
+            "tarsus4_T2_right": {
+              "position": [
+                -0.003698371492906578
+              ],
+              "velocity": [
+                -10.357669040708778
+              ]
+            },
+            "tarsus5_T2_right": {
+              "position": [
+                -0.0037000784105032545
+              ],
+              "velocity": [
+                -10.357264085135164
+              ]
+            },
+            "coxa_abduct_T3_left": {
+              "position": [
+                -0.2698529278357772
+              ],
+              "velocity": [
+                6.5577200023263815
+              ]
+            },
+            "coxa_twist_T3_left": {
+              "position": [
+                0.06878143793050391
+              ],
+              "velocity": [
+                -2.6899745849488985
+              ]
+            },
+            "coxa_T3_left": {
+              "position": [
+                0.11898101327153918
+              ],
+              "velocity": [
+                -4.073542134314699
+              ]
+            },
+            "femur_twist_T3_left": {
+              "position": [
+                0.20191762236135613
+              ],
+              "velocity": [
+                -15.451219877456026
+              ]
+            },
+            "femur_T3_left": {
+              "position": [
+                0.4116948051448604
+              ],
+              "velocity": [
+                13.619721174495977
+              ]
+            },
+            "tibia_T3_left": {
+              "position": [
+                -0.34341555978807625
+              ],
+              "velocity": [
+                -14.894784903819641
+              ]
+            },
+            "tarsus_T3_left": {
+              "position": [
+                0.22182114655873114
+              ],
+              "velocity": [
+                6.4452763694867565
+              ]
+            },
+            "tarsus2_T3_left": {
+              "position": [
+                0.01951116298877073
+              ],
+              "velocity": [
+                20.15299490212275
+              ]
+            },
+            "tarsus3_T3_left": {
+              "position": [
+                0.00974713109982103
+              ],
+              "velocity": [
+                10.076136249600683
+              ]
+            },
+            "tarsus4_T3_left": {
+              "position": [
+                0.009735203656852733
+              ],
+              "velocity": [
+                10.075721080651387
+              ]
+            },
+            "tarsus5_T3_left": {
+              "position": [
+                0.009728369438410897
+              ],
+              "velocity": [
+                10.075510552107113
+              ]
+            },
+            "coxa_abduct_T3_right": {
+              "position": [
+                -0.22797640856265744
+              ],
+              "velocity": [
+                -8.54187882909288
+              ]
+            },
+            "coxa_twist_T3_right": {
+              "position": [
+                0.07641178659583198
+              ],
+              "velocity": [
+                9.236351703608287
+              ]
+            },
+            "coxa_T3_right": {
+              "position": [
+                0.07402070774240548
+              ],
+              "velocity": [
+                15.659072613589727
+              ]
+            },
+            "femur_twist_T3_right": {
+              "position": [
+                0.30569963838364356
+              ],
+              "velocity": [
+                -16.66837243179884
+              ]
+            },
+            "femur_T3_right": {
+              "position": [
+                0.42547515694028215
+              ],
+              "velocity": [
+                13.787757745299505
+              ]
+            },
+            "tibia_T3_right": {
+              "position": [
+                -0.4159162597556437
+              ],
+              "velocity": [
+                25.388723222366142
+              ]
+            },
+            "tarsus_T3_right": {
+              "position": [
+                0.21953058517633245
+              ],
+              "velocity": [
+                6.456260184838981
+              ]
+            },
+            "tarsus2_T3_right": {
+              "position": [
+                -0.015461982228836593
+              ],
+              "velocity": [
+                -20.34608036152307
+              ]
+            },
+            "tarsus3_T3_right": {
+              "position": [
+                -0.007737386104124044
+              ],
+              "velocity": [
+                -10.17192515174992
+              ]
+            },
+            "tarsus4_T3_right": {
+              "position": [
+                -0.007746248066981357
+              ],
+              "velocity": [
+                -10.169597156090887
+              ]
+            },
+            "tarsus5_T3_right": {
+              "position": [
+                -0.007751047094958389
+              ],
+              "velocity": [
+                -10.168094977239381
+              ]
+            }
+          },
+          "activation": [
+            -0.06350567519944421,
+            0.15342919404135666,
+            -0.15001235368327984,
+            -0.06089201881131759,
+            0.2323185495953439,
+            -0.2877106631732347,
+            -0.36593946848925435,
+            0.23061325231303784,
+            0.06864927455174345,
+            1.2554389004025588,
+            0.9354144570576424,
+            0.44045193002932365,
+            -0.16007595152473444,
+            0.15747231523781938,
+            -0.4604569793025688,
+            0.1956197826583079,
+            0.2806093330084482,
+            1.7887560720713143,
+            0.9488501159695061,
+            0.5465066521512852,
+            -0.14961774833300617,
+            -0.32413205218900776,
+            -0.6746615112851565,
+            0.04467812144537933,
+            0.5300610760691069,
+            1.1338002571018306,
+            -0.06707011452501332,
+            0.16809234388992117,
+            -0.17586178065831443,
+            -0.3242623005486772,
+            -0.35892503655563573,
+            0.16833813497488137,
+            0.38658325087410217,
+            1.7573638452609786,
+            -0.46763005901484855,
+            0.30199944205124113,
+            -0.14437970103813816,
+            -0.18400439218565562,
+            0.03212646471121592,
+            0.046165091746404784,
+            -0.007424143223956285,
+            0.6000020899062434,
+            -0.5155272045310635,
+            0.39339802165810994,
+            0.16499488992813374,
+            -0.34545717564786443,
+            0.2008824481434429,
+            0.2820904375966988,
+            0.07968636965875611,
+            0.6114660008660473,
+            -0.12682614322478575,
+            0.39147478345644193,
+            -0.15812793053599178,
+            0.7507072031952425,
+            0.7507072031952425,
+            0.9999999999999922,
+            0.7507072031952425,
+            0.7507072031952425,
+            0.7507072031952425
+          ],
+          "controls": [
+            -0.2,
+            0.5807918310165405,
+            -0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -0.7,
+            0.7,
+            -1.0,
+            0.8,
+            1.7,
+            -1.0,
+            -0.15,
+            1.3,
+            1.2,
+            -0.9,
+            0.7,
+            0.8,
+            1.7,
+            0.7497519254684448,
+            2.0,
+            1.3,
+            1.2,
+            -0.9,
+            -0.5,
+            -0.75,
+            -0.2,
+            1.0,
+            -0.15,
+            1.3,
+            -1.0,
+            -0.9,
+            0.3,
+            0.8,
+            0.9,
+            1.0,
+            2.0,
+            -1.35,
+            -1.0,
+            -0.9,
+            0.25,
+            -0.15,
+            -0.3,
+            -1.0,
+            1.5,
+            -1.35,
+            1.2,
+            0.9,
+            -0.9,
+            0.8,
+            1.3,
+            -1.0,
+            1.5,
+            1.3,
+            1.2,
+            -0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    ],
+    "contact_events": [],
+    "diagnostic_guard_leg_ik": false,
+    "diagnostic_contact_guard": false,
+    "guard_steps": 0,
+    "guard_events": [],
+    "forward_displacement_cm": -0.00018541558394886894,
+    "diagnostic_match_resume_height": false,
+    "nominal_reference_height_cm": 0.14355,
+    "reference_height_cm": 0.14355,
+    "diagnostic_head_command_hold": false,
+    "head_hold_actuators": [],
+    "diagnostic_command_slew_rate": 0,
+    "physical_filter_settle_seconds": 0.1,
+    "filter_settle_rows": [
+      {
+        "seconds": 0.002,
+        "claws": 0,
+        "other_contacts": 2,
+        "up": 0.04339360526668529,
+        "speed_cm_s": 3.035137614011426
+      },
+      {
+        "seconds": 0.004,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.006115131341516256,
+        "speed_cm_s": 2.644227358371461
+      },
+      {
+        "seconds": 0.006,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.041121531368562836,
+        "speed_cm_s": 2.610951086915894
+      },
+      {
+        "seconds": 0.008,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.07348339130127046,
+        "speed_cm_s": 2.7101343208555715
+      },
+      {
+        "seconds": 0.01,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.10668801371180864,
+        "speed_cm_s": 2.866836208495442
+      },
+      {
+        "seconds": 0.012,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.14305019533660673,
+        "speed_cm_s": 2.793201764127571
+      },
+      {
+        "seconds": 0.014,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.19029807533311072,
+        "speed_cm_s": 2.738386628214135
+      },
+      {
+        "seconds": 0.016,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.24137690791994365,
+        "speed_cm_s": 2.9158117522498688
+      },
+      {
+        "seconds": 0.018000000000000002,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.29558714712329237,
+        "speed_cm_s": 3.18518898234665
+      },
+      {
+        "seconds": 0.02,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.35276251714093526,
+        "speed_cm_s": 3.5357740149264343
+      },
+      {
+        "seconds": 0.022,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.4129238438063285,
+        "speed_cm_s": 3.966540007137469
+      },
+      {
+        "seconds": 0.024,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.47607855812578176,
+        "speed_cm_s": 4.479668834573466
+      },
+      {
+        "seconds": 0.026000000000000002,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.542113209971051,
+        "speed_cm_s": 5.078231735352891
+      },
+      {
+        "seconds": 0.028,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.6105826246718811,
+        "speed_cm_s": 5.773762330299239
+      },
+      {
+        "seconds": 0.03,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.6881889535138705,
+        "speed_cm_s": 5.780291436294543
+      },
+      {
+        "seconds": 0.032,
+        "claws": 0,
+        "other_contacts": 0,
+        "up": -0.7675385159683853,
+        "speed_cm_s": 6.487232173476712
+      },
+      {
+        "seconds": 0.034,
+        "claws": 0,
+        "other_contacts": 0,
+        "up": -0.8410189297311174,
+        "speed_cm_s": 7.232902825532684
+      },
+      {
+        "seconds": 0.036000000000000004,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9045434789387141,
+        "speed_cm_s": 5.646890001605516
+      },
+      {
+        "seconds": 0.038,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9442018673676673,
+        "speed_cm_s": 5.881565243061143
+      },
+      {
+        "seconds": 0.04,
+        "claws": 0,
+        "other_contacts": 2,
+        "up": -0.9398056467440448,
+        "speed_cm_s": 7.1275834584136755
+      },
+      {
+        "seconds": 0.042,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9327380732487295,
+        "speed_cm_s": 5.52311338906272
+      },
+      {
+        "seconds": 0.044,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9233962202479749,
+        "speed_cm_s": 3.9197209485692706
+      },
+      {
+        "seconds": 0.046,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.915756665040344,
+        "speed_cm_s": 2.4415304649642153
+      },
+      {
+        "seconds": 0.048,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9127496949600887,
+        "speed_cm_s": 1.1725373941281394
+      },
+      {
+        "seconds": 0.05,
+        "claws": 0,
+        "other_contacts": 0,
+        "up": -0.9159601543182625,
+        "speed_cm_s": 1.1463647193708368
+      },
+      {
+        "seconds": 0.052000000000000005,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9256306783435155,
+        "speed_cm_s": 2.3894707395750285
+      },
+      {
+        "seconds": 0.054,
+        "claws": 0,
+        "other_contacts": 0,
+        "up": -0.940831543539234,
+        "speed_cm_s": 3.8556049118456976
+      },
+      {
+        "seconds": 0.056,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9593441114502361,
+        "speed_cm_s": 5.392778167290267
+      },
+      {
+        "seconds": 0.058,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9792045627502892,
+        "speed_cm_s": 5.684121008327827
+      },
+      {
+        "seconds": 0.06,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9938652038141153,
+        "speed_cm_s": 3.234827671362539
+      },
+      {
+        "seconds": 0.062,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9954177041472414,
+        "speed_cm_s": 1.915189344174212
+      },
+      {
+        "seconds": 0.064,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9895084132110602,
+        "speed_cm_s": 1.455432879410092
+      },
+      {
+        "seconds": 0.066,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9812600954776591,
+        "speed_cm_s": 1.086268724569416
+      },
+      {
+        "seconds": 0.068,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9730224738284223,
+        "speed_cm_s": 0.7718641484591438
+      },
+      {
+        "seconds": 0.07,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9662553065351683,
+        "speed_cm_s": 0.5775676761039007
+      },
+      {
+        "seconds": 0.07200000000000001,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9615738137645423,
+        "speed_cm_s": 0.6175029202573272
+      },
+      {
+        "seconds": 0.074,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9588682768166519,
+        "speed_cm_s": 0.8523058398325297
+      },
+      {
+        "seconds": 0.076,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9573529246781775,
+        "speed_cm_s": 1.1639181942578494
+      },
+      {
+        "seconds": 0.078,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9555562374815317,
+        "speed_cm_s": 1.4992377886846282
+      },
+      {
+        "seconds": 0.08,
+        "claws": 0,
+        "other_contacts": 3,
+        "up": -0.9513196188161196,
+        "speed_cm_s": 1.7752203721613469
+      },
+      {
+        "seconds": 0.082,
+        "claws": 0,
+        "other_contacts": 2,
+        "up": -0.9531043930112747,
+        "speed_cm_s": 2.0265307996204323
+      },
+      {
+        "seconds": 0.084,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9531573748987507,
+        "speed_cm_s": 1.6652606001042205
+      },
+      {
+        "seconds": 0.08600000000000001,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9561032032954785,
+        "speed_cm_s": 0.5653936839855017
+      },
+      {
+        "seconds": 0.088,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9618273497305334,
+        "speed_cm_s": 1.3761026977780788
+      },
+      {
+        "seconds": 0.09,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9689960654679904,
+        "speed_cm_s": 0.8075794537887873
+      },
+      {
+        "seconds": 0.092,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9747041971843633,
+        "speed_cm_s": 0.8865738085774871
+      },
+      {
+        "seconds": 0.094,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9791188641060451,
+        "speed_cm_s": 0.9762197999363441
+      },
+      {
+        "seconds": 0.096,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9821526244162616,
+        "speed_cm_s": 1.0918536854073317
+      },
+      {
+        "seconds": 0.098,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9835954269813438,
+        "speed_cm_s": 0.5153875350453723
+      },
+      {
+        "seconds": 0.1,
+        "claws": 0,
+        "other_contacts": 1,
+        "up": -0.9842763431825281,
+        "speed_cm_s": 0.13577969154780403
+      }
+    ],
+    "minimum_held_claws": 0,
+    "minimum_held_up_cosine": -0.9999417639094291,
+    "maximum_held_speed_cm_s": 75.98739889508671,
+    "displacement_cm": 0.0002797878772327001,
+    "minimum_walking_up_cosine": -0.9852449896582763,
+    "hold_seconds": 2.0,
+    "walking_seconds": 6.0,
+    "completed_walking_seconds": 0.002,
+    "pose_jump": 0.0,
+    "velocity_jump": 0.0,
+    "time_reset": false,
+    "command_blend_seconds": 0.0,
+    "claw_release_seconds": 0.0,
+    "claw_release": "native walking policy",
+    "initial_root": [
+      3.8502256625512965,
+      7.8023516961508905,
+      0.04468665760221806,
+      0.07800742760700195,
+      0.8542117961831032,
+      0.5123088705584753,
+      0.04215055927119152
+    ],
+    "reference_heading_rad": 1.0797592518194274,
+    "reference_heading_quaternion": [
+      0.8577705638018875,
+      0.0,
+      0.0,
+      0.5140327420262175
+    ],
+    "reference_quaternion_same_hemisphere": true,
+    "rows": [
+      {
+        "seconds": 0.0,
+        "up": -0.9852449896582763,
+        "claws": 0,
+        "other_contacts": 1,
+        "root": [
+          3.8503230033395823,
+          7.802089387120962,
+          0.04466567804182211,
+          0.07467852921142532,
+          0.8552519577443548,
+          0.5110446004054693,
+          0.0424337418298147
+        ],
+        "speed_cm_s": 0.29924357801250817
+      }
+    ],
+    "previous_action_matches_applied_controls": true,
+    "walking_command_cm_s": 1.0,
+    "command_acceleration_seconds": 0.25,
+    "leg_actuator_stance_recovery_seconds": 0.0,
+    "continuous_elapsed_seconds": 0.001999999999995339
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-17",
+  "editor": "2022.3.62f3",
+  "status": "research viewer Play-mode checks passed",
+  "scene": "Assets/ResearchLab.unity",
+  "observed": ["actual articulated fly geometry", "mounted rider above thorax", "live full-network telemetry", "sensory stimulation increases spikes", "pause freezes simulation time", "paused status label", "camera recentering", "backend disconnection status"],
+  "fixed": ["missing JSON module", "rider used mesh rather than body frame", "camera framing", "paused speed reporting", "Windows UDP reset notification"],
+  "neural_flight_control": false,
+  "biological_validation": false,
+  "gamepad_feel_tested": false
+}

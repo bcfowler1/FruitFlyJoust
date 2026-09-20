@@ -1,0 +1,18 @@
+{
+  "fast_gameplay": {
+    "status": "passed",
+    "checks": 19,
+    "method": "Unity Play-mode physical scene checks"
+  },
+  "trained_head_full_brain_combat": {
+    "status": "passed",
+    "checks": 15,
+    "neurons": 138639,
+    "scientific_body": "NeuroMechFly",
+    "limits": "Gameplay combat damage; no biological injury model or wing flight",
+    "trained_head_stabilization": true
+  },
+  "head_steering_qualified": true,
+  "wing_landing_reproduced": true,
+  "walking_after_wing_landing_qualified": false
+}

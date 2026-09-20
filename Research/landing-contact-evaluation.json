@@ -1,0 +1,14 @@
+{
+  "qualified": true,
+  "upright": {
+    "claws": 6,
+    "non_claw_contacts": 0
+  },
+  "inverted": {
+    "claws": 0,
+    "non_claw_contacts": 3
+  },
+  "body_collision_cannot_qualify": true,
+  "distinct_claws": true,
+  "live_mujoco_contacts": true
+}

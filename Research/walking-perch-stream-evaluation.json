@@ -1,0 +1,13 @@
+{
+  "full_brain": true,
+  "physical_fit_enabled": true,
+  "walking_perch_launch_reland_resume_passed": true,
+  "continuous_clocks": true,
+  "contact_only_hold_passed": true,
+  "pause_reset_passed": true,
+  "landed_contacts": 6,
+  "optimized_observations": true,
+  "rider_unload_reload_passed": true,
+  "biologically_validated": false,
+  "wing_driven_flight": false
+}

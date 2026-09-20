@@ -1,0 +1,66 @@
+{
+  "trials": [
+    {
+      "drive": 0.5,
+      "cue": -0.5,
+      "target_yaw_radps": -0.42723020675359774,
+      "measured_yaw_radps": -0.45704901218414307,
+      "error_radps": -0.029818805430545325,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "cue": 0.5,
+      "target_yaw_radps": 0.42723020675359774,
+      "measured_yaw_radps": 0.32590872711605495,
+      "error_radps": -0.10132147963754279,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.7,
+      "cue": -0.5,
+      "target_yaw_radps": -0.620698292185225,
+      "measured_yaw_radps": -0.7329558001624213,
+      "error_radps": -0.11225750797719636,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.7,
+      "cue": 0.5,
+      "target_yaw_radps": 0.620698292185225,
+      "measured_yaw_radps": 0.44117596414354115,
+      "error_radps": -0.17952232804168383,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "cue": -0.5,
+      "target_yaw_radps": -0.8280617234373246,
+      "measured_yaw_radps": -0.8890612920125326,
+      "error_radps": -0.06099956857520794,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "cue": 0.5,
+      "target_yaw_radps": 0.8280617234373246,
+      "measured_yaw_radps": 0.7984520329369439,
+      "error_radps": -0.02960969050038076,
+      "finite": true,
+      "ended": false
+    }
+  ],
+  "rms_radps": 0.10048457501352451,
+  "max_radps": 0.17952232804168383,
+  "limits": {
+    "rms_radps": 0.35,
+    "max_radps": 0.5
+  },
+  "qualified": true,
+  "biologically_validated": false
+}

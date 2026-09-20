@@ -1,0 +1,8 @@
+{
+  "qualified": false,
+  "status": "failed: recovery initialization KeyError 11",
+  "landing_passed": true,
+  "held_stance_passed": true,
+  "walking_resume_completed": false,
+  "subsequent_fix": "Stored all 48 initial joint targets; subsequent fixed two-second probe completed but failed walking."
+}

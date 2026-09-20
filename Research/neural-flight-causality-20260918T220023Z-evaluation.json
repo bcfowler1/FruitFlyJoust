@@ -1,0 +1,169 @@
+{
+  "engineering_qualified": false,
+  "biologically_validated": false,
+  "tests": [
+    {
+      "disabled": {
+        "trajectory": 0,
+        "influence": 0.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389835016567476,
+        "maximum_tracking_error_m": 0.004213690136462514,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 282.47863247863245,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "enabled": {
+        "trajectory": 0,
+        "influence": 1.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.18919999999998732,
+        "minimum_thorax_height_m": 0.005389835016567476,
+        "maximum_tracking_error_m": 0.004215751909314442,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.007307692307692305,
+        "maximum_population_rate_hz": 282.47863247863245,
+        "maximum_clock_error_seconds": 1.2656542480726785e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "maximum_final_qpos_difference": 0.002227799406589015,
+      "passed": true
+    },
+    {
+      "disabled": {
+        "trajectory": 1,
+        "influence": 0.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367228926379875,
+        "maximum_tracking_error_m": 0.001479399550929245,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "enabled": {
+        "trajectory": 1,
+        "influence": 1.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.22699999999998316,
+        "minimum_thorax_height_m": 0.005367228926379875,
+        "maximum_tracking_error_m": 0.0014835681190631547,
+        "clipped_actions": 0,
+        "maximum_applied_residual": 0.011709401709401712,
+        "maximum_population_rate_hz": 278.8461538461538,
+        "maximum_clock_error_seconds": 1.684763439868675e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": true
+      },
+      "maximum_final_qpos_difference": 0.003922491936557582,
+      "passed": true
+    },
+    {
+      "disabled": {
+        "trajectory": 2,
+        "influence": 0.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367056761524573,
+        "maximum_tracking_error_m": 0.0006882659445636871,
+        "clipped_actions": 21,
+        "maximum_applied_residual": 0.0,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": false
+      },
+      "enabled": {
+        "trajectory": 2,
+        "influence": 1.0,
+        "reference_completed": true,
+        "simulated_seconds": 0.2057999999999855,
+        "minimum_thorax_height_m": 0.005367056761524573,
+        "maximum_tracking_error_m": 0.0006881189300407411,
+        "clipped_actions": 21,
+        "maximum_applied_residual": 0.009743589743589744,
+        "maximum_population_rate_hz": 271.7948717948718,
+        "maximum_clock_error_seconds": 1.4516166046973922e-14,
+        "rider_load": {
+          "fly_mass_mg": 0.9846214691323193,
+          "rider_mass_mg": 0.32820715637743975,
+          "mass_fraction": 0.3333333333333333,
+          "total_mass_mg": 1.312828625509759,
+          "attachment": "rigid thorax inertia; spherical rider approximation",
+          "offset_cm": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        "flight_limits_passed": false
+      },
+      "maximum_final_qpos_difference": 0.0019608334746585854,
+      "passed": false
+    }
+  ],
+  "limits": "Existing trained-flight limits: >=.1 s, height >=.002 m, tracking error <.02 m, no action clipping. Synthetic descending excitation and arbitrary decoder gains; trained policy remains stabilizer."
+}

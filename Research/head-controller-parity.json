@@ -1,0 +1,8 @@
+{
+  "qualified": true,
+  "maximum_numpy_torch_difference": 2.980232238769531e-07,
+  "samples": 1000,
+  "source": "FlyGym 1.1 bundled head-stabilization MLP; Apache-2.0",
+  "checkpoint_sha256": "2e7e27463306b2fbe13357a9c45065be2e85e6e9a3811567f1be618e97a3cd7d",
+  "unchanged_weights": true
+}

@@ -1,0 +1,12 @@
+{
+  "qualified": true,
+  "maximum_state_error": 0.0,
+  "reset_state_error": 0.0,
+  "reference_wall_seconds": 10.563830800005235,
+  "optimized_wall_seconds": 8.877819999994244,
+  "speedup": 1.189912703795761,
+  "simulated_seconds": 0.54,
+  "mechanism": "same full physics and gait; reuse duplicate unchanged-time observation",
+  "biologically_validated": false,
+  "reduced_model": false
+}

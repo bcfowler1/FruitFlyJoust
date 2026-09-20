@@ -1,0 +1,11 @@
+{
+  "status": "observed passed",
+  "surface": "wall",
+  "airborne_start_zero_claws": true,
+  "approach_via_backend_protocol": true,
+  "perched_four_contacts": true,
+  "rider_attached": true,
+  "launch_via_rider_space": true,
+  "launch_zero_contacts": true,
+  "limits": "Ceiling tested by backend stream; no hardware gamepad landing-hold test in this run; averaged flight wrench not neural or wing-policy landing."
+}

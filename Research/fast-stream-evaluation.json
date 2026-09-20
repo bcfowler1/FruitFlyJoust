@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "paced_real_time_ratio": 0.9970238095221947,
+  "finite": true,
+  "pause_holds": true,
+  "climb_changes_height": true,
+  "reset": true,
+  "calibration_rmse_mps": 0.018897351886154393,
+  "limits": "Translation-only empirical model; no reduced brain, collision or calibrated yaw."
+}

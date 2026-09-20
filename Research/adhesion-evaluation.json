@@ -1,0 +1,152 @@
+{
+  "status": "contact experiments executed",
+  "trials": [
+    {
+      "surface": "floor",
+      "adhesion": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 6,
+      "final_contacting_claws": 6,
+      "max_root_displacement_m": 1.0002398808070257e-06,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": true
+    },
+    {
+      "surface": "floor",
+      "adhesion": false,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 6,
+      "final_contacting_claws": 6,
+      "max_root_displacement_m": 1.4598471495485095e-06,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": true
+    },
+    {
+      "surface": "wall",
+      "adhesion": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 6,
+      "final_contacting_claws": 6,
+      "max_root_displacement_m": 3.5282061376214446e-05,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": true
+    },
+    {
+      "surface": "wall",
+      "adhesion": false,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 0,
+      "final_contacting_claws": 0,
+      "max_root_displacement_m": 0.6414979853451949,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": false
+    },
+    {
+      "surface": "ceiling",
+      "adhesion": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 6,
+      "final_contacting_claws": 6,
+      "max_root_displacement_m": 5.654077886856331e-05,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": true
+    },
+    {
+      "surface": "ceiling",
+      "adhesion": false,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "claw_actuators": 6,
+      "initial_contacts": 6,
+      "minimum_contacting_claws": 0,
+      "final_contacting_claws": 0,
+      "max_root_displacement_m": 0.6413898573920873,
+      "simulated_seconds": 0.5,
+      "finite": true,
+      "attached": false
+    }
+  ],
+  "biologically_validated": false,
+  "mechanism": "Upstream contact-only MuJoCo adhesion actuators on six distinct tarsal claws. No root welding.",
+  "limitations": "Flat surface, fixed leg joint targets, no approach/landing controller, uncalibrated adhesive gain. Surface-relative gravity test."
+}

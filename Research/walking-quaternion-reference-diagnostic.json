@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "report": "unified-native-speed-six-second-evaluation.json",
+      "physical_quaternion": [
+        0.8272935742608781,
+        -0.06065211930018955,
+        0.14889612294912366,
+        0.5382718708810404
+      ],
+      "old_relative_reference": [
+        0.9869784533606405,
+        -0.0311606815006878,
+        -0.1577268110794664,
+        0.004979718561668067
+      ],
+      "corrected_relative_reference": [
+        0.9869784533606405,
+        -0.0311606815006878,
+        -0.1577268110794664,
+        0.004979718561668067
+      ],
+      "reference_rotation_matrix_difference": 0.0
+    },
+    {
+      "report": "unified-loaded-stance-handover-seed46-evaluation.json",
+      "physical_quaternion": [
+        0.26281323859860023,
+        -0.05595904410673832,
+        0.019422448786382447,
+        0.9630267677915899
+      ],
+      "old_relative_reference": [
+        0.9982441070520848,
+        -0.004018676734507391,
+        -0.059097346569055506,
+        0.00023791087776053876
+      ],
+      "corrected_relative_reference": [
+        0.9982441070520848,
+        -0.004018676734507391,
+        -0.059097346569055506,
+        0.00023791087776053876
+      ],
+      "reference_rotation_matrix_difference": 0.0
+    },
+    {
+      "report": "unified-gripped-loaded-control-restore-seed42-evaluation.json",
+      "physical_quaternion": [
+        -0.7046384145523771,
+        -0.02410206785979953,
+        0.013689082186003454,
+        -0.7090249671844426
+      ],
+      "old_relative_reference": [
+        -0.999615756860145,
+        0.00728535384847037,
+        -0.02674367711284511,
+        0.00019491204459237688
+      ],
+      "corrected_relative_reference": [
+        0.999615756860145,
+        -0.00728535384847037,
+        0.02674367711284511,
+        -0.00019491204459237688
+      ],
+      "reference_rotation_matrix_difference": 0.0
+    }
+  ],
+  "source": "Pinned upstream base.py ref_root_quat uses raw get_dquat_local quaternion multiplication; synthetic reference now selects physical quaternion hemisphere",
+  "limitations": "Diagnostic of neural-policy input representation, not biological validation or proof of sustained walking."
+}

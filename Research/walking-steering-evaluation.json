@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "left_drive": 0.42,
+      "right_drive": 0.98,
+      "heading_rad": 1.7360633611679077
+    },
+    {
+      "left_drive": 0.98,
+      "right_drive": 0.42,
+      "heading_rad": -1.423232078552246
+    }
+  ],
+  "simulated_seconds_per_test": 0.9,
+  "loaded": true,
+  "finite": true,
+  "conclusion": "Rightward rider cue uses higher left-leg drive; negative Z-up heading maps to positive Unity yaw",
+  "calibrated": false
+}

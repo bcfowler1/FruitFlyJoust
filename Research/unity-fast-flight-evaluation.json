@@ -1,0 +1,10 @@
+{
+  "mode": "empirical translation lab",
+  "observed_in_unity": true,
+  "simulated_time_seconds": 5.895,
+  "displayed_real_time_ratio": 1.0,
+  "fly_centered_after_camera_translation_fix": true,
+  "rider_attached": true,
+  "stopped_after_test": true,
+  "limits": "Visual Editor test. No hardware controller feel, collision, landing, neural control, wing dynamics or calibrated yaw demonstrated."
+}

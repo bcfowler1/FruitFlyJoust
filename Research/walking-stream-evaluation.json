@@ -1,0 +1,15 @@
+{
+  "neurons": 138639,
+  "geoms": 69,
+  "pause_passed": true,
+  "reset_both_clocks_passed": true,
+  "resume_clocks_matched": true,
+  "first_frame_ratio": 0.04740101798793027,
+  "rider_load": {
+    "fly_mass_native": 0.0010265275447127182,
+    "rider_mass_native": 0.00034217584823757275,
+    "mass_fraction": 0.3333333333333333,
+    "mass_units": "upstream scaled MuJoCo units; physical conversion not asserted",
+    "attachment": "rigid thorax load; isotropic small-rider inertia approximation"
+  }
+}

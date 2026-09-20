@@ -1,0 +1,729 @@
+{
+  "source": "unified-ramped-claw-resume-evaluation.json",
+  "joints": [
+    {
+      "joint": "tibia_T1_right",
+      "preflight": -0.26179544822513734,
+      "landed": -0.5313096815876106,
+      "difference_rad": -0.26951423336247327,
+      "landed_velocity": 1.7877389983634272e-06
+    },
+    {
+      "joint": "head_twist",
+      "preflight": 0.006511384590479956,
+      "landed": -0.26259700950298354,
+      "difference_rad": -0.2691083940934635,
+      "landed_velocity": -0.002274377150290476
+    },
+    {
+      "joint": "tibia_T3_left",
+      "preflight": 0.6917568417506827,
+      "landed": 0.4264374747741192,
+      "difference_rad": -0.26531936697656355,
+      "landed_velocity": -0.023895129519111668
+    },
+    {
+      "joint": "tibia_T2_left",
+      "preflight": -0.47647706850713145,
+      "landed": -0.6622490020737962,
+      "difference_rad": -0.18577193356666477,
+      "landed_velocity": 0.012731596070604471
+    },
+    {
+      "joint": "coxa_abduct_T1_right",
+      "preflight": 0.14333671294389574,
+      "landed": 0.3182075632951711,
+      "difference_rad": 0.17487085035127534,
+      "landed_velocity": -0.0007824819631481262
+    },
+    {
+      "joint": "femur_twist_T1_right",
+      "preflight": 0.1513327839387591,
+      "landed": 0.31394519014016764,
+      "difference_rad": 0.16261240620140854,
+      "landed_velocity": -0.0019189839115400246
+    },
+    {
+      "joint": "femur_twist_T1_left",
+      "preflight": 0.07437873275099519,
+      "landed": 0.23003948793956214,
+      "difference_rad": 0.15566075518856695,
+      "landed_velocity": -0.01703856573596297
+    },
+    {
+      "joint": "coxa_abduct_T1_left",
+      "preflight": 0.11058035832277528,
+      "landed": 0.2569753083467894,
+      "difference_rad": 0.1463949500240141,
+      "landed_velocity": -0.018401980341855577
+    },
+    {
+      "joint": "tarsus_T3_left",
+      "preflight": -0.3140180443740122,
+      "landed": -0.44625516968004153,
+      "difference_rad": -0.13223712530602932,
+      "landed_velocity": -0.0365939483960829
+    },
+    {
+      "joint": "antenna_abduct_right",
+      "preflight": -0.017770932120378072,
+      "landed": -0.13626606679421083,
+      "difference_rad": -0.11849513467383276,
+      "landed_velocity": -0.03370782373486018
+    },
+    {
+      "joint": "coxa_twist_T2_right",
+      "preflight": -0.6283174026005011,
+      "landed": -0.510233482033257,
+      "difference_rad": 0.11808392056724404,
+      "landed_velocity": -0.001470832623016025
+    },
+    {
+      "joint": "tarsus3_T2_left",
+      "preflight": 0.06437389685118848,
+      "landed": -0.0532238386317929,
+      "difference_rad": -0.11759773548298139,
+      "landed_velocity": 0.0014093462168987862
+    },
+    {
+      "joint": "coxa_twist_T1_left",
+      "preflight": 0.0011957521309855451,
+      "landed": -0.114153179122654,
+      "difference_rad": -0.11534893125363956,
+      "landed_velocity": 0.010455219452890656
+    },
+    {
+      "joint": "tarsus5_T2_left",
+      "preflight": -0.04997785408602013,
+      "landed": 0.06302492765342113,
+      "difference_rad": 0.11300278173944125,
+      "landed_velocity": -0.0014156477446266998
+    },
+    {
+      "joint": "tarsus_T1_right",
+      "preflight": 0.051926015776295714,
+      "landed": -0.057196921188907554,
+      "difference_rad": -0.10912293696520327,
+      "landed_velocity": -0.0005256104305091046
+    },
+    {
+      "joint": "femur_twist_T2_right",
+      "preflight": 0.33377525041275724,
+      "landed": 0.2250196431692818,
+      "difference_rad": -0.10875560724347544,
+      "landed_velocity": 0.0010749456551237505
+    },
+    {
+      "joint": "coxa_twist_T1_right",
+      "preflight": 0.03315421187321187,
+      "landed": -0.07521538478652512,
+      "difference_rad": -0.10836959665973699,
+      "landed_velocity": 0.002184191636451294
+    },
+    {
+      "joint": "tarsus_T2_left",
+      "preflight": -0.11131249078208703,
+      "landed": -0.20561619086049626,
+      "difference_rad": -0.09430370007840923,
+      "landed_velocity": 0.0007479406179438192
+    },
+    {
+      "joint": "abdomen_2",
+      "preflight": 0.09486693308988528,
+      "landed": 0.004879210721209991,
+      "difference_rad": -0.08998772236867529,
+      "landed_velocity": -0.0643204802593537
+    },
+    {
+      "joint": "tarsus3_T1_right",
+      "preflight": 0.029596765328519715,
+      "landed": -0.06027320736489298,
+      "difference_rad": -0.0898699726934127,
+      "landed_velocity": -0.000458683015670583
+    },
+    {
+      "joint": "tibia_T1_left",
+      "preflight": -0.16602959159294003,
+      "landed": -0.2553242808981468,
+      "difference_rad": -0.08929468930520676,
+      "landed_velocity": 0.014806181430178745
+    },
+    {
+      "joint": "coxa_abduct_T3_left",
+      "preflight": 0.1364286282432593,
+      "landed": 0.04883112956785065,
+      "difference_rad": -0.08759749867540864,
+      "landed_velocity": 0.03517492821803436
+    },
+    {
+      "joint": "coxa_T3_left",
+      "preflight": 0.2244591713083468,
+      "landed": 0.1383517611484258,
+      "difference_rad": -0.08610741015992102,
+      "landed_velocity": 0.023492908991829976
+    },
+    {
+      "joint": "tibia_T2_right",
+      "preflight": -0.2965574377596302,
+      "landed": -0.3813901633238654,
+      "difference_rad": -0.08483272556423516,
+      "landed_velocity": -0.0052114254353609136
+    },
+    {
+      "joint": "femur_twist_T3_left",
+      "preflight": 0.11221984391370048,
+      "landed": 0.03153159341730269,
+      "difference_rad": -0.08068825049639779,
+      "landed_velocity": -0.08739263312337356
+    },
+    {
+      "joint": "femur_T1_right",
+      "preflight": -0.15259249701656483,
+      "landed": -0.07300966764032593,
+      "difference_rad": 0.0795828293762389,
+      "landed_velocity": -0.0004683471091712026
+    },
+    {
+      "joint": "antenna_right",
+      "preflight": -0.013509802269378323,
+      "landed": -0.0925950215080981,
+      "difference_rad": -0.07908521923871978,
+      "landed_velocity": 0.008626409826422838
+    },
+    {
+      "joint": "tarsus5_T1_right",
+      "preflight": -0.025708496327762193,
+      "landed": 0.052804514683707164,
+      "difference_rad": 0.07851301101146936,
+      "landed_velocity": 0.0016982067523603492
+    },
+    {
+      "joint": "coxa_twist_T2_left",
+      "preflight": -0.6158555212849529,
+      "landed": -0.5421409896851741,
+      "difference_rad": 0.07371453159977881,
+      "landed_velocity": 0.02233536054511612
+    },
+    {
+      "joint": "head",
+      "preflight": 0.017994188791053814,
+      "landed": -0.054886438721663634,
+      "difference_rad": -0.07288062751271746,
+      "landed_velocity": -0.0017181737200887772
+    },
+    {
+      "joint": "tarsus2_T2_left",
+      "preflight": 0.04666360365617108,
+      "landed": -0.02389167213639139,
+      "difference_rad": -0.07055527579256247,
+      "landed_velocity": 0.0002809661543351267
+    },
+    {
+      "joint": "femur_twist_T2_left",
+      "preflight": 0.1450333102763512,
+      "landed": 0.07457531665455928,
+      "difference_rad": -0.0704579936217919,
+      "landed_velocity": -0.02225055356908116
+    },
+    {
+      "joint": "tarsus3_T3_left",
+      "preflight": -0.03835635883359088,
+      "landed": -0.10693078741699007,
+      "difference_rad": -0.06857442858339918,
+      "landed_velocity": -0.0007057888622302886
+    },
+    {
+      "joint": "wing_pitch_left",
+      "preflight": -0.9853969033437454,
+      "landed": -0.9185311203089905,
+      "difference_rad": 0.06686578303475488,
+      "landed_velocity": -0.06846172243101192
+    },
+    {
+      "joint": "wing_pitch_right",
+      "preflight": -0.9851982366225396,
+      "landed": -0.9183667309281348,
+      "difference_rad": 0.06683150569440477,
+      "landed_velocity": -0.06911540081026744
+    },
+    {
+      "joint": "femur_T1_left",
+      "preflight": -0.1508409537669374,
+      "landed": -0.0843823446350761,
+      "difference_rad": 0.0664586091318613,
+      "landed_velocity": -0.012809024455751678
+    },
+    {
+      "joint": "coxa_T1_right",
+      "preflight": -0.13963636658523165,
+      "landed": -0.205485928659595,
+      "difference_rad": -0.06584956207436335,
+      "landed_velocity": 0.0008327504771881015
+    },
+    {
+      "joint": "antenna_abduct_left",
+      "preflight": -0.020472668396575612,
+      "landed": -0.08503507550263299,
+      "difference_rad": -0.06456240710605737,
+      "landed_velocity": -0.0214734649145597
+    },
+    {
+      "joint": "antenna_left",
+      "preflight": -0.01376370982507966,
+      "landed": -0.07671795298653801,
+      "difference_rad": -0.06295424316145835,
+      "landed_velocity": 0.012104882295799705
+    },
+    {
+      "joint": "femur_T3_left",
+      "preflight": 0.6004886632182737,
+      "landed": 0.6602923605657672,
+      "difference_rad": 0.05980369734749358,
+      "landed_velocity": 0.0001878031314851477
+    },
+    {
+      "joint": "tarsus2_T1_right",
+      "preflight": 0.02042826958252508,
+      "landed": -0.03329876378278637,
+      "difference_rad": -0.053727033365311455,
+      "landed_velocity": 0.0006020008598473261
+    },
+    {
+      "joint": "tarsus3_T2_right",
+      "preflight": 0.020502592711955748,
+      "landed": -0.0315167412642094,
+      "difference_rad": -0.05201933397616515,
+      "landed_velocity": -0.0009343278055555465
+    },
+    {
+      "joint": "tarsus2_T3_left",
+      "preflight": -0.012585761152583157,
+      "landed": -0.06398467178857868,
+      "difference_rad": -0.051398910635995526,
+      "landed_velocity": -0.01784032013172609
+    },
+    {
+      "joint": "abdomen_abduct_7",
+      "preflight": 0.012470295616982496,
+      "landed": 0.06219576071987696,
+      "difference_rad": 0.04972546510289447,
+      "landed_velocity": 0.057727427996183
+    },
+    {
+      "joint": "abdomen",
+      "preflight": 0.10025307184104307,
+      "landed": 0.05058876781216948,
+      "difference_rad": -0.04966430402887359,
+      "landed_velocity": -0.11506662991758956
+    },
+    {
+      "joint": "abdomen_abduct_6",
+      "preflight": 0.012224547853943984,
+      "landed": 0.06178397457709112,
+      "difference_rad": 0.04955942672314714,
+      "landed_velocity": 0.06574649795146513
+    },
+    {
+      "joint": "abdomen_abduct_5",
+      "preflight": 0.012228718717995865,
+      "landed": 0.061750873809143646,
+      "difference_rad": 0.04952215509114778,
+      "landed_velocity": 0.08544928067599769
+    },
+    {
+      "joint": "tarsus5_T2_right",
+      "preflight": -0.017383876963442103,
+      "landed": 0.030962720467727498,
+      "difference_rad": 0.048346597431169605,
+      "landed_velocity": 0.0001744574519120189
+    },
+    {
+      "joint": "coxa_abduct_T2_left",
+      "preflight": -0.0596776401999666,
+      "landed": -0.10773821101965403,
+      "difference_rad": -0.048060570819687426,
+      "landed_velocity": -0.008162578924220046
+    },
+    {
+      "joint": "abdomen_3",
+      "preflight": -0.06717974207647401,
+      "landed": -0.11467463894358536,
+      "difference_rad": -0.04749489686711135,
+      "landed_velocity": -0.007011098288024441
+    },
+    {
+      "joint": "wing_yaw_right",
+      "preflight": 1.4998833049981737,
+      "landed": 1.4529125908146643,
+      "difference_rad": -0.0469707141835094,
+      "landed_velocity": 0.08153444926078067
+    },
+    {
+      "joint": "tarsus5_T3_left",
+      "preflight": 0.022184299474309645,
+      "landed": 0.06817742468770897,
+      "difference_rad": 0.04599312521339933,
+      "landed_velocity": -0.005109564398601709
+    },
+    {
+      "joint": "coxa_twist_T3_left",
+      "preflight": -0.08363097885985314,
+      "landed": -0.03941967074697381,
+      "difference_rad": 0.04421130811287933,
+      "landed_velocity": -0.13212789442759676
+    },
+    {
+      "joint": "abdomen_abduct_4",
+      "preflight": 0.018520463354570686,
+      "landed": 0.06261860396833688,
+      "difference_rad": 0.04409814061376619,
+      "landed_velocity": 0.11778812984728979
+    },
+    {
+      "joint": "abdomen_7",
+      "preflight": 0.017425565592992312,
+      "landed": 0.0612840879608237,
+      "difference_rad": 0.04385852236783139,
+      "landed_velocity": -0.004440304347749906
+    },
+    {
+      "joint": "abdomen_abduct_2",
+      "preflight": -0.009336215217462002,
+      "landed": -0.05234485816538339,
+      "difference_rad": -0.04300864294792139,
+      "landed_velocity": -0.12883306344033055
+    },
+    {
+      "joint": "tarsus_T2_right",
+      "preflight": -0.27747211882549183,
+      "landed": -0.31848327505926255,
+      "difference_rad": -0.04101115623377072,
+      "landed_velocity": -0.002198861922824604
+    },
+    {
+      "joint": "abdomen_6",
+      "preflight": 0.009356080136049556,
+      "landed": 0.047210819589673485,
+      "difference_rad": 0.03785473945362393,
+      "landed_velocity": 0.006408588139620117
+    },
+    {
+      "joint": "coxa_T2_left",
+      "preflight": -0.12369869444646564,
+      "landed": -0.16109427810874985,
+      "difference_rad": -0.03739558366228421,
+      "landed_velocity": -0.002441773156578353
+    },
+    {
+      "joint": "tarsus5_T3_right",
+      "preflight": -0.028790972339813557,
+      "landed": 0.008223539390444729,
+      "difference_rad": 0.037014511730258284,
+      "landed_velocity": 9.56106265808072e-07
+    },
+    {
+      "joint": "coxa_abduct_T2_right",
+      "preflight": -0.0851482309187537,
+      "landed": -0.11945113723492767,
+      "difference_rad": -0.03430290631617397,
+      "landed_velocity": -0.00275291409877926
+    },
+    {
+      "joint": "tarsus2_T2_right",
+      "preflight": 0.013246507005243527,
+      "landed": -0.019518191681407848,
+      "difference_rad": -0.032764698686651376,
+      "landed_velocity": -0.0015013573030251178
+    },
+    {
+      "joint": "abdomen_abduct",
+      "preflight": -0.049886954991245035,
+      "landed": -0.08159461767879735,
+      "difference_rad": -0.03170766268755231,
+      "landed_velocity": -0.12729988773203615
+    },
+    {
+      "joint": "wing_yaw_left",
+      "preflight": 1.4999369331163157,
+      "landed": 1.4703825965099053,
+      "difference_rad": -0.02955433660641038,
+      "landed_velocity": 0.06703886438769457
+    },
+    {
+      "joint": "abdomen_5",
+      "preflight": -0.01912451012132916,
+      "landed": 0.00937298586571069,
+      "difference_rad": 0.02849749598703985,
+      "landed_velocity": 0.03227117018625777
+    },
+    {
+      "joint": "tarsus_T1_left",
+      "preflight": -0.4325058446970382,
+      "landed": -0.4589430890144609,
+      "difference_rad": -0.026437244317422726,
+      "landed_velocity": 0.005651160114132151
+    },
+    {
+      "joint": "coxa_twist_T3_right",
+      "preflight": -0.1492454966694323,
+      "landed": -0.12302660526578216,
+      "difference_rad": 0.026218891403650135,
+      "landed_velocity": -0.019628432660652645
+    },
+    {
+      "joint": "abdomen_abduct_3",
+      "preflight": 0.09634036352173793,
+      "landed": 0.07065788988905997,
+      "difference_rad": -0.025682473632677963,
+      "landed_velocity": -0.040290336984694544
+    },
+    {
+      "joint": "tarsus3_T3_right",
+      "preflight": 0.031131826727804013,
+      "landed": 0.008191284005573209,
+      "difference_rad": -0.022940542722230804,
+      "landed_velocity": 8.570199115864048e-06
+    },
+    {
+      "joint": "coxa_abduct_T3_right",
+      "preflight": 0.08811488032081234,
+      "landed": 0.06524571269871249,
+      "difference_rad": -0.022869167622099854,
+      "landed_velocity": 0.01692938225087927
+    },
+    {
+      "joint": "femur_T2_left",
+      "preflight": -0.15248928715431626,
+      "landed": -0.13011822019797795,
+      "difference_rad": 0.02237106695633831,
+      "landed_velocity": 0.005328395787467384
+    },
+    {
+      "joint": "head_abduct",
+      "preflight": 0.01498772119337454,
+      "landed": -0.005114040368424573,
+      "difference_rad": -0.020101761561799113,
+      "landed_velocity": -0.003775502621223709
+    },
+    {
+      "joint": "tarsus2_T3_right",
+      "preflight": 0.032787733038226546,
+      "landed": 0.016360486662750175,
+      "difference_rad": -0.01642724637547637,
+      "landed_velocity": 2.1796456172564742e-05
+    },
+    {
+      "joint": "coxa_T2_right",
+      "preflight": -0.16031349644926585,
+      "landed": -0.1751215172745573,
+      "difference_rad": -0.014808020825291451,
+      "landed_velocity": -0.004376772934872825
+    },
+    {
+      "joint": "coxa_T1_left",
+      "preflight": -0.18784585322921726,
+      "landed": -0.20257221396413405,
+      "difference_rad": -0.014726360734916788,
+      "landed_velocity": 0.0005198898397338701
+    },
+    {
+      "joint": "tibia_T3_right",
+      "preflight": 0.2891146154230098,
+      "landed": 0.2744724060282401,
+      "difference_rad": -0.014642209394769734,
+      "landed_velocity": -2.4741501963666216e-05
+    },
+    {
+      "joint": "tarsus_T3_right",
+      "preflight": -0.2537708679106763,
+      "landed": -0.24136532890083,
+      "difference_rad": 0.012405539009846311,
+      "landed_velocity": 6.558644617502579e-05
+    },
+    {
+      "joint": "wing_roll_right",
+      "preflight": 0.761399270476095,
+      "landed": 0.7736353580319827,
+      "difference_rad": 0.012236087555887676,
+      "landed_velocity": 0.04192809644273305
+    },
+    {
+      "joint": "tarsus4_T3_left",
+      "preflight": -0.011283798095483867,
+      "landed": -0.023462687629273397,
+      "difference_rad": -0.01217888953378953,
+      "landed_velocity": -0.0013034529595149964
+    },
+    {
+      "joint": "wing_roll_left",
+      "preflight": 0.7614982981607885,
+      "landed": 0.7735983466653581,
+      "difference_rad": 0.012100048504569583,
+      "landed_velocity": 0.04363030164207143
+    },
+    {
+      "joint": "femur_T3_right",
+      "preflight": 0.03209886472855893,
+      "landed": 0.04324711982709346,
+      "difference_rad": 0.011148255098534524,
+      "landed_velocity": -0.005307662690969006
+    },
+    {
+      "joint": "abdomen_4",
+      "preflight": -0.07520815301041947,
+      "landed": -0.08616522817403566,
+      "difference_rad": -0.010957075163616187,
+      "landed_velocity": 0.09600207146557022
+    },
+    {
+      "joint": "antenna_twist_left",
+      "preflight": 0.0001844652157797088,
+      "landed": -0.00993618159458626,
+      "difference_rad": -0.010120646810365968,
+      "landed_velocity": 0.0060164525472176985
+    },
+    {
+      "joint": "femur_T2_right",
+      "preflight": -0.15232215757803125,
+      "landed": -0.14321618359628918,
+      "difference_rad": 0.009105973981742066,
+      "landed_velocity": 0.0045611448071488595
+    },
+    {
+      "joint": "tarsus4_T3_right",
+      "preflight": -8.896055387023859e-05,
+      "landed": 0.008211138865974434,
+      "difference_rad": 0.008300099419844673,
+      "landed_velocity": 3.847494984676739e-06
+    },
+    {
+      "joint": "tarsus4_T1_left",
+      "preflight": -0.008630259631455469,
+      "landed": -0.001253267479544985,
+      "difference_rad": 0.007376992151910484,
+      "landed_velocity": 0.0010925338679153504
+    },
+    {
+      "joint": "tarsus2_T1_left",
+      "preflight": -0.011558353220049283,
+      "landed": -0.01882458668324234,
+      "difference_rad": -0.0072662334631930555,
+      "landed_velocity": 0.0035149409820559156
+    },
+    {
+      "joint": "coxa_T3_right",
+      "preflight": -0.06391245881751238,
+      "landed": -0.07043752004557269,
+      "difference_rad": -0.006525061228060305,
+      "landed_velocity": 0.005824126074855716
+    },
+    {
+      "joint": "antenna_twist_right",
+      "preflight": 0.00029173369874876097,
+      "landed": -0.005107434539398073,
+      "difference_rad": -0.005399168238146834,
+      "landed_velocity": 0.0056646417454845185
+    },
+    {
+      "joint": "tarsus4_T2_left",
+      "preflight": 0.008414771900455354,
+      "landed": 0.0035527326564183505,
+      "difference_rad": -0.004862039244037004,
+      "landed_velocity": 0.0002032695897576109
+    },
+    {
+      "joint": "tarsus3_T1_left",
+      "preflight": -0.02169196262114218,
+      "landed": -0.017243305709689568,
+      "difference_rad": 0.0044486569114526135,
+      "landed_velocity": 0.0023733013032709
+    },
+    {
+      "joint": "tarsus4_T1_right",
+      "preflight": 0.0005258294528713674,
+      "landed": -0.0026640116879367752,
+      "difference_rad": -0.0031898411408081426,
+      "landed_velocity": 0.0006423862962457876
+    },
+    {
+      "joint": "femur_twist_T3_right",
+      "preflight": 0.11284821634319678,
+      "landed": 0.11547937526197966,
+      "difference_rad": 0.0026311589187828777,
+      "landed_velocity": 0.0031764556962495197
+    },
+    {
+      "joint": "tarsus4_T2_right",
+      "preflight": 0.0019519853054830593,
+      "landed": -0.0005896423494883912,
+      "difference_rad": -0.0025416276549714506,
+      "landed_velocity": -0.00032047147287577593
+    },
+    {
+      "joint": "labrum_right",
+      "preflight": 0.05176368272446755,
+      "landed": 0.04984805942792557,
+      "difference_rad": -0.0019156232965419767,
+      "landed_velocity": -2.6744372107493842e-05
+    },
+    {
+      "joint": "labrum_left",
+      "preflight": 0.05268234710688346,
+      "landed": 0.05455946531267353,
+      "difference_rad": 0.0018771182057900695,
+      "landed_velocity": 4.6348502750885354e-05
+    },
+    {
+      "joint": "tarsus5_T1_left",
+      "preflight": 0.008780328054055738,
+      "landed": 0.007068103058388405,
+      "difference_rad": -0.0017122249956673325,
+      "landed_velocity": 0.000610924804526456
+    },
+    {
+      "joint": "haustellum_abduct",
+      "preflight": -0.00017823644471315792,
+      "landed": 0.0007313865229047781,
+      "difference_rad": 0.000909622967617936,
+      "landed_velocity": -7.703104369929055e-05
+    },
+    {
+      "joint": "haustellum",
+      "preflight": 0.17255561645336215,
+      "landed": 0.173162161315499,
+      "difference_rad": 0.0006065448621368486,
+      "landed_velocity": 0.00015588588753680978
+    },
+    {
+      "joint": "rostrum",
+      "preflight": 0.07220736808253957,
+      "landed": 0.07167853053460574,
+      "difference_rad": -0.0005288375479338275,
+      "landed_velocity": -0.0003913128003606338
+    },
+    {
+      "joint": "haltere_left",
+      "preflight": 3.426677148989305e-06,
+      "landed": 1.793486659061148e-06,
+      "difference_rad": -1.6331904899281571e-06,
+      "landed_velocity": 4.7217670962873564e-05
+    },
+    {
+      "joint": "haltere_right",
+      "preflight": 2.144335615564544e-06,
+      "landed": 2.193998816424763e-06,
+      "difference_rad": 4.966320086021876e-08,
+      "landed_velocity": -2.1503944279651088e-05
+    }
+  ],
+  "initial_root": [
+    0.6903538941909076,
+    0.18313203267050984,
+    0.11982839481956238,
+    0.8272935742608781,
+    -0.06065211930018955,
+    0.14889612294912366,
+    0.5382718708810404
+  ],
+  "limits": "Observed posture differences; causal explanation not established."
+}

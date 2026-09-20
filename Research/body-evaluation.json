@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "revision": "d015e9bfe441bd90ae431bac24c55cb74bdbce26",
+  "bodies": 68,
+  "joints": 103,
+  "actuators": 78,
+  "timestep_seconds": 0.0001,
+  "simulated_seconds": 0.009999999999999995,
+  "elapsed_seconds": 0.5893821000063326,
+  "stable_finite_state": true,
+  "controller": "zero actuation; no learned policy",
+  "preview": "body-preview.png"
+}

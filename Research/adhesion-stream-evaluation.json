@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "trials": [
+    {
+      "surface": "wall",
+      "six_claw_contact": true,
+      "pause_holds": true,
+      "release_detaches": true,
+      "grip_slider_half_preserves_paused_contact": true,
+      "grip_slider_zero_detaches": true,
+      "reset_restores_contact": true,
+      "finite": true
+    },
+    {
+      "surface": "ceiling",
+      "six_claw_contact": true,
+      "pause_holds": true,
+      "release_detaches": true,
+      "grip_slider_half_preserves_paused_contact": true,
+      "grip_slider_zero_detaches": true,
+      "reset_restores_contact": true,
+      "finite": true
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "qualified": false,
+  "seeds_requested": [
+    46,
+    42,
+    43,
+    44,
+    45
+  ],
+  "experiments": [
+    {
+      "seed": 46,
+      "qualified": false,
+      "report": "unified-contact-qualification-20260918T205730350304Z-seed46.json",
+      "continuity_mass_and_limits_verified": false,
+      "landing_qualified": false,
+      "hold_qualified": null,
+      "walking_seconds": null,
+      "minimum_walking_up": null,
+      "forward_cm": null,
+      "final_quarter_forward_cm": null,
+      "selected_handoff": null
+    }
+  ],
+  "source_sha256": {
+    "evaluate_unified_policies.py": "21ff6fb7e69044c9dd0e6a224b819d989f73a8ccca7ee72276e66799c9b988c6",
+    "landing_leg_ik.py": "66e1124ef877490d9a3d9c83656dd7aa0f5494330103b9a574e01cc260d59136",
+    "handoff_prediction.py": "9b47ac6deb303a26c01a508e9df8a2fbf63f133bc3fb5c7a16871cf43a0bfd5c",
+    "qualify_unified_handoff.py": "5b3466212b10fc0ff41967210576f37cdd86efad41275c1f62805697639e45f0"
+  },
+  "limitations": "Trained-policy and copied-physics engineering floor transitions; no connectome motor or biological qualification. No playable integration established by this offline suite."
+}

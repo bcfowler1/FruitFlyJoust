@@ -1,0 +1,1306 @@
+{
+  "qualified": true,
+  "trials": [
+    {
+      "turn": 0,
+      "qualified": true,
+      "gates": {
+        "finite": true,
+        "body_running": true,
+        "upright": true,
+        "locomotion": true,
+        "signed_yaw": true,
+        "synchronized_clocks": true
+      },
+      "displacement_mm": 8.413278831742867,
+      "integrated_yaw_rad": -0.04728918649256228,
+      "minimum_up": 0.9928739168363306,
+      "rider_load": {
+        "fly_mass_native": 0.0010265275447127182,
+        "rider_mass_native": 0.00034217584823757275,
+        "mass_fraction": 0.3333333333333333,
+        "mass_units": "upstream scaled MuJoCo units; physical conversion not asserted",
+        "attachment": "rigid thorax load; isotropic small-rider inertia approximation"
+      },
+      "stats": {
+        "neurons": 138639,
+        "directed_connection_rows": 15091983,
+        "simulated_ms": 900.0,
+        "spike_count": 14903,
+        "active_neurons": 594,
+        "downstream_active_neurons": 570,
+        "finite_membrane_state": true
+      },
+      "samples": [
+        {
+          "time": 0.014999999999999965,
+          "neural_time": 0.015,
+          "feedback": {
+            "speed_mmps": 28.59871482849121,
+            "yaw_rate_radps": 5.369870662689209,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 133.33333333333334,
+            "stim_right": 244.44444444444446
+          },
+          "neural_turn": 0.1023455167395906,
+          "action": [
+            0.7494516904602179,
+            0.650548309539782
+          ],
+          "up": 0.9990479540414793
+        },
+        {
+          "time": 0.029999999999999874,
+          "neural_time": 0.03,
+          "feedback": {
+            "speed_mmps": 3.3002278804779053,
+            "yaw_rate_radps": -4.68951940536499,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 0.0
+          },
+          "neural_turn": 0.08663360954454986,
+          "action": [
+            0.7239701058087393,
+            0.6760298941912606
+          ],
+          "up": 0.9998070582204135
+        },
+        {
+          "time": 0.04500000000000026,
+          "neural_time": 0.045,
+          "feedback": {
+            "speed_mmps": 11.532384872436523,
+            "yaw_rate_radps": -3.1818578243255615,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 94.44444444444444,
+            "stim_right": 227.7777777777778
+          },
+          "neural_turn": -0.029011749498820058,
+          "action": [
+            0.7145618049710907,
+            0.6854381950289092
+          ],
+          "up": 0.9995500266712876
+        },
+        {
+          "time": 0.06000000000000069,
+          "neural_time": 0.06,
+          "feedback": {
+            "speed_mmps": 8.926495552062988,
+            "yaw_rate_radps": 2.1023242473602295,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 94.44444444444444,
+            "stim_right": 161.11111111111111
+          },
+          "neural_turn": -0.02455791575785561,
+          "action": [
+            0.7284722027587738,
+            0.6715277972412261
+          ],
+          "up": 0.9997453556192082
+        },
+        {
+          "time": 0.07500000000000112,
+          "neural_time": 0.075,
+          "feedback": {
+            "speed_mmps": 12.127338409423828,
+            "yaw_rate_radps": 6.112198829650879,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 105.55555555555556
+          },
+          "neural_turn": -0.02078782689042801,
+          "action": [
+            0.7197391373167046,
+            0.6802608626832952
+          ],
+          "up": 0.9978092645819264
+        },
+        {
+          "time": 0.09000000000000155,
+          "neural_time": 0.09,
+          "feedback": {
+            "speed_mmps": 16.601451873779297,
+            "yaw_rate_radps": -1.2580296993255615,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 233.33333333333334,
+            "stim_right": 55.55555555555556
+          },
+          "neural_turn": -0.06876927393273229,
+          "action": [
+            0.6822197571369497,
+            0.7177802428630502
+          ],
+          "up": 0.9998897616588195
+        },
+        {
+          "time": 0.10500000000000198,
+          "neural_time": 0.105,
+          "feedback": {
+            "speed_mmps": 6.706145286560059,
+            "yaw_rate_radps": -4.732763290405273,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 83.33333333333334,
+            "stim_right": 172.22222222222223
+          },
+          "neural_turn": -0.10938469198784967,
+          "action": [
+            0.6786749019766676,
+            0.7213250980233323
+          ],
+          "up": 0.9946687669902586
+        },
+        {
+          "time": 0.12000000000000241,
+          "neural_time": 0.12,
+          "feedback": {
+            "speed_mmps": 17.138164520263672,
+            "yaw_rate_radps": -8.685035705566406,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 83.33333333333334,
+            "stim_right": 216.66666666666669
+          },
+          "neural_turn": -0.09259214275050352,
+          "action": [
+            0.703548046603235,
+            0.6964519533967649
+          ],
+          "up": 0.9979412151399798
+        },
+        {
+          "time": 0.13500000000000145,
+          "neural_time": 0.135,
+          "feedback": {
+            "speed_mmps": 6.500523567199707,
+            "yaw_rate_radps": -0.901395857334137,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 16.666666666666668,
+            "stim_right": 205.55555555555557
+          },
+          "neural_turn": -0.0272047983369689,
+          "action": [
+            0.7550261602004475,
+            0.6449738397995525
+          ],
+          "up": 0.999692104556632
+        },
+        {
+          "time": 0.1499999999999998,
+          "neural_time": 0.15,
+          "feedback": {
+            "speed_mmps": 7.79075813293457,
+            "yaw_rate_radps": 10.644822120666504,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 150.0,
+            "stim_right": 155.55555555555557
+          },
+          "neural_turn": 0.07931715211801184,
+          "action": [
+            0.782466947362093,
+            0.6175330526379069
+          ],
+          "up": 0.9983380939124411
+        },
+        {
+          "time": 0.16499999999999815,
+          "neural_time": 0.165,
+          "feedback": {
+            "speed_mmps": 15.44221019744873,
+            "yaw_rate_radps": 5.275543689727783,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 294.44444444444446,
+            "stim_right": 94.44444444444444
+          },
+          "neural_turn": 0.06714051973826589,
+          "action": [
+            0.7326770040392001,
+            0.6673229959607998
+          ],
+          "up": 0.9963608390699241
+        },
+        {
+          "time": 0.1799999999999965,
+          "neural_time": 0.18,
+          "feedback": {
+            "speed_mmps": 14.869207382202148,
+            "yaw_rate_radps": -2.082409381866455,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 61.111111111111114
+          },
+          "neural_turn": -0.04551229378149095,
+          "action": [
+            0.6826960581549442,
+            0.7173039418450557
+          ],
+          "up": 0.9979861706267479
+        },
+        {
+          "time": 0.19499999999999484,
+          "neural_time": 0.195,
+          "feedback": {
+            "speed_mmps": 13.526845932006836,
+            "yaw_rate_radps": -11.132410049438477,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 127.77777777777779,
+            "stim_right": 166.66666666666669
+          },
+          "neural_turn": -0.1408708416834754,
+          "action": [
+            0.6684810972696437,
+            0.7315189027303562
+          ],
+          "up": 0.9987143624059925
+        },
+        {
+          "time": 0.2099999999999932,
+          "neural_time": 0.21,
+          "feedback": {
+            "speed_mmps": 13.011664390563965,
+            "yaw_rate_radps": -1.5410445928573608,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 27.77777777777778,
+            "stim_right": 211.11111111111111
+          },
+          "neural_turn": -0.17041735142481618,
+          "action": [
+            0.7067732266609285,
+            0.6932267733390715
+          ],
+          "up": 0.9976897163746915
+        },
+        {
+          "time": 0.22499999999999154,
+          "neural_time": 0.225,
+          "feedback": {
+            "speed_mmps": 24.71044921875,
+            "yaw_rate_radps": 5.350754737854004,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 116.66666666666667,
+            "stim_right": 144.44444444444446
+          },
+          "neural_turn": -0.14425517358536835,
+          "action": [
+            0.7166819215929143,
+            0.6833180784070856
+          ],
+          "up": 0.9991363697781822
+        },
+        {
+          "time": 0.2399999999999899,
+          "neural_time": 0.24,
+          "feedback": {
+            "speed_mmps": 15.676234245300293,
+            "yaw_rate_radps": 2.727978229522705,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 0.0
+          },
+          "neural_turn": -0.12210936816093756,
+          "action": [
+            0.6977158502597613,
+            0.7022841497402386
+          ],
+          "up": 0.9995729208146775
+        },
+        {
+          "time": 0.25499999999998824,
+          "neural_time": 0.255,
+          "feedback": {
+            "speed_mmps": 7.58447265625,
+            "yaw_rate_radps": 5.821031093597412,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 72.22222222222223
+          },
+          "neural_turn": -0.15453610695596876,
+          "action": [
+            0.677318613975749,
+            0.7226813860242509
+          ],
+          "up": 0.9987745785515177
+        },
+        {
+          "time": 0.2699999999999866,
+          "neural_time": 0.27,
+          "feedback": {
+            "speed_mmps": 21.854825973510742,
+            "yaw_rate_radps": 2.003342628479004,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 83.33333333333334
+          },
+          "neural_turn": -0.2843302654833547,
+          "action": [
+            0.6201832296080579,
+            0.7798167703919421
+          ],
+          "up": 0.9982348936848919
+        },
+        {
+          "time": 0.28499999999998493,
+          "neural_time": 0.285,
+          "feedback": {
+            "speed_mmps": 10.548986434936523,
+            "yaw_rate_radps": -4.230043888092041,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 144.44444444444446,
+            "stim_right": 44.44444444444444
+          },
+          "neural_turn": -0.34302589030454694,
+          "action": [
+            0.5997749781067632,
+            0.8002250218932367
+          ],
+          "up": 0.9984748941439803
+        },
+        {
+          "time": 0.2999999999999833,
+          "neural_time": 0.3,
+          "feedback": {
+            "speed_mmps": 8.90096378326416,
+            "yaw_rate_radps": -4.074392318725586,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 61.111111111111114,
+            "stim_right": 166.66666666666669
+          },
+          "neural_turn": -0.34153790567692677,
+          "action": [
+            0.6202519232253911,
+            0.7797480767746088
+          ],
+          "up": 0.9989678578403425
+        },
+        {
+          "time": 0.31499999999998163,
+          "neural_time": 0.315,
+          "feedback": {
+            "speed_mmps": 17.326414108276367,
+            "yaw_rate_radps": 4.622465133666992,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 72.22222222222223,
+            "stim_right": 261.11111111111114
+          },
+          "neural_turn": -0.28910559551293286,
+          "action": [
+            0.6510474630283344,
+            0.7489525369716656
+          ],
+          "up": 0.9928739168363306
+        },
+        {
+          "time": 0.32999999999998,
+          "neural_time": 0.33,
+          "feedback": {
+            "speed_mmps": 2.708554744720459,
+            "yaw_rate_radps": 5.496721267700195,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 38.88888888888889
+          },
+          "neural_turn": -0.2447226031653156,
+          "action": [
+            0.6433516770301136,
+            0.7566483229698862
+          ],
+          "up": 0.9975561084312962
+        },
+        {
+          "time": 0.3449999999999783,
+          "neural_time": 0.345,
+          "feedback": {
+            "speed_mmps": 13.205141067504883,
+            "yaw_rate_radps": -6.980602264404297,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 238.88888888888889,
+            "stim_right": 100.0
+          },
+          "neural_turn": -0.3094987279866882,
+          "action": [
+            0.6057431432787063,
+            0.7942568567212936
+          ],
+          "up": 0.9991889732446826
+        },
+        {
+          "time": 0.35999999999997667,
+          "neural_time": 0.36,
+          "feedback": {
+            "speed_mmps": 18.4536190032959,
+            "yaw_rate_radps": -10.729994773864746,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 16.666666666666668,
+            "stim_right": 277.77777777777777
+          },
+          "neural_turn": -0.26198501711762284,
+          "action": [
+            0.6493415781075343,
+            0.7506584218924656
+          ],
+          "up": 0.9932989025949572
+        },
+        {
+          "time": 0.374999999999975,
+          "neural_time": 0.375,
+          "feedback": {
+            "speed_mmps": 14.083490371704102,
+            "yaw_rate_radps": -4.203503608703613,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 16.666666666666668,
+            "stim_right": 266.6666666666667
+          },
+          "neural_turn": -0.17059277081542715,
+          "action": [
+            0.7164103887190325,
+            0.6835896112809674
+          ],
+          "up": 0.9984774295916434
+        },
+        {
+          "time": 0.38999999999997337,
+          "neural_time": 0.39,
+          "feedback": {
+            "speed_mmps": 22.028564453125,
+            "yaw_rate_radps": -0.18135584890842438,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 44.44444444444444,
+            "stim_right": 155.55555555555557
+          },
+          "neural_turn": -0.0420581461541214,
+          "action": [
+            0.7630929799864569,
+            0.636907020013543
+          ],
+          "up": 0.999938120440952
+        },
+        {
+          "time": 0.4049999999999717,
+          "neural_time": 0.405,
+          "feedback": {
+            "speed_mmps": 13.225337028503418,
+            "yaw_rate_radps": 5.924445629119873,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 127.77777777777779,
+            "stim_right": 88.88888888888889
+          },
+          "neural_turn": 0.015571306267553063,
+          "action": [
+            0.7734828307533929,
+            0.626517169246607
+          ],
+          "up": 0.9970604553237669
+        },
+        {
+          "time": 0.41999999999997006,
+          "neural_time": 0.42,
+          "feedback": {
+            "speed_mmps": 12.788192749023438,
+            "yaw_rate_radps": 4.080384254455566,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 283.33333333333337,
+            "stim_right": 38.88888888888889
+          },
+          "neural_turn": 0.013180826188158348,
+          "action": [
+            0.7441410371251425,
+            0.6558589628748576
+          ],
+          "up": 0.998669610874994
+        },
+        {
+          "time": 0.4349999999999684,
+          "neural_time": 0.435,
+          "feedback": {
+            "speed_mmps": 22.65056800842285,
+            "yaw_rate_radps": 4.1866607666015625,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 50.0
+          },
+          "neural_turn": -0.09118818825235493,
+          "action": [
+            0.698085816648231,
+            0.7019141833517689
+          ],
+          "up": 0.9985879128811234
+        },
+        {
+          "time": 0.44999999999996676,
+          "neural_time": 0.45,
+          "feedback": {
+            "speed_mmps": 6.356374740600586,
+            "yaw_rate_radps": -3.111203908920288,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 27.77777777777778
+          },
+          "neural_turn": -0.17953465162109403,
+          "action": [
+            0.6577042450935281,
+            0.7422957549064719
+          ],
+          "up": 0.9968972907366842
+        },
+        {
+          "time": 0.4649999999999651,
+          "neural_time": 0.465,
+          "feedback": {
+            "speed_mmps": 3.060108184814453,
+            "yaw_rate_radps": -5.4503068923950195,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 83.33333333333334,
+            "stim_right": 266.6666666666667
+          },
+          "neural_turn": -0.20314555995165445,
+          "action": [
+            0.6655306901222865,
+            0.7344693098777133
+          ],
+          "up": 0.9987124000954659
+        },
+        {
+          "time": 0.47999999999996346,
+          "neural_time": 0.48,
+          "feedback": {
+            "speed_mmps": 20.828340530395508,
+            "yaw_rate_radps": 1.3341844081878662,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 72.22222222222223,
+            "stim_right": 255.55555555555557
+          },
+          "neural_turn": -0.22313176236154142,
+          "action": [
+            0.6821640641320025,
+            0.7178359358679973
+          ],
+          "up": 0.9971379090418871
+        },
+        {
+          "time": 0.4949999999999618,
+          "neural_time": 0.495,
+          "feedback": {
+            "speed_mmps": 6.121768474578857,
+            "yaw_rate_radps": 4.83268928527832,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 133.33333333333334,
+            "stim_right": 83.33333333333334
+          },
+          "neural_turn": -0.13770420071188488,
+          "action": [
+            0.6973432678809323,
+            0.7026567321190677
+          ],
+          "up": 0.9972825927619787
+        },
+        {
+          "time": 0.5099999999999602,
+          "neural_time": 0.51,
+          "feedback": {
+            "speed_mmps": 14.36381721496582,
+            "yaw_rate_radps": -3.01659893989563,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 300.0,
+            "stim_right": 50.0
+          },
+          "neural_turn": -0.11656408934327965,
+          "action": [
+            0.6823280758672969,
+            0.717671924132703
+          ],
+          "up": 0.999264635497279
+        },
+        {
+          "time": 0.5249999999999585,
+          "neural_time": 0.525,
+          "feedback": {
+            "speed_mmps": 19.895530700683594,
+            "yaw_rate_radps": -7.742571830749512,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 66.66666666666667,
+            "stim_right": 177.77777777777777
+          },
+          "neural_turn": -0.1498421297773983,
+          "action": [
+            0.6863410948235733,
+            0.7136589051764266
+          ],
+          "up": 0.9946605194664243
+        },
+        {
+          "time": 0.5399999999999568,
+          "neural_time": 0.54,
+          "feedback": {
+            "speed_mmps": 8.864707946777344,
+            "yaw_rate_radps": -3.471951484680176,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 0.0,
+            "stim_right": 188.88888888888889
+          },
+          "neural_turn": -0.12683862447525537,
+          "action": [
+            0.7228895156358967,
+            0.6771104843641034
+          ],
+          "up": 0.9974136661182202
+        },
+        {
+          "time": 0.5549999999999552,
+          "neural_time": 0.555,
+          "feedback": {
+            "speed_mmps": 17.768314361572266,
+            "yaw_rate_radps": 3.7460567951202393,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 94.44444444444444,
+            "stim_right": 177.77777777777777
+          },
+          "neural_turn": -0.05619381925877173,
+          "action": [
+            0.7519195665264108,
+            0.648080433473589
+          ],
+          "up": 0.9999850234532192
+        },
+        {
+          "time": 0.5699999999999535,
+          "neural_time": 0.57,
+          "feedback": {
+            "speed_mmps": 20.093164443969727,
+            "yaw_rate_radps": 10.525060653686523,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 122.22222222222223,
+            "stim_right": 44.44444444444444
+          },
+          "neural_turn": 0.054778475685234085,
+          "action": [
+            0.761615419799231,
+            0.6383845802007688
+          ],
+          "up": 0.9954546710007794
+        },
+        {
+          "time": 0.5849999999999519,
+          "neural_time": 0.585,
+          "feedback": {
+            "speed_mmps": 17.65471649169922,
+            "yaw_rate_radps": 4.386022090911865,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 294.44444444444446,
+            "stim_right": 0.0
+          },
+          "neural_turn": -0.055976538154675085,
+          "action": [
+            0.6876622715281216,
+            0.7123377284718783
+          ],
+          "up": 0.9978557616185778
+        },
+        {
+          "time": 0.5999999999999502,
+          "neural_time": 0.6,
+          "feedback": {
+            "speed_mmps": 18.656648635864258,
+            "yaw_rate_radps": 3.7561862468719482,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 133.33333333333334,
+            "right": 0.0,
+            "stim_left": 177.77777777777777,
+            "stim_right": 27.77777777777778
+          },
+          "neural_turn": -0.20090139167996052,
+          "action": [
+            0.6335822852976166,
+            0.7664177147023834
+          ],
+          "up": 0.9995257197592256
+        },
+        {
+          "time": 0.6149999999999486,
+          "neural_time": 0.615,
+          "feedback": {
+            "speed_mmps": 9.111710548400879,
+            "yaw_rate_radps": -6.204263687133789,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 44.44444444444444
+          },
+          "neural_turn": -0.3235776316715637,
+          "action": [
+            0.5901498073784782,
+            0.8098501926215218
+          ],
+          "up": 0.9959544059581906
+        },
+        {
+          "time": 0.6299999999999469,
+          "neural_time": 0.63,
+          "feedback": {
+            "speed_mmps": 8.530235290527344,
+            "yaw_rate_radps": -4.051259994506836,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 50.0,
+            "stim_right": 233.33333333333334
+          },
+          "neural_turn": -0.3250753101631604,
+          "action": [
+            0.6192835131466088,
+            0.7807164868533912
+          ],
+          "up": 0.998161915167212
+        },
+        {
+          "time": 0.6449999999999453,
+          "neural_time": 0.645,
+          "feedback": {
+            "speed_mmps": 19.63326072692871,
+            "yaw_rate_radps": -3.947103500366211,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 161.11111111111111
+          },
+          "neural_turn": -0.2751703092662634,
+          "action": [
+            0.6499192016714231,
+            0.7500807983285767
+          ],
+          "up": 0.9980329186407156
+        },
+        {
+          "time": 0.6599999999999436,
+          "neural_time": 0.66,
+          "feedback": {
+            "speed_mmps": 7.777106285095215,
+            "yaw_rate_radps": 3.449798107147217,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 27.77777777777778,
+            "stim_right": 150.0
+          },
+          "neural_turn": -0.23292663802639038,
+          "action": [
+            0.6764258948858608,
+            0.7235741051141391
+          ],
+          "up": 0.9963606619268068
+        },
+        {
+          "time": 0.674999999999942,
+          "neural_time": 0.675,
+          "feedback": {
+            "speed_mmps": 6.682323932647705,
+            "yaw_rate_radps": -1.5091654062271118,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 50.0
+          },
+          "neural_turn": -0.19716814232955066,
+          "action": [
+            0.6701333927025409,
+            0.7298666072974591
+          ],
+          "up": 0.998549290682097
+        },
+        {
+          "time": 0.6899999999999403,
+          "neural_time": 0.69,
+          "feedback": {
+            "speed_mmps": 17.894441604614258,
+            "yaw_rate_radps": -6.997738361358643,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 216.66666666666669
+          },
+          "neural_turn": -0.21807198758239144,
+          "action": [
+            0.6703584616859231,
+            0.7296415383140769
+          ],
+          "up": 0.9973875833925725
+        },
+        {
+          "time": 0.7049999999999387,
+          "neural_time": 0.705,
+          "feedback": {
+            "speed_mmps": 3.509974956512451,
+            "yaw_rate_radps": -2.691408157348633,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 11.11111111111111,
+            "stim_right": 161.11111111111111
+          },
+          "neural_turn": -0.1845939521990673,
+          "action": [
+            0.7063081315585046,
+            0.6936918684414954
+          ],
+          "up": 0.9966106663883438
+        },
+        {
+          "time": 0.719999999999937,
+          "neural_time": 0.72,
+          "feedback": {
+            "speed_mmps": 16.038497924804688,
+            "yaw_rate_radps": 6.655831813812256,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 133.33333333333334,
+            "stim_right": 161.11111111111111
+          },
+          "neural_turn": -0.10508264869204677,
+          "action": [
+            0.7345560619918224,
+            0.6654439380081775
+          ],
+          "up": 0.9998147743901926
+        },
+        {
+          "time": 0.7349999999999354,
+          "neural_time": 0.735,
+          "feedback": {
+            "speed_mmps": 23.644176483154297,
+            "yaw_rate_radps": 11.447507858276367,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 200.0,
+            "stim_right": 16.666666666666668
+          },
+          "neural_turn": -0.03777778335112289,
+          "action": [
+            0.7215375369198356,
+            0.6784624630801643
+          ],
+          "up": 0.9929825643620503
+        },
+        {
+          "time": 0.7499999999999337,
+          "neural_time": 0.75,
+          "feedback": {
+            "speed_mmps": 12.364885330200195,
+            "yaw_rate_radps": 1.3904978036880493,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 0.0
+          },
+          "neural_turn": -0.1854964783229883,
+          "action": [
+            0.6352869956127932,
+            0.7647130043872067
+          ],
+          "up": 0.9968708330841417
+        },
+        {
+          "time": 0.7649999999999321,
+          "neural_time": 0.765,
+          "feedback": {
+            "speed_mmps": 18.43904685974121,
+            "yaw_rate_radps": -1.0211015939712524,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 166.66666666666669,
+            "stim_right": 144.44444444444446
+          },
+          "neural_turn": -0.3105376540413634,
+          "action": [
+            0.6007402060528262,
+            0.7992597939471737
+          ],
+          "up": 0.9997517691692535
+        },
+        {
+          "time": 0.7799999999999304,
+          "neural_time": 0.78,
+          "feedback": {
+            "speed_mmps": 16.84501838684082,
+            "yaw_rate_radps": -9.389639854431152,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 83.33333333333334,
+            "stim_right": 116.66666666666667
+          },
+          "neural_turn": -0.3140372074062134,
+          "action": [
+            0.6077871664137964,
+            0.7922128335862034
+          ],
+          "up": 0.996092476600776
+        },
+        {
+          "time": 0.7949999999999288,
+          "neural_time": 0.795,
+          "feedback": {
+            "speed_mmps": 18.28573989868164,
+            "yaw_rate_radps": -4.764904975891113,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 5.555555555555555,
+            "stim_right": 183.33333333333334
+          },
+          "neural_turn": -0.26582675700504305,
+          "action": [
+            0.660792790267257,
+            0.7392072097327429
+          ],
+          "up": 0.9977928919980655
+        },
+        {
+          "time": 0.8099999999999271,
+          "neural_time": 0.81,
+          "feedback": {
+            "speed_mmps": 20.06756591796875,
+            "yaw_rate_radps": -6.315272808074951,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 38.88888888888889,
+            "stim_right": 200.0
+          },
+          "neural_turn": -0.17384473342191167,
+          "action": [
+            0.702800019833394,
+            0.6971999801666059
+          ],
+          "up": 0.9986258558759922
+        },
+        {
+          "time": 0.8249999999999255,
+          "neural_time": 0.825,
+          "feedback": {
+            "speed_mmps": 6.188796520233154,
+            "yaw_rate_radps": 1.2173612117767334,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 100.0,
+            "stim_left": 0.0,
+            "stim_right": 183.33333333333334
+          },
+          "neural_turn": 0.006361885299257103,
+          "action": [
+            0.7729717044120928,
+            0.627028295587907
+          ],
+          "up": 0.9946263923340983
+        },
+        {
+          "time": 0.8399999999999238,
+          "neural_time": 0.84,
+          "feedback": {
+            "speed_mmps": 12.895739555358887,
+            "yaw_rate_radps": 1.631624460220337,
+            "contacting_claws": 6
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 211.11111111111111,
+            "stim_right": 116.66666666666667
+          },
+          "neural_turn": 0.05655797801146669,
+          "action": [
+            0.7759819844060959,
+            0.624018015593904
+          ],
+          "up": 0.998697503411856
+        },
+        {
+          "time": 0.8549999999999222,
+          "neural_time": 0.855,
+          "feedback": {
+            "speed_mmps": 21.467304229736328,
+            "yaw_rate_radps": 0.27385661005973816,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 83.33333333333334
+          },
+          "neural_turn": 0.04787529478347175,
+          "action": [
+            0.7630055261853462,
+            0.6369944738146537
+          ],
+          "up": 0.9975465086211353
+        },
+        {
+          "time": 0.8699999999999205,
+          "neural_time": 0.87,
+          "feedback": {
+            "speed_mmps": 10.383038520812988,
+            "yaw_rate_radps": -3.959026575088501,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 72.22222222222223
+          },
+          "neural_turn": -0.01064719626183551,
+          "action": [
+            0.7434528314247009,
+            0.6565471685752992
+          ],
+          "up": 0.9960952762090656
+        },
+        {
+          "time": 0.8849999999999189,
+          "neural_time": 0.885,
+          "feedback": {
+            "speed_mmps": 11.516938209533691,
+            "yaw_rate_radps": 5.512667655944824,
+            "contacting_claws": 5
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 61.111111111111114,
+            "stim_right": 188.88888888888889
+          },
+          "neural_turn": -0.00901265705696742,
+          "action": [
+            0.7571507724887422,
+            0.6428492275112577
+          ],
+          "up": 0.9993684623783228
+        },
+        {
+          "time": 0.8999999999999172,
+          "neural_time": 0.9,
+          "feedback": {
+            "speed_mmps": 22.74736785888672,
+            "yaw_rate_radps": 9.217375755310059,
+            "contacting_claws": 4
+          },
+          "rates": {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 50.0
+          },
+          "neural_turn": -0.007629049491429348,
+          "action": [
+            0.7315563531164176,
+            0.6684436468835822
+          ],
+          "up": 0.994240619977625
+        }
+      ]
+    }
+  ],
+  "wall_seconds": 24.24528459997964,
+  "limits": {
+    "minimum_up": 0.85,
+    "minimum_displacement_mm": 0.5,
+    "maximum_clock_difference_seconds": 1e-08,
+    "maximum_neutral_yaw_rad": 0.1
+  },
+  "limitations": "Two short engineering trials. Synthetic upstream PFL3 excitation, existing uncalibrated DN-rate decoder, calibrated body steering and hybrid gait. Actual body feedback; one-third rider mass. Not sensory encoding, direct leg motor control, robust gameplay or biological validation."
+}

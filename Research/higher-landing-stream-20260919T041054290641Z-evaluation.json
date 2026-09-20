@@ -1,0 +1,6 @@
+{
+  "qualified": false,
+  "qualification": "higher-landing-qualification-20260918-summary.json",
+  "log": "higher-landing-stream-20260919T041054290641Z.log",
+  "error": "RuntimeError('Backend exited; inspect higher-landing-stream-20260919T041054290641Z.log')"
+}

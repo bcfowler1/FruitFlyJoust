@@ -1,0 +1,22 @@
+{
+  "scene": "WalkingLab",
+  "full_brain_toggle_on_observed": true,
+  "full_brain_toggle_off_observed": true,
+  "neurons_on": 138639,
+  "neurons_off": 0,
+  "matching_clocks_observed": true,
+  "unity_speed_ratio_observed": 0.03,
+  "rider_scale": 0.78,
+  "previous_rider_scale": 0.6,
+  "mounted_seat_height": -0.38,
+  "mounted_seat_forward": 0.28,
+  "revised_seated_pose_visually_checked": true,
+  "backend_stopped": true,
+  "udp_ports_released": true,
+  "limitations": [
+    "walking only",
+    "synthetic direct descending encoder",
+    "uncalibrated gait decoder",
+    "no exact Eon reproduction"
+  ]
+}

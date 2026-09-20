@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "torch_version": "2.8.0+cu128",
+  "cuda_version": "12.8",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "capability": [
+    12,
+    0
+  ],
+  "setup_seconds": 2.915615000005346,
+  "cpu_gpu_parity": "300 deterministic steps: matching spikes and membrane voltages within tolerance",
+  "measured_windows": [
+    {
+      "steps": 150,
+      "simulated_seconds": 0.015,
+      "wall_seconds": 0.0841904999979306,
+      "real_time_ratio": 0.1781673704321592
+    },
+    {
+      "steps": 500,
+      "simulated_seconds": 0.05,
+      "wall_seconds": 0.2862864000053378,
+      "real_time_ratio": 0.17465028027551346
+    },
+    {
+      "steps": 1000,
+      "simulated_seconds": 0.1,
+      "wall_seconds": 0.5709779000026174,
+      "real_time_ratio": 0.17513812706155807
+    }
+  ],
+  "graph_status": "passed; persistent state advances and spike counts increase across replay",
+  "graph_windows": [
+    {
+      "simulated_seconds": 0.015,
+      "wall_seconds": 0.06263009998656344,
+      "real_time_ratio": 0.23950145382520666
+    },
+    {
+      "simulated_seconds": 0.06,
+      "wall_seconds": 0.24698860000353307,
+      "real_time_ratio": 0.24292619173169014
+    },
+    {
+      "simulated_seconds": 0.15,
+      "wall_seconds": 0.6175173000083305,
+      "real_time_ratio": 0.24290817439118945
+    }
+  ],
+  "allocated_gpu_bytes": 198124544,
+  "neurons": 138639,
+  "directed_connection_rows": 15091983,
+  "simulated_ms": 455.0,
+  "spike_count": 7940,
+  "active_neurons": 375,
+  "downstream_active_neurons": 354,
+  "finite_membrane_state": true,
+  "interpretation": "upstream PyTorch neural model benchmark; no body/flight controller coupling"
+}

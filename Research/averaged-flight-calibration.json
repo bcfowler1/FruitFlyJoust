@@ -1,0 +1,154 @@
+{
+  "status": "bounded translation qualification passed",
+  "qualified_translation": true,
+  "coefficients": [
+    [
+      0.9396724115347147,
+      -0.044575087804838494,
+      -0.17085839202663095
+    ],
+    [
+      0.020227944825136054,
+      0.5358321723985776,
+      0.394443920261072
+    ],
+    [
+      0.2594733631633226,
+      -0.06134203688555607,
+      0.8512051644365818
+    ],
+    [
+      0.45248402037141955,
+      -0.06273763910513096,
+      0.10932829800595789
+    ],
+    [
+      -0.11069622230317717,
+      0.41318378784842924,
+      -0.07910898810816412
+    ],
+    [
+      0.24771233022048134,
+      0.13518442510326406,
+      0.3161672264098402
+    ],
+    [
+      -0.0010077821413784997,
+      -0.0020439659515459896,
+      0.0009914771486464469
+    ]
+  ],
+  "sample_interval_seconds": 0.015,
+  "poles": [
+    {
+      "real": 0.12092603540079348,
+      "imag": 0.23771383826405215
+    },
+    {
+      "real": 0.12092603540079348,
+      "imag": -0.23771383826405215
+    },
+    {
+      "real": 0.43143818082853874,
+      "imag": 0.0
+    }
+  ],
+  "tests": [
+    {
+      "index": 0,
+      "held_out": false,
+      "velocity_rmse_mps": 0.020092357296790073,
+      "maximum_error_mps": 0.0427235539747895,
+      "wall_seconds": 0.00018210001871921122
+    },
+    {
+      "index": 1,
+      "held_out": false,
+      "velocity_rmse_mps": 0.018016172132749385,
+      "maximum_error_mps": 0.030564923686245533,
+      "wall_seconds": 0.00015869998605921865
+    },
+    {
+      "index": 2,
+      "held_out": false,
+      "velocity_rmse_mps": 0.02479524461009919,
+      "maximum_error_mps": 0.04399173693643577,
+      "wall_seconds": 0.00013609998859465122
+    },
+    {
+      "index": 3,
+      "held_out": false,
+      "velocity_rmse_mps": 0.020874428179749056,
+      "maximum_error_mps": 0.03860763235012118,
+      "wall_seconds": 0.00017529999604448676
+    },
+    {
+      "index": 4,
+      "held_out": false,
+      "velocity_rmse_mps": 0.020526186044645275,
+      "maximum_error_mps": 0.0482090441925913,
+      "wall_seconds": 0.00018540001474320889
+    },
+    {
+      "index": 5,
+      "held_out": false,
+      "velocity_rmse_mps": 0.02910768323645745,
+      "maximum_error_mps": 0.03993464902420771,
+      "wall_seconds": 4.700000863522291e-05
+    },
+    {
+      "index": 6,
+      "held_out": false,
+      "velocity_rmse_mps": 0.01937017155732751,
+      "maximum_error_mps": 0.028364094410031692,
+      "wall_seconds": 6.560000474564731e-05
+    },
+    {
+      "index": 7,
+      "held_out": false,
+      "velocity_rmse_mps": 0.03511505271301,
+      "maximum_error_mps": 0.047765336338467045,
+      "wall_seconds": 0.00010569998994469643
+    },
+    {
+      "index": 8,
+      "held_out": false,
+      "velocity_rmse_mps": 0.024843370487812155,
+      "maximum_error_mps": 0.07631357893916038,
+      "wall_seconds": 0.00022499999613501132
+    },
+    {
+      "index": 9,
+      "held_out": false,
+      "velocity_rmse_mps": 0.02556866580858799,
+      "maximum_error_mps": 0.056751063000052865,
+      "wall_seconds": 0.00012740000966005027
+    },
+    {
+      "index": 48,
+      "held_out": true,
+      "velocity_rmse_mps": 0.018897351886154393,
+      "maximum_error_mps": 0.041977304011764534,
+      "wall_seconds": 0.00038139999378472567
+    }
+  ],
+  "rider_mass_fraction": 0.3333333333333333,
+  "training_references": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "held_out_reference": 48,
+  "limits": [
+    "Empirical translation only; not a reduced neural network",
+    "Yaw/joystick/landing behavior is an engineering controller, not calibrated biology",
+    "Qualification covers the recorded references, not unrestricted flight"
+  ]
+}

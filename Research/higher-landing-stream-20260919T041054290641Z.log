@@ -1,0 +1,33 @@
+WARNING:tensorflow:From C:\Users\lov3n\Documents\Codex\2026-09-16\c\work\flight-env\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+WARNING:tensorflow:From C:\Users\lov3n\Documents\Codex\2026-09-16\c\work\flight-env\Lib\site-packages\tensorflow_probability\python\internal\backend\numpy\_utils.py:48: The name tf.logging.TaskLevelStatusMessage is deprecated. Please use tf.compat.v1.logging.TaskLevelStatusMessage instead.
+
+WARNING:tensorflow:From C:\Users\lov3n\Documents\Codex\2026-09-16\c\work\flight-env\Lib\site-packages\tensorflow_probability\python\internal\backend\numpy\_utils.py:48: The name tf.control_flow_v2_enabled is deprecated. Please use tf.compat.v1.control_flow_v2_enabled instead.
+
+{"path": "C:\\Users\\lov3n\\Documents\\Codex\\2026-09-16\\c\\outputs\\FruitFlyJoust\\Assets\\Resources\\FlyUnifiedGeometry.bytes", "meshes": 85, "visual_geoms": 85, "bytes": 5227686}
+{"stage": "landing", "seed": 42, "hover_qualified": true, "simulation_time": 1.7000000000013753}
+{"stage": "claw_grip_started", "state": {"up_cosine": 0.9380755806273199, "claws": ["walker/tarsal_claw_T1_left_collision", "walker/tarsal_claw_T2_left_collision", "walker/tarsal_claw_T2_right_collision", "walker/tarsal_claw_T3_left_collision", "walker/tarsal_claw_T3_right_collision"], "root": [0.518642188379812, -0.03444337710325252, 0.22329352664654945, 0.9794888087548393, -0.05315759251980423, -0.1677393216983971, -0.09818077122168849], "speed_cm_s": 0.13985568438232385, "root_velocity": [0.0494006566149182, -0.08331774780445357, -0.10088280567498406, 0.31146332509738317, 1.2503403920414193, 0.0293860271450897], "wing_velocity": [1.382011667433097, 1.5954327096210341, -2.1649556879293694, 1.3896336149817203, 1.1342665528253122, -2.0533980255928754]}}
+{"stage": "sustained_hold", "seed": 42, "simulation_time": 5.583799999993656}
+{"stage": "walking_resume", "seed": 42, "hold_qualified": true, "simulation_time": 5.583799999993656}
+{"stage": "cartesian_walking_manifold_transition", "qualified": true, "rows": [{"leg": "T1_left", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9888862177202655, "target_error_cm": 0.08853683515509236}, {"leg": "T1_right", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9795854495099346, "target_error_cm": 0.0454594250304489}, {"leg": "T3_left", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9985606355816186, "target_error_cm": 0.003449793871750589}, {"leg": "T3_right", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9988505108259269, "target_error_cm": 0.003421910189977077}, {"leg": "T2_left", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9999307519096792, "target_error_cm": 0.03333633205823648}, {"leg": "T2_right", "completed_steps": 500, "safe": true, "claws": 6, "other_contacts": 0, "up": 0.9999782750501179, "target_error_cm": 0.013246480941227382}]}
+Traceback (most recent call last):
+  File "C:\Users\lov3n\Documents\Codex\2026-09-16\c\outputs\FruitFlyJoust\Research\serve_higher_landing.py", line 149, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\lov3n\Documents\Codex\2026-09-16\c\outputs\FruitFlyJoust\Research\serve_higher_landing.py", line 131, in main
+    evaluation.main(launch_height=.25,output_name=report,landing=True,upright_landing=False,
+  File "C:\Users\lov3n\Documents\Codex\2026-09-16\c\outputs\FruitFlyJoust\Research\evaluate_cartesian_walking_transition.py", line 650, in main
+    print(json.dumps(summary),flush=True)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lov3n\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\json\__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lov3n\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lov3n\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\json\encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\lov3n\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type ndarray is not JSON serializable

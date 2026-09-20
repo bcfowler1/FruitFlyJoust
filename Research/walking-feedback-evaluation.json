@@ -1,0 +1,58 @@
+{
+  "trials": [
+    {
+      "feedback_yaw": 0,
+      "mean_rate_difference": 141.66666666666666,
+      "last": {
+        "neural_time": 0.18,
+        "rates": {
+          "left": 33.333333333333336,
+          "right": 133.33333333333334
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 180.0,
+          "spike_count": 115,
+          "active_neurons": 11,
+          "downstream_active_neurons": 11,
+          "finite_membrane_state": true
+        },
+        "feedback": {
+          "speed_mmps": 10.0,
+          "yaw_rate_radps": 0.0,
+          "contacting_claws": 3
+        },
+        "encoder": "synthetic direct descending excitation with measured speed/yaw/contact feedback; unvalidated"
+      }
+    },
+    {
+      "feedback_yaw": 3,
+      "mean_rate_difference": 72.22222222222223,
+      "last": {
+        "neural_time": 0.18,
+        "rates": {
+          "left": 66.66666666666667,
+          "right": 66.66666666666667
+        },
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 180.0,
+          "spike_count": 113,
+          "active_neurons": 11,
+          "downstream_active_neurons": 11,
+          "finite_membrane_state": true
+        },
+        "feedback": {
+          "speed_mmps": 10.0,
+          "yaw_rate_radps": 3.0,
+          "contacting_claws": 3
+        },
+        "encoder": "synthetic direct descending excitation with measured speed/yaw/contact feedback; unvalidated"
+      }
+    }
+  ],
+  "passed": true,
+  "biological_encoding": false
+}

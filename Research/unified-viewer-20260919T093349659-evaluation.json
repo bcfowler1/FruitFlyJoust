@@ -1,0 +1,19 @@
+{
+    "qualified": true,
+    "error": "",
+    "session": "da70f8104c1e48b8b759cc33a2123524",
+    "geometryCount": 85,
+    "maximumPositionError": 0.0,
+    "maximumRotationError": 0.0,
+    "checks": [
+        "all physical visual geometries received",
+        "trained scientific lab distinct from connectome mode",
+        "correct fitted thorax seat",
+        "paused physical clock and all rendered poses frozen",
+        "resumed physical clock advances",
+        "whole streamed floor loop qualified",
+        "actual flight landed and walking captures saved",
+        "all rendered poses track actual scientific state",
+        "explicit replay starts a new body session"
+    ]
+}

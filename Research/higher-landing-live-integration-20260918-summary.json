@@ -1,0 +1,60 @@
+{
+  "qualified": true,
+  "mode": "separately gated higher landing live integration",
+  "default_mode_changed": false,
+  "offline_qualification": "higher-landing-qualification-20260918-summary.json",
+  "live_transport_evaluation": "higher-landing-stream-20260919T041354652584Z-evaluation.json",
+  "physical_trial": "higher-landing-live-6255c905f39a44f69d4d421602f84979.json",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "transport": {
+    "frames": 1262,
+    "exact_paused_geometry_and_clock": true,
+    "paused_wall_seconds": 1,
+    "resumed": true,
+    "explicit_replay_new_session": true,
+    "maximum_stream_time_gap": 0.016799999999960846,
+    "observed_phases": [
+      "claw grip started",
+      "complete: qualification passed",
+      "landing",
+      "standing before launch",
+      "walking before launch",
+      "walking handoff",
+      "walking resume",
+      "walking resumed",
+      "wing takeoff and hover"
+    ]
+  },
+  "physical": {
+    "qualified": true,
+    "landing_stable_seconds": 2.1001999999998016,
+    "landing_final_contacts": 6,
+    "landing_final_body_contacts": 0,
+    "completed_walking_seconds": 6.0,
+    "minimum_walking_up_cosine": 0.9398983517610862,
+    "forward_displacement_cm": 5.863035996303758,
+    "final_quarter_second_forward_cm": 0.24972622535267658,
+    "pose_jump": 0.0,
+    "velocity_jump": 0.0,
+    "time_reset": false,
+    "rider_mass_fraction": 0.3333333333333333,
+    "root_external_force": false
+  },
+  "source_sha256": {
+    "serve_higher_landing.py": "c55cb3b680f773cbc6699beb5852e9dbb522f85c4930effb1be61c4597aa0368",
+    "evaluate_higher_landing_stream.py": "a56e115b5bd255b057687fd6f7ee9ec08d5e55351667e0088500df643a23f8d2"
+  },
+  "unity_editor_source_sha256": "8a3f1b4268ae87d38f1a606cdffb95fd6abeb5ce23730ff3e4c1f28a4b6d1426",
+  "unity_integration": {
+    "menu": "Fruit Fly/Research/Start Qualified Higher Landing Backend",
+    "automatic_default": "Start Unified Floor Qualification Backend",
+    "protocol_compatibility": "same ResearchViewer UDP protocol validated by live transport regression",
+    "native_menu_click_validated": false,
+    "limitation": "Native Unity window was not targetable in this session; menu invocation still requires an in-editor click check."
+  },
+  "provenance": "Engineering stance bridge into native walking policy; not a connectome-derived limb controller."
+}

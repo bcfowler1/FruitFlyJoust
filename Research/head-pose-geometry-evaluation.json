@@ -1,0 +1,11 @@
+{
+  "qualified": true,
+  "method": "Offline source-mesh rigid-transform invariants; Unity rendering and live animation NOT tested",
+  "scanned_poses": 1001,
+  "head_parts": 11,
+  "axis": "body upright / source Z / Unity root Y",
+  "maximum_vertical_displacement": 0.0,
+  "maximum_pair_distance_error": 1.1102230246251565e-16,
+  "absolute_yaw_limit_degrees": 3,
+  "biological_validation": false
+}

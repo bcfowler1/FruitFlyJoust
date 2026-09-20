@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "checks": 15,
+  "neurons": 138639,
+  "scientific_body": "NeuroMechFly",
+  "limits": "Gameplay combat damage; no biological injury model or wing flight",
+  "trained_head_stabilization": true
+}

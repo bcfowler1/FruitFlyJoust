@@ -1,0 +1,14 @@
+{
+  "qualified": true,
+  "trained_upstream_head_controller": true,
+  "live_neck_actuators": true,
+  "maximum_neck_target_rad": 0.11388266831636429,
+  "maximum_neck_joint_angle_rad": 0.13518145003447254,
+  "loaded_gait": true,
+  "unloaded_gait": true,
+  "perch_remount": true,
+  "landed_claws": 6,
+  "floor_only": true,
+  "flywire_head_decoder": false,
+  "whole_animal_biological_validation": false
+}

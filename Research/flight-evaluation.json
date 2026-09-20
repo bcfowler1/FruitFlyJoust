@@ -1,0 +1,126 @@
+{
+  "status": "mechanics checks passed",
+  "trials": [
+    {
+      "frequency_action": -1.0,
+      "frequency_hz": 207.1,
+      "control_steps": 266,
+      "simulation_seconds": 0.05320000000000101,
+      "wall_seconds": 1.1761113999964437,
+      "action_shape": [
+        12
+      ],
+      "physics_timestep": 5e-05,
+      "control_timestep": 0.0002,
+      "max_wing_angle_change_rad": 2.1969680112654855,
+      "initial_com_m": [
+        1.083803201769434e-06,
+        -4.360407536040448e-06,
+        0.010001324138057401
+      ],
+      "final_com_m": [
+        0.008806734588901381,
+        4.101468361762217e-05,
+        0.001594887836360495
+      ],
+      "finite": true,
+      "episode_terminated": true,
+      "reached_reference_end": false,
+      "final_thorax_height_cm": 0.19905220941126173,
+      "final_acceleration_norm": 2437095.5400921605,
+      "observation_names": [
+        "walker/accelerometer",
+        "walker/actuator_activation",
+        "walker/gyro",
+        "walker/joints_pos",
+        "walker/joints_vel",
+        "walker/ref_displacement",
+        "walker/ref_root_quat",
+        "walker/velocimeter",
+        "walker/world_zaxis"
+      ]
+    },
+    {
+      "frequency_action": 0.0,
+      "frequency_hz": 218.0,
+      "control_steps": 268,
+      "simulation_seconds": 0.05360000000000102,
+      "wall_seconds": 1.168440699999337,
+      "action_shape": [
+        12
+      ],
+      "physics_timestep": 5e-05,
+      "control_timestep": 0.0002,
+      "max_wing_angle_change_rad": 2.196046063198337,
+      "initial_com_m": [
+        1.083803201769434e-06,
+        -4.360407536040448e-06,
+        0.010001324138057401
+      ],
+      "final_com_m": [
+        0.00879785389759464,
+        4.502074806065849e-05,
+        0.0015930224775291902
+      ],
+      "finite": true,
+      "episode_terminated": true,
+      "reached_reference_end": false,
+      "final_thorax_height_cm": 0.19346490174716519,
+      "final_acceleration_norm": 2795017.0419257297,
+      "observation_names": [
+        "walker/accelerometer",
+        "walker/actuator_activation",
+        "walker/gyro",
+        "walker/joints_pos",
+        "walker/joints_vel",
+        "walker/ref_displacement",
+        "walker/ref_root_quat",
+        "walker/velocimeter",
+        "walker/world_zaxis"
+      ]
+    },
+    {
+      "frequency_action": 1.0,
+      "frequency_hz": 228.9,
+      "control_steps": 267,
+      "simulation_seconds": 0.053400000000001016,
+      "wall_seconds": 1.17300750000868,
+      "action_shape": [
+        12
+      ],
+      "physics_timestep": 5e-05,
+      "control_timestep": 0.0002,
+      "max_wing_angle_change_rad": 2.1956095267759395,
+      "initial_com_m": [
+        1.083803201769434e-06,
+        -4.360407536040448e-06,
+        0.010001324138057401
+      ],
+      "final_com_m": [
+        0.008673644844836239,
+        4.917871136516951e-05,
+        0.001878670261685283
+      ],
+      "finite": true,
+      "episode_terminated": true,
+      "reached_reference_end": false,
+      "final_thorax_height_cm": 0.19508339599372773,
+      "final_acceleration_norm": 2968136.083387982,
+      "observation_names": [
+        "walker/accelerometer",
+        "walker/actuator_activation",
+        "walker/gyro",
+        "walker/joints_pos",
+        "walker/joints_vel",
+        "walker/ref_displacement",
+        "walker/ref_root_quat",
+        "walker/velocimeter",
+        "walker/world_zaxis"
+      ]
+    }
+  ],
+  "trained_policy": false,
+  "measured_wing_pattern": false,
+  "neural_coupling": false,
+  "interpretation": "Upstream approximate wingbeat plus zero policy residual; not controlled flight or biological validation"
+}

@@ -1,0 +1,1250 @@
+{
+  "comparison_completed": true,
+  "upstream_pfl3": true,
+  "network_changes_current_steering_readout": true,
+  "maximum_rate_difference_hz": 100.0,
+  "results": {
+    "connected": [
+      {
+        "turn": -0.5,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 166.66666666666669,
+            "stim_right": 150.0
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 250.0,
+            "stim_right": 83.33333333333334
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 127.77777777777779
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 266.6666666666667,
+            "stim_right": 88.88888888888889
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 122.22222222222223
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 238.88888888888889,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 238.88888888888889,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 288.8888888888889,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 111.11111111111111
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 244.44444444444446,
+            "stim_right": 116.66666666666667
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 205.55555555555557,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 88.88888888888889
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 277.77777777777777,
+            "stim_right": 105.55555555555556
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 150.0
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 122.22222222222223
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 111.11111111111111
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 250.0,
+            "stim_right": 116.66666666666667
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 300.0,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 127.77777777777779
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 261.11111111111114,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 100.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 266.6666666666667,
+            "stim_right": 155.55555555555557
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 10991,
+          "active_neurons": 519,
+          "downstream_active_neurons": 495,
+          "finite_membrane_state": true
+        }
+      },
+      {
+        "turn": 0,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 133.33333333333334,
+            "stim_right": 244.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 188.88888888888889
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 33.333333333333336,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 166.66666666666669,
+            "stim_right": 244.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 66.66666666666667,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 127.77777777777779,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 144.44444444444446,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 205.55555555555557
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 10873,
+          "active_neurons": 505,
+          "downstream_active_neurons": 481,
+          "finite_membrane_state": true
+        }
+      },
+      {
+        "turn": 0.5,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 111.11111111111111,
+            "stim_right": 266.6666666666667
+          },
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 133.33333333333334,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 127.77777777777779,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 255.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 144.44444444444446,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 116.66666666666667,
+            "stim_right": 222.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 238.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 122.22222222222223,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 161.11111111111111,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 100.0,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 150.0,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 122.22222222222223,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 88.88888888888889,
+            "stim_right": 200.0
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 100.0,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 144.44444444444446,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 155.55555555555557,
+            "stim_right": 294.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 238.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 116.66666666666667,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 150.0,
+            "stim_right": 283.33333333333337
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 94.44444444444444,
+            "stim_right": 272.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 83.33333333333334,
+            "stim_right": 205.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 172.22222222222223,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 261.11111111111114
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 222.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 155.55555555555557,
+            "stim_right": 255.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 33.333333333333336,
+            "stim_left": 94.44444444444444,
+            "stim_right": 288.8888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 66.66666666666667,
+            "stim_left": 111.11111111111111,
+            "stim_right": 250.0
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 10694,
+          "active_neurons": 534,
+          "downstream_active_neurons": 510,
+          "finite_membrane_state": true
+        }
+      }
+    ],
+    "isolated": [
+      {
+        "turn": -0.5,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 166.66666666666669,
+            "stim_right": 150.0
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 250.0,
+            "stim_right": 83.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 127.77777777777779
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 266.6666666666667,
+            "stim_right": 88.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 122.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 238.88888888888889,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 238.88888888888889,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 288.8888888888889,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 111.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 244.44444444444446,
+            "stim_right": 116.66666666666667
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 205.55555555555557,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 88.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 277.77777777777777,
+            "stim_right": 105.55555555555556
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 150.0
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 255.55555555555557,
+            "stim_right": 122.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 111.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 250.0,
+            "stim_right": 116.66666666666667
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 300.0,
+            "stim_right": 133.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 127.77777777777779
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 261.11111111111114,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 266.6666666666667,
+            "stim_right": 155.55555555555557
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 2102,
+          "active_neurons": 24,
+          "downstream_active_neurons": 0,
+          "finite_membrane_state": true
+        }
+      },
+      {
+        "turn": 0,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 244.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 138.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 194.44444444444446,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 227.7777777777778,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 188.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 188.88888888888889,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 144.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 216.66666666666669,
+            "stim_right": 161.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 172.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 166.66666666666669,
+            "stim_right": 244.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 155.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 211.11111111111111,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 222.22222222222223,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 127.77777777777779,
+            "stim_right": 177.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 200.0,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 144.44444444444446,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 183.33333333333334,
+            "stim_right": 205.55555555555557
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 2110,
+          "active_neurons": 24,
+          "downstream_active_neurons": 0,
+          "finite_membrane_state": true
+        }
+      },
+      {
+        "turn": 0.5,
+        "rates": [
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 111.11111111111111,
+            "stim_right": 266.6666666666667
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 166.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 138.88888888888889,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 183.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 127.77777777777779,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 255.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 144.44444444444446,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 116.66666666666667,
+            "stim_right": 222.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 133.33333333333334,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 238.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 161.11111111111111,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 100.0,
+            "stim_right": 211.11111111111111
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 88.88888888888889,
+            "stim_right": 200.0
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 100.0,
+            "stim_right": 277.77777777777777
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 144.44444444444446,
+            "stim_right": 227.7777777777778
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 194.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 294.44444444444446
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 122.22222222222223,
+            "stim_right": 238.88888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 116.66666666666667,
+            "stim_right": 233.33333333333334
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 150.0,
+            "stim_right": 283.33333333333337
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 94.44444444444444,
+            "stim_right": 272.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 83.33333333333334,
+            "stim_right": 205.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 216.66666666666669
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 172.22222222222223,
+            "stim_right": 261.11111111111114
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 105.55555555555556,
+            "stim_right": 222.22222222222223
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 155.55555555555557,
+            "stim_right": 255.55555555555557
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 94.44444444444444,
+            "stim_right": 288.8888888888889
+          },
+          {
+            "left": 0.0,
+            "right": 0.0,
+            "stim_left": 111.11111111111111,
+            "stim_right": 250.0
+          }
+        ],
+        "stats": {
+          "neurons": 138639,
+          "directed_connection_rows": 15091983,
+          "simulated_ms": 480.0,
+          "spike_count": 2114,
+          "active_neurons": 24,
+          "downstream_active_neurons": 0,
+          "finite_membrane_state": true
+        }
+      }
+    ]
+  },
+  "wall_seconds": 22.23681669999496,
+  "limitations": "Diagnostic synaptic ablation in device memory only. Identical reset/seed/input. PFL3 mode stimulates anatomically grouped upstream cells; default directly excites DNa01/DNa02. No biological sensory or brain-to-leg validation. No production weights or gameplay settings changed."
+}

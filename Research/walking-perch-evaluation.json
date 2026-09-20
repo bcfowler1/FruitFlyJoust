@@ -1,0 +1,115 @@
+{
+  "trials": [
+    {
+      "surface": "floor",
+      "events": [
+        {
+          "phase": "hold",
+          "contacts": 6,
+          "minimum_contacts": 6,
+          "slip_mm": 0.026080737887476942,
+          "passed": true
+        },
+        {
+          "cycle": 0,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 5,
+          "slip_mm": 0.0293160199535749,
+          "assistance_off": true
+        },
+        {
+          "cycle": 1,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 5,
+          "slip_mm": 0.027846991981679545,
+          "assistance_off": true
+        }
+      ],
+      "resumed_walk": true,
+      "finite": true,
+      "passed": true,
+      "wall_seconds": 81.88835339999059,
+      "rider_mass_fraction": 0.3333333333333333,
+      "root_snapping": false,
+      "limits": "One flat surface; static surface-relative gravity; engineering hover force and fixed airborne leg targets; not wing or neural landing control"
+    },
+    {
+      "surface": "wall",
+      "events": [
+        {
+          "phase": "hold",
+          "contacts": 6,
+          "minimum_contacts": 6,
+          "slip_mm": 0.0456425288726448,
+          "passed": true
+        },
+        {
+          "cycle": 0,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 5,
+          "slip_mm": 0.015701098096782246,
+          "assistance_off": true
+        },
+        {
+          "cycle": 1,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 4,
+          "slip_mm": 0.027571033707113873,
+          "assistance_off": true
+        }
+      ],
+      "resumed_walk": true,
+      "finite": true,
+      "passed": true,
+      "wall_seconds": 76.43492110000807,
+      "rider_mass_fraction": 0.3333333333333333,
+      "root_snapping": false,
+      "limits": "One flat surface; static surface-relative gravity; engineering hover force and fixed airborne leg targets; not wing or neural landing control"
+    },
+    {
+      "surface": "ceiling",
+      "events": [
+        {
+          "phase": "hold",
+          "contacts": 6,
+          "minimum_contacts": 6,
+          "slip_mm": 0.08633205570540835,
+          "passed": true
+        },
+        {
+          "cycle": 0,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 3,
+          "slip_mm": 0.017654282289440864,
+          "assistance_off": true
+        },
+        {
+          "cycle": 1,
+          "launched": true,
+          "landed": true,
+          "held": true,
+          "minimum_contacts": 3,
+          "slip_mm": 0.021584620884524425,
+          "assistance_off": true
+        }
+      ],
+      "resumed_walk": true,
+      "finite": true,
+      "passed": true,
+      "wall_seconds": 56.00817340001231,
+      "rider_mass_fraction": 0.3333333333333333,
+      "root_snapping": false,
+      "limits": "One flat surface; static surface-relative gravity; engineering hover force and fixed airborne leg targets; not wing or neural landing control"
+    }
+  ]
+}

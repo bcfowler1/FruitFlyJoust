@@ -1,0 +1,20 @@
+{
+  "trials": [
+    {
+      "optimized": false,
+      "sim_seconds": 0.5749999999999449,
+      "wall_seconds": 10.063688299997011,
+      "reference_end": true,
+      "clips": 0
+    },
+    {
+      "optimized": true,
+      "sim_seconds": 0.5749999999999449,
+      "wall_seconds": 5.626601600000868,
+      "reference_end": true,
+      "clips": 0
+    }
+  ],
+  "state_parity": true,
+  "speedup": 1.788590878727838
+}

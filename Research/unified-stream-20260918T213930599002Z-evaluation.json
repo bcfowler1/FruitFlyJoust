@@ -1,0 +1,6 @@
+{
+  "qualified": false,
+  "qualification": "unified-contact-qualification-20260918T213219801072Z-summary.json",
+  "log": "unified-stream-20260918T213930599002Z.log",
+  "error": "RuntimeError('Backend exited; inspect unified-stream-20260918T213930599002Z.log')"
+}

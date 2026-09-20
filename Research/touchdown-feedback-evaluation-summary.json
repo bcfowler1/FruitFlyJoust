@@ -1,0 +1,49 @@
+{
+  "cases": [
+    {
+      "report": "unified-attitude-gated-seed45-evaluation.json",
+      "overall_passed": false,
+      "landing_passed": true,
+      "grip_start": {
+        "up_cosine": 0.6739821507085269,
+        "claws": [
+          "walker/tarsal_claw_T2_left_collision",
+          "walker/tarsal_claw_T2_right_collision",
+          "walker/tarsal_claw_T3_left_collision"
+        ],
+        "root": [
+          0.391969878237997,
+          0.04061480038931169,
+          0.23435938665306225,
+          0.9147862388990678,
+          0.00846115545054725,
+          -0.4036549683754418,
+          0.012538439901426661
+        ],
+        "speed_cm_s": 1.6294446799003888
+      },
+      "final_landing_up": 0.9394621945321271,
+      "walking_passed": false,
+      "minimum_walking_up": -0.9998329566181979
+    },
+    {
+      "report": "unified-upright-grip-seed45-evaluation.json",
+      "overall_passed": false,
+      "landing_passed": false,
+      "grip_start": null,
+      "final_landing_up": 0.7239695520954411,
+      "walking_passed": null,
+      "minimum_walking_up": null
+    },
+    {
+      "report": "unified-balanced-grip-seed45-evaluation.json",
+      "overall_passed": false,
+      "landing_passed": false,
+      "grip_start": null,
+      "final_landing_up": 0.7239695520954411,
+      "walking_passed": null,
+      "minimum_walking_up": null
+    }
+  ],
+  "conclusion": "Attitude gate .65 qualifies seed45 landing but not walking; stricter .8 and balanced front/rear contact gates never engage before stable landing. No candidate qualifies full cross-initialization sequence. Defaults unchanged, no gameplay integration."
+}

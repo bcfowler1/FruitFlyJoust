@@ -1,0 +1,152 @@
+[
+  {
+    "file": "unified-native-speed-six-second-evaluation.json",
+    "qualified": true,
+    "rms_leg_position_error_rad": 0.08824836305842665,
+    "largest_errors": [
+      [
+        0.26951423336247327,
+        "tibia_T1_right"
+      ],
+      [
+        0.26531936697656355,
+        "tibia_T3_left"
+      ],
+      [
+        0.18577193356666477,
+        "tibia_T2_left"
+      ],
+      [
+        0.17487085035127534,
+        "coxa_abduct_T1_right"
+      ],
+      [
+        0.16261240620140854,
+        "femur_twist_T1_right"
+      ],
+      [
+        0.15566075518856695,
+        "femur_twist_T1_left"
+      ],
+      [
+        0.1463949500240141,
+        "coxa_abduct_T1_left"
+      ],
+      [
+        0.13223712530602932,
+        "tarsus_T3_left"
+      ]
+    ],
+    "initial_root": [
+      0.6903538941909076,
+      0.18313203267050984,
+      0.11982839481956238,
+      0.8272935742608781,
+      -0.06065211930018955,
+      0.14889612294912366,
+      0.5382718708810404
+    ],
+    "completed_walking_seconds": 6.0,
+    "minimum_up": 0.9006505614856761
+  },
+  {
+    "file": "unified-integral-support-recovery-seed45-evaluation.json",
+    "qualified": false,
+    "rms_leg_position_error_rad": 0.1533437969341645,
+    "largest_errors": [
+      [
+        0.5465205313223508,
+        "femur_T1_right"
+      ],
+      [
+        0.460099085475264,
+        "femur_T1_left"
+      ],
+      [
+        0.3932843082560095,
+        "femur_twist_T1_right"
+      ],
+      [
+        0.3061544077323811,
+        "femur_twist_T1_left"
+      ],
+      [
+        0.30298020148287513,
+        "coxa_twist_T1_right"
+      ],
+      [
+        0.2773905220319177,
+        "coxa_abduct_T2_right"
+      ],
+      [
+        0.2739002200328513,
+        "femur_T2_left"
+      ],
+      [
+        0.2708100788626908,
+        "coxa_twist_T1_left"
+      ]
+    ],
+    "initial_root": [
+      0.5793635262412246,
+      0.06549363420673202,
+      0.13508234249452156,
+      0.9891626245061362,
+      0.00014381942936568464,
+      0.023964953409547383,
+      0.14485497093363175
+    ],
+    "completed_walking_seconds": 0.14400000000000002,
+    "minimum_up": 0.8117387601409646
+  },
+  {
+    "file": "unified-integral-posture-recovery-seed45-evaluation.json",
+    "qualified": false,
+    "rms_leg_position_error_rad": 0.1510980942588378,
+    "largest_errors": [
+      [
+        0.5495345097906416,
+        "femur_T1_right"
+      ],
+      [
+        0.460342035195919,
+        "femur_T1_left"
+      ],
+      [
+        0.3856903716374683,
+        "femur_twist_T1_right"
+      ],
+      [
+        0.3126579243088974,
+        "coxa_twist_T1_right"
+      ],
+      [
+        0.31111456480410427,
+        "femur_twist_T1_left"
+      ],
+      [
+        0.27537564255427766,
+        "femur_T2_left"
+      ],
+      [
+        0.26956073182049384,
+        "femur_T2_right"
+      ],
+      [
+        0.2677493054670678,
+        "coxa_twist_T1_left"
+      ]
+    ],
+    "initial_root": [
+      0.5809486653177536,
+      0.0663142125404264,
+      0.1341718248108806,
+      0.9887665100497207,
+      0.0005616845191200338,
+      0.028974452057250497,
+      0.1466320368902323
+    ],
+    "completed_walking_seconds": 0.14200000000000002,
+    "minimum_up": 0.8221699476474955
+  }
+]

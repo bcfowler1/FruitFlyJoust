@@ -1,0 +1,14 @@
+{
+  "qualified": true,
+  "neurons": 138639,
+  "continuous_brain_body_clocks": true,
+  "unloaded_live_idle_gait": true,
+  "excursion_m": 0.0010531061010170188,
+  "landed_claws": 6,
+  "pause_passed": true,
+  "remount_passed": true,
+  "reset_passed": true,
+  "trained_head_stabilization": true,
+  "upstream_steering": true,
+  "biological_decision_making": false
+}

@@ -1,0 +1,42 @@
+{
+  "trials": [
+    {
+      "surface": "floor",
+      "initial_airborne": true,
+      "landed": true,
+      "held": true,
+      "held_claws": 6,
+      "launched": true,
+      "final_claws": 0,
+      "landing_time": 0.411299999999971,
+      "finite": true
+    },
+    {
+      "surface": "wall",
+      "initial_airborne": true,
+      "landed": true,
+      "held": true,
+      "held_claws": 4,
+      "launched": true,
+      "final_claws": 0,
+      "landing_time": 0.4107999999999711,
+      "finite": true
+    },
+    {
+      "surface": "ceiling",
+      "initial_airborne": true,
+      "landed": true,
+      "held": true,
+      "held_claws": 4,
+      "launched": true,
+      "final_claws": 0,
+      "landing_time": 0.4105999999999711,
+      "finite": true
+    }
+  ],
+  "engineering_controller": true,
+  "wing_resolved_flight": false,
+  "neural_control": false,
+  "root_welding": false,
+  "limits": "Millimeter-scale flat-surface approach; synthetic averaged flight wrench, fixed leg targets and uncalibrated adhesion."
+}

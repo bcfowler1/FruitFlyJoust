@@ -1,0 +1,23 @@
+{
+  "status": "passed observed Editor checks",
+  "unity_version": "2022.3.62f3",
+  "experimental_flight": {
+    "reference_completed": true,
+    "simulated_seconds": 0.227,
+    "neurons": 138639,
+    "action_clips": 0,
+    "rider_visible_attached": true
+  },
+  "wall_contact": {
+    "six_claw_contacts": true,
+    "rider_visible_attached": true,
+    "pause_verified": true,
+    "release_contact_loss": true,
+    "reset_restores_contacts": true
+  },
+  "limits": [
+    "Ceiling streaming tested separately, not observed in Editor",
+    "Neural mapping is experimental and biologically unvalidated",
+    "Contact lab is separate from flight approach"
+  ]
+}

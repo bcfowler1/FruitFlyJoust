@@ -1,0 +1,182 @@
+{
+  "status": "references completed",
+  "trials": [
+    {
+      "trajectory": 0,
+      "trained_policy": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "steps": 946,
+      "simulated_seconds": 0.18919999999998732,
+      "wall_seconds": 2.699966799991671,
+      "mean_tracking_error_m": 0.0006732362935871869,
+      "max_tracking_error_m": 0.004213690136462514,
+      "minimum_thorax_height_m": 0.005389835016567476,
+      "final_thorax_height_m": 0.013792172862535113,
+      "episode_terminated": true,
+      "reference_end": true,
+      "max_raw_action": 0.9199041724205017,
+      "clipped_action_entries": 0,
+      "clipped_action_indices": [],
+      "maximum_action_overshoot": 0.0,
+      "action_minimum": [
+        -0.2,
+        -3.0,
+        -0.5,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -0.7,
+        -1.05,
+        -1.0
+      ],
+      "action_maximum": [
+        0.2,
+        3.0,
+        0.3,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.7,
+        0.7,
+        1.0
+      ],
+      "finite": true
+    },
+    {
+      "trajectory": 1,
+      "trained_policy": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "steps": 1135,
+      "simulated_seconds": 0.22699999999998316,
+      "wall_seconds": 3.3909763999981806,
+      "mean_tracking_error_m": 0.00062624296700356,
+      "max_tracking_error_m": 0.001479399550929245,
+      "minimum_thorax_height_m": 0.005367228926379875,
+      "final_thorax_height_m": 0.024998496068929482,
+      "episode_terminated": true,
+      "reference_end": true,
+      "max_raw_action": 0.902692437171936,
+      "clipped_action_entries": 0,
+      "clipped_action_indices": [],
+      "maximum_action_overshoot": 0.0,
+      "action_minimum": [
+        -0.2,
+        -3.0,
+        -0.5,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -0.7,
+        -1.05,
+        -1.0
+      ],
+      "action_maximum": [
+        0.2,
+        3.0,
+        0.3,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.7,
+        0.7,
+        1.0
+      ],
+      "finite": true
+    },
+    {
+      "trajectory": 48,
+      "trained_policy": true,
+      "rider_load": {
+        "fly_mass_mg": 0.9846214691323193,
+        "rider_mass_mg": 0.32820715637743975,
+        "mass_fraction": 0.3333333333333333,
+        "total_mass_mg": 1.312828625509759,
+        "attachment": "rigid thorax inertia; spherical rider approximation",
+        "offset_cm": [
+          0.0,
+          0.0,
+          0.05
+        ]
+      },
+      "steps": 2875,
+      "simulated_seconds": 0.5749999999999449,
+      "wall_seconds": 8.169734099996276,
+      "mean_tracking_error_m": 0.0002565427535309491,
+      "max_tracking_error_m": 0.0006783487635005149,
+      "minimum_thorax_height_m": 0.004997861291366176,
+      "final_thorax_height_m": 0.0069629436504198,
+      "episode_terminated": true,
+      "reference_end": true,
+      "max_raw_action": 0.721028208732605,
+      "clipped_action_entries": 0,
+      "clipped_action_indices": [],
+      "maximum_action_overshoot": 0.0,
+      "action_minimum": [
+        -0.2,
+        -3.0,
+        -0.5,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -0.7,
+        -1.05,
+        -1.0
+      ],
+      "action_maximum": [
+        0.2,
+        3.0,
+        0.3,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.7,
+        0.7,
+        1.0
+      ],
+      "finite": true
+    }
+  ],
+  "biologically_validated": false,
+  "mass_fraction": 0.3333333333333333,
+  "limitations": "Rigid spherical payload. Unchanged unloaded checkpoint. Short recorded references only."
+}

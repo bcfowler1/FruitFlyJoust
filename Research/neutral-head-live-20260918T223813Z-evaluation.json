@@ -1,0 +1,51 @@
+{
+  "queued_button_edges_preserved": true,
+  "button_edges_consumed_once": true,
+  "status": "closed loop executed",
+  "frames": 14,
+  "final_time": 0.2057999999999855,
+  "reference_completed": true,
+  "neural_body_clocks_match": true,
+  "actual_population_spikes": true,
+  "nonzero_motor_residual": true,
+  "rider_mass_mg": 0.32820715637743975,
+  "clipped_actions": 0,
+  "final_neural": {
+    "neural_time": 0.2058,
+    "rates": {
+      "left": 113.96011396011396,
+      "right": 100.30864197530865
+    },
+    "residual": {
+      "left": 0.0020785849952516615,
+      "right": -0.000651709401709401
+    },
+    "excitation_hz": {
+      "left": 138.19835354351108,
+      "right": 73.10698623719145
+    },
+    "stats": {
+      "neurons": 138639,
+      "directed_connection_rows": 15091983,
+      "simulated_ms": 250.8,
+      "spike_count": 592,
+      "active_neurons": 27,
+      "downstream_active_neurons": 27,
+      "finite_membrane_state": true
+    },
+    "experimental": true,
+    "encoder": "synthetic feedback controller; direct descending excitation; not biological sensory encoding",
+    "consumed_rider_cues": {
+      "turn": 0.5,
+      "climb": 0.2,
+      "spur_press": false,
+      "brake_press": false,
+      "land_hold": false
+    },
+    "applied_residual": {
+      "left": 0.0020785849952516615,
+      "right": -0.000651709401709401
+    }
+  },
+  "biologically_validated": false
+}

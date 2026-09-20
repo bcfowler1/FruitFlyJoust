@@ -1,0 +1,78 @@
+{
+  "source": "unified-ramped-claw-resume-evaluation.json",
+  "window": [
+    {
+      "seconds": 0.15,
+      "feet": 6,
+      "up": 0.9956364442562569,
+      "right_rear_tibia_velocity": -2.8064048390372607,
+      "right_middle_tibia_velocity": 6.419959990860516,
+      "head_twist_command": -3.0
+    },
+    {
+      "seconds": 0.152,
+      "feet": 6,
+      "up": 0.9959701208616585,
+      "right_rear_tibia_velocity": -2.851421849637425,
+      "right_middle_tibia_velocity": 3.775871275506793,
+      "head_twist_command": 3.0
+    },
+    {
+      "seconds": 0.154,
+      "feet": 6,
+      "up": 0.9964460618814034,
+      "right_rear_tibia_velocity": -2.66555860446069,
+      "right_middle_tibia_velocity": 7.235415106861733,
+      "head_twist_command": -3.0
+    },
+    {
+      "seconds": 0.156,
+      "feet": 6,
+      "up": 0.9966752078490223,
+      "right_rear_tibia_velocity": -1.7538516436051923,
+      "right_middle_tibia_velocity": 6.2486015791465785,
+      "head_twist_command": 3.0
+    },
+    {
+      "seconds": 0.158,
+      "feet": 5,
+      "up": 0.996793570190235,
+      "right_rear_tibia_velocity": 2.072565051245077,
+      "right_middle_tibia_velocity": 8.2370688036615,
+      "head_twist_command": -3.0
+    },
+    {
+      "seconds": 0.16,
+      "feet": 5,
+      "up": 0.9968794381601107,
+      "right_rear_tibia_velocity": -1.2590682053588844,
+      "right_middle_tibia_velocity": 3.5782810634670232,
+      "head_twist_command": 3.0
+    },
+    {
+      "seconds": 0.162,
+      "feet": 5,
+      "up": 0.9972198484605231,
+      "right_rear_tibia_velocity": -7.042858344896794,
+      "right_middle_tibia_velocity": 12.63537080795727,
+      "head_twist_command": -2.9496939182281494
+    },
+    {
+      "seconds": 0.164,
+      "feet": 4,
+      "up": 0.9971057882646819,
+      "right_rear_tibia_velocity": -6.533174196709402,
+      "right_middle_tibia_velocity": 8.041136692574485,
+      "head_twist_command": 3.0
+    },
+    {
+      "seconds": 0.166,
+      "feet": 4,
+      "up": 0.9964834415504966,
+      "right_rear_tibia_velocity": -12.950734350207085,
+      "right_middle_tibia_velocity": 12.636664877225435,
+      "head_twist_command": -2.6902360916137695
+    }
+  ],
+  "interpretation": "Contact loss begins while body remains upright. Large native head commands and right-leg velocities are diagnostic observations, not established causes. Next experiment should isolate bounded policy command handoff without altering gates, root state or rider load."
+}

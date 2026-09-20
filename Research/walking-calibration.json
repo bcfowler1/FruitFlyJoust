@@ -1,0 +1,176 @@
+{
+  "coefficients": [
+    0.008704262278191065,
+    -0.0952277416558861,
+    -0.13723575634342675,
+    1.7202234332848954,
+    0.6923134312217614,
+    1.1921044258267206
+  ],
+  "features": [
+    "1",
+    "drive",
+    "drive^2",
+    "drive*turn",
+    "drive^2*turn",
+    "drive*turn^3"
+  ],
+  "training": [
+    {
+      "drive": 0.5,
+      "turn": -0.7,
+      "yaw_rate_radps": -0.9538669718636407,
+      "yaw_rate_std": 2.2980115680095965,
+      "speed_mmps": 9.36265413761139,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "turn": -0.35,
+      "yaw_rate_radps": -0.5399605300691392,
+      "yaw_rate_std": 2.4642863860279283,
+      "speed_mmps": 9.46167976061503,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "turn": 0.0,
+      "yaw_rate_radps": -0.08393756217426723,
+      "yaw_rate_std": 2.477862361777133,
+      "speed_mmps": 8.942262097199757,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "turn": 0.35,
+      "yaw_rate_radps": 0.3859787517123753,
+      "yaw_rate_std": 2.453267349733213,
+      "speed_mmps": 9.111280699570974,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.5,
+      "turn": 0.7,
+      "yaw_rate_radps": 0.8256935742166308,
+      "yaw_rate_std": 2.3245429937792204,
+      "speed_mmps": 9.97542507648468,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "turn": -0.7,
+      "yaw_rate_radps": -2.0886968241797557,
+      "yaw_rate_std": 4.576682083708019,
+      "speed_mmps": 18.126314862569174,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "turn": -0.35,
+      "yaw_rate_radps": -0.9580561849806046,
+      "yaw_rate_std": 4.631532042239301,
+      "speed_mmps": 18.755784765879312,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "turn": 0.0,
+      "yaw_rate_radps": -0.06204603446854485,
+      "yaw_rate_std": 4.747311766662668,
+      "speed_mmps": 19.85925753911336,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "turn": 0.35,
+      "yaw_rate_radps": 0.5260076456599766,
+      "yaw_rate_std": 4.828804213695222,
+      "speed_mmps": 18.735652049382526,
+      "finite": true,
+      "ended": false
+    },
+    {
+      "drive": 0.9,
+      "turn": 0.7,
+      "yaw_rate_radps": 1.6419830587175157,
+      "yaw_rate_std": 4.5359758698330985,
+      "speed_mmps": 17.682456239064535,
+      "finite": true,
+      "ended": false
+    }
+  ],
+  "held_out": [
+    {
+      "drive": 0.7,
+      "turn": -0.5,
+      "yaw_rate_radps": -1.0940905412038167,
+      "yaw_rate_std": 3.438346462994392,
+      "speed_mmps": 14.321998325983683,
+      "finite": true,
+      "ended": false,
+      "predicted_rate_radps": -1.0012048070480912,
+      "error_radps": 0.09288573415572543
+    },
+    {
+      "drive": 0.7,
+      "turn": -0.2,
+      "yaw_rate_radps": -0.4930117395189073,
+      "yaw_rate_std": 3.493669353282878,
+      "speed_mmps": 13.285033988952637,
+      "finite": true,
+      "ended": false,
+      "predicted_rate_radps": -0.44055445919345587,
+      "error_radps": 0.05245728032545144
+    },
+    {
+      "drive": 0.7,
+      "turn": 0.2,
+      "yaw_rate_radps": 0.2408193879657322,
+      "yaw_rate_std": 3.458116750593557,
+      "speed_mmps": 14.57682654062907,
+      "finite": true,
+      "ended": false,
+      "predicted_rate_radps": 0.19015310421503925,
+      "error_radps": -0.05066628375069296
+    },
+    {
+      "drive": 0.7,
+      "turn": 0.5,
+      "yaw_rate_radps": 0.8795346816380822,
+      "yaw_rate_std": 3.6296661377242607,
+      "speed_mmps": 14.99518961906433,
+      "finite": true,
+      "ended": false,
+      "predicted_rate_radps": 0.7508034520696747,
+      "error_radps": -0.12873122956840755
+    }
+  ],
+  "held_out_rms_radps": 0.08734747798890771,
+  "held_out_max_radps": 0.12873122956840755,
+  "monotonic": true,
+  "qualified": true,
+  "limits": {
+    "rms_radps": 0.75,
+    "max_radps": 1.25,
+    "drive_range": [
+      0.5,
+      0.9
+    ],
+    "turn_range": [
+      -0.7,
+      0.7
+    ]
+  },
+  "rider_mass_fraction": 0.3333333333333333,
+  "wall_seconds": 141.06984530002228,
+  "biologically_validated": false,
+  "scope": "Loaded gait response only; not biological DN decoding or sensory encoding"
+}

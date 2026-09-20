@@ -1,0 +1,25 @@
+{
+  "qualified": true,
+  "walking_only": true,
+  "full_wing_and_leg_body": true,
+  "random_seed": 44,
+  "finite": true,
+  "minimum_up_cosine": 0.9922879269039697,
+  "displacement_cm": 3.3966346342622886,
+  "simulation_seconds": 3.3999999999987454,
+  "rider_load": {
+    "fly_mass_mg": 0.9846214691323193,
+    "rider_mass_mg": 0.32820715637743975,
+    "mass_fraction": 0.3333333333333333,
+    "total_mass_mg": 1.312828625509759,
+    "attachment": "rigid thorax inertia; spherical rider approximation",
+    "offset_cm": [
+      0.0,
+      0.0,
+      0.05
+    ]
+  },
+  "pose_reset": false,
+  "root_external_force": false,
+  "wall_seconds": 19.327568899985636
+}

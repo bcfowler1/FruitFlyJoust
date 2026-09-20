@@ -1,0 +1,64 @@
+{
+  "cases": [
+    {
+      "report": "unified-ramped-claw-resume-evaluation.json",
+      "qualified": false,
+      "minimum_up": -0.9992369442491513,
+      "radial_cm": 0.4181802023610002,
+      "forward_cm": null,
+      "tail_forward_cm": null,
+      "command_cm_s": 0.2,
+      "pose_jump": 0.0,
+      "velocity_jump": 0.0,
+      "root_force": false,
+      "mass_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-native-speed-two-second-evaluation.json",
+      "qualified": true,
+      "minimum_up": 0.9006505614856761,
+      "radial_cm": 1.8783055960439483,
+      "forward_cm": 1.878262529990776,
+      "tail_forward_cm": 0.25599961991621867,
+      "command_cm_s": 1.0,
+      "pose_jump": 0.0,
+      "velocity_jump": 0.0,
+      "root_force": false,
+      "mass_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-native-speed-repeat-evaluation.json",
+      "qualified": true,
+      "minimum_up": 0.9006505614856761,
+      "radial_cm": 1.8783055960439483,
+      "forward_cm": 1.878262529990776,
+      "tail_forward_cm": 0.25599961991621867,
+      "command_cm_s": 1.0,
+      "pose_jump": 0.0,
+      "velocity_jump": 0.0,
+      "root_force": false,
+      "mass_fraction": 0.3333333333333333
+    },
+    {
+      "report": "unified-native-speed-six-second-evaluation.json",
+      "qualified": true,
+      "minimum_up": 0.9006505614856761,
+      "radial_cm": 5.872585313887148,
+      "forward_cm": 5.872581034610363,
+      "tail_forward_cm": 0.24384984315250438,
+      "walking_seconds": 6,
+      "command_cm_s": 1,
+      "pose_jump": 0.0,
+      "velocity_jump": 0.0,
+      "root_force": false,
+      "mass_fraction": 0.3333333333333333
+    }
+  ],
+  "limits": "Seed44 passed two repeated two-second trials and one six-second trial. Initialization robustness, live playable controller, neural landing control and biological validation remain unestablished.",
+  "independent_initialization": {
+    "report": "unified-native-speed-seed45-evaluation.json",
+    "hover_qualified": true,
+    "landing_qualified": false,
+    "walking_tested": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "visual_geoms": 85,
+  "finite": true,
+  "motion": true,
+  "pause_holds_pose": true,
+  "resume_advances": true,
+  "replay_new_session": true,
+  "neural_coupling": false,
+  "first_sim_time": 0.014999999999999937,
+  "resumed_sim_time": 0.060000000000001205,
+  "episode_status": "reference completed",
+  "episode_end_sim_time": 0.22699999999998316,
+  "episode_hold": true,
+  "clipped_action_entries": 0,
+  "rider_cue_transport": true,
+  "rider_cue_mapping_enabled": false
+}
