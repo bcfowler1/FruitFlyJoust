@@ -14,6 +14,7 @@ namespace FruitFlyJoust
         public bool Mounted { get; private set; }=true;
         public float LastFallDamage { get; private set; }
         public int RespawnCount { get; private set; }
+        public bool RiderRagdolled { get { return riderVisual && riderVisual.Ragdolled; } }
         Transform flyVisual,lance,riderAnchor;
         BiologicalPoseMirror poseMirror;
         RiderAnimationVisual riderVisual;
@@ -175,7 +176,7 @@ namespace FruitFlyJoust
             float dt=player.CombatDeltaTime;if(dt<=0)return;
             if(health.Health<=0)
             {
-                if(respawnTimer<0){respawnTimer=3;if(groundAI)groundAI.enabled=false;}
+                if(respawnTimer<0){respawnTimer=3;if(groundAI)groundAI.enabled=false;if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*.5f);}
                 respawnTimer-=dt;if(respawnTimer<=0)RespawnStronger();return;
             }
             contactCooldown=Mathf.Max(0,contactCooldown-dt);
@@ -207,6 +208,7 @@ namespace FruitFlyJoust
         {
             if(!Mounted || impact<3)return false;
             Mounted=false;verticalSpeed=2;peakFallSpeed=0;
+            if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*2);
             if(riderVisual)riderVisual.BeginMountTransition(false);
             if(flyVisual){flyVisual.SetParent(null,true);Destroy(flyVisual.gameObject,2);flyVisual=null;}
             if(lance){lance.SetParent(null,true);Destroy(lance.gameObject,2);lance=null;}
@@ -223,6 +225,7 @@ namespace FruitFlyJoust
             if(feet.isGrounded && verticalSpeed<=0)
             {
                 LastFallDamage=Mathf.Clamp((peakFallSpeed-4)*5,0,30);if(LastFallDamage>0)health.Hit(LastFallDamage);
+                if(health.Health>0 && riderVisual)riderVisual.ExitRagdoll();
                 verticalSpeed=-2;groundAI=gameObject.AddComponent<CombatOpponent>();groundAI.style=CombatOpponent.Style.Swordsman;
                 groundAI.speed=Mathf.Lerp(1.2f,2.7f,Competence);groundAI.attackInterval=Mathf.Lerp(1.8f,.75f,Competence);return;
             }
@@ -233,6 +236,7 @@ namespace FruitFlyJoust
         void RespawnStronger()
         {
             competencyLevel++;RespawnCount++;clock=0;
+            if(riderVisual)riderVisual.ExitRagdoll();
             if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
             if(flyVisual)Destroy(flyVisual.gameObject);if(lance)Destroy(lance.gameObject);
             foreach(var zone in GetComponentsInChildren<MountedHitZone>())Destroy(zone.gameObject);

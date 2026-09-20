@@ -151,9 +151,17 @@ namespace FruitFlyJoust
             Require(leftGroomMotion>8 && rightGroomMotion>8,
                 "perched idle alternates complete left and right foreleg chains for grooming");
             Vector3 walkStart=combat.fly.transform.position;
+            var foodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);foodObject.name="Mounted walking food check";
+            foodObject.transform.position=walkStart+combat.fly.transform.forward*.25f;foodObject.transform.localScale=Vector3.one*.2f;
+            var food=foodObject.AddComponent<FlyFood>();food.nutrition=.5f;int meals=combat.fly.FoodEatenCount;combat.fly.SetHunger(.8f);
             walkingRequest=new Vector2(.4f,1);
             yield return new WaitForSeconds(.5f);
             Require(Vector3.Distance(walkStart,combat.fly.transform.position)>.1f && combat.fly.Phase==RidePhase.Perched && combat.fly.SurfaceWalkingSpeed>.1f,"grounded stick steers and walks without launching");
+            Require(combat.fly.FoodEatenCount==meals+1 && combat.fly.Hunger<.4f,"mounted fly eats a food bit while walking over it");
+            Destroy(foodObject);
+            combat.fly.SetHunger(.95f);yield return new WaitForFixedUpdate();
+            Require(combat.fly.SeekingFood && combat.fly.RiderAuthority<.2f,"very hungry fly overrides the reins and seeks available food");
+            combat.fly.SetHunger(.15f);
             walkingRequest=Vector2.zero;combat.fly.rider.reins=Vector2.zero;
             yield return new WaitForSeconds(.4f);
             Vector3 stopped=combat.fly.transform.position;
@@ -267,10 +275,12 @@ namespace FruitFlyJoust
             Require(target.Health < 100, "moving mounted lance collision damages target");
             Require(target.LastDamage>0,"lance contact records positive target damage");
             Require(combat.ForceUnseat(Vector3.up*1.5f+combat.fly.transform.right*2),"solid enemy lance contact can unseat the mounted player");
+            Require(combat.RiderRagdolled,"unseated player enters ragdoll while falling");
             float fallDeadline=Time.time+6;while(!combat.FootAvatar.GetComponent<CharacterController>().isGrounded && Time.time<fallDeadline)yield return null;
             yield return null;
             Require(!combat.Mounted && !combat.Defeated && combat.LastFallDamage<=30,
                 "player fall damage is bounded and normally survivable for continued ground combat");
+            Require(!combat.RiderRagdolled,"surviving player recovers from ragdoll after landing");
             Require(combat.weapon==RiderCombat.Weapon.Sword,"unseated player continues combat on foot with sword");
             combat.view.enabled = true;
             deadline = 0; WriteReport("passed"); Debug.Log("COMBAT_PLAY_CHECKS_PASSED: " + checks);

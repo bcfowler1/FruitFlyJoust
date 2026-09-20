@@ -67,6 +67,7 @@ namespace FruitFlyJoust
         private Vector3 combatSpawnCenter;
         public int PlayerRespawnCount { get; private set; }
         public Vector3 LastPlayerRespawnPosition { get; private set; }
+        public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
 
         void Start()
         {
@@ -287,6 +288,7 @@ namespace FruitFlyJoust
             avatar.rotation=heading.sqrMagnitude>.01f ? Quaternion.LookRotation(heading) : Quaternion.identity;feet.enabled=true;
             falling=impulse.y;unseatVelocity=Vector3.ProjectOnPlane(impulse,Vector3.up);
             unseatedFall=true;peakUnseatedFallSpeed=0;LastFallDamage=0;
+            if(animationVisual)animationVisual.EnterRagdoll(impulse);
             view.fly=avatar;view.rider=footInput;view.followAnchorRotation=false;view.SetOrientationSource(null,avatar);
             weapon=Weapon.Sword;SetWeapon();message="Unseated! Recover and continue on foot.";return true;
         }
@@ -337,7 +339,7 @@ namespace FruitFlyJoust
                     {
                         LastFallDamage=Mathf.Clamp((peakUnseatedFallSpeed-4)*5,0,30);
                         if(LastFallDamage>0)TakeDamage(LastFallDamage);
-                        unseatedFall=false;unseatVelocity=Vector3.zero;
+                        unseatedFall=false;unseatVelocity=Vector3.zero;if(!Defeated && animationVisual)animationVisual.ExitRagdoll();
                     }
                     falling = -2; if (input.ConsumeSpur()) falling = 4;
                 }
@@ -349,6 +351,7 @@ namespace FruitFlyJoust
                 if (input.resetRide)
                 {
                     // Reset deliberately remounts; clear projectiles and target damage too.
+                    if(animationVisual)animationVisual.ExitRagdoll();
                     Mounted = true; avatar.gameObject.SetActive(false); mountedVisual.gameObject.SetActive(true);
                     var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(true);
                     RideInput.enabled = true; ResetBody(); strikePending = false; cooldown = charge = 0;
@@ -505,7 +508,7 @@ namespace FruitFlyJoust
         {
             if (Defeated || damage <= 0 || float.IsNaN(damage) || float.IsInfinity(damage)) return false;
             Health = Mathf.Max(0, Health-damage);
-            if(Defeated)defeatRespawnTimer=defeatRespawnDelay;
+            if(Defeated){defeatRespawnTimer=defeatRespawnDelay;if(animationVisual)animationVisual.EnterRagdoll((Mounted ? RideVelocity : unseatVelocity)+Vector3.up*.5f);}
             message = Defeated ? "Rider defeated. Respawning away from opponents..." : "Rider hit.";
             return true;
         }
@@ -513,6 +516,7 @@ namespace FruitFlyJoust
         public void RespawnFarthestFromOpponents()
         {
             Vector3 position=FindFarthestOpponentSpawn();
+            if(animationVisual)animationVisual.ExitRagdoll();
             Mounted=false;RideInput.enabled=false;RideInput.ResetCues();mountedVisual.gameObject.SetActive(false);
             var head=saddle.Find("Rider head");if(head)head.gameObject.SetActive(false);
             avatar.gameObject.SetActive(true);feet.enabled=false;avatar.position=position;

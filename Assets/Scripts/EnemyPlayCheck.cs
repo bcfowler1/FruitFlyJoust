@@ -55,13 +55,16 @@ namespace FruitFlyJoust
                 Require(jouster.Mounted && jouster.RespawnCount==1 && jouster.Competence>initialCompetence,
                     "defeated mounted jouster respawns one competency level stronger");
                 Require(jouster.ReceiveLanceContact(5),"solid lance contact unseats mounted opponent");
+                Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,
                     "unseated opponent survives bounded fall damage and continues ground combat");
+                Require(!jouster.RiderRagdolled,"surviving opponent recovers from ragdoll after landing");
                 jouster.gameObject.SetActive(false);
             }
             var opponents=FindObjectsOfType<CombatOpponent>();
             Require(opponents.Length>=2,"opponents present");
+            foreach(var armed in opponents)Require(armed.WeaponVisible,"ground opponent visibly carries its combat weapon");
             foreach(var opponent in opponents) opponent.enabled=false;
             foreach(var arrow in FindObjectsOfType<OpponentArrow>()) Destroy(arrow.gameObject);
             rider.ResetHealth();

@@ -11,24 +11,48 @@ namespace FruitFlyJoust
         private CombatTarget target;
         private CharacterController feet;
         private RiderCombat rider;
-        private float cooldown, falling;
+        private RiderAnimationVisual visual;
+        private Transform weaponVisual;
+        private float cooldown, falling, attackGesture, strikeDelay;
+        private bool strikePending, alternateCut;
         private Vector3 spawn;
         public bool Defeated { get { return !target || target.Health<=0; } }
+        public bool Ragdolled { get { return visual && visual.Ragdolled; } }
+        public bool WeaponVisible { get { return weaponVisual && weaponVisual.gameObject.activeInHierarchy; } }
         void Start()
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();
             rider = FindObjectOfType<RiderCombat>(); spawn = transform.position;
             // CharacterController provides collision; remove the primitive's duplicate capsule.
             var primitive = GetComponent<CapsuleCollider>(); if (primitive) Destroy(primitive);
+            var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
+            visual=GetComponent<RiderAnimationVisual>();
+            if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();visual.visualScale=.6f;visual.Create(transform,material);}
+            visual.Pose(transform,false,0);BuildWeapon(material);
+        }
+        void BuildWeapon(Material material)
+        {
+            var weapon=GameObject.CreatePrimitive(PrimitiveType.Cube);weapon.name=style==Style.Swordsman ? "Enemy sword" : "Enemy bow";
+            Destroy(weapon.GetComponent<Collider>());weapon.GetComponent<Renderer>().sharedMaterial=material;weaponVisual=weapon.transform;
+            Transform hand=visual ? visual.Hand(style==Style.Archer) : null;weaponVisual.SetParent(hand ? hand : transform,false);
+            weaponVisual.localPosition=style==Style.Swordsman ? new Vector3(0,0,.28f) : new Vector3(0,0,.18f);
+            weaponVisual.localScale=style==Style.Swordsman ? new Vector3(.045f,.045f,.65f) : new Vector3(.04f,.55f,.04f);
         }
         public void ResetOpponent()
-        { feet.enabled = false; transform.position = spawn; feet.enabled = true; falling = 0; cooldown = 0; }
+        { if(visual)visual.ExitRagdoll();feet.enabled = false; transform.position = spawn; feet.enabled = true; falling = 0; cooldown = attackGesture = 0;strikePending=false;target.ResetTarget(); }
         void Update()
         {
-            if (!rider || target.Health <= 0 || rider.Defeated || rider.CombatPaused) return;
+            if(target && target.Health<=0){if(feet.enabled)feet.enabled=false;if(visual&&!visual.Ragdolled)visual.EnterRagdoll(Vector3.up*.5f+transform.forward);return;}
+            if (!rider || rider.Defeated || rider.CombatPaused) return;
             float dt = rider.CombatDeltaTime;
             if (dt <= 0) return;
             cooldown = Mathf.Max(0, cooldown-dt);
+            attackGesture=Mathf.Max(0,attackGesture-dt);
+            if(strikePending)
+            {
+                strikeDelay-=dt;
+                if(strikeDelay<=0){strikePending=false;if(Vector3.Distance(rider.RiderPosition,transform.position)<2)rider.TakeDamage(12);}
+            }
             Vector3 difference = rider.RiderPosition-transform.position;
             Vector3 horizontal = Vector3.ProjectOnPlane(difference, Vector3.up);
             bool visible = difference.magnitude <= sightRange &&
@@ -62,13 +86,19 @@ namespace FruitFlyJoust
                         }
                         else { Destroy(arrow); cooldown = attackInterval; return; }
                     }
-                    else rider.TakeDamage(12);
+                    else {attackGesture=.55f;strikeDelay=.2f;strikePending=true;alternateCut=!alternateCut;}
                     cooldown = attackInterval;
                 }
             }
             if (feet.isGrounded) falling = -2;
             falling += Physics.gravity.y*dt;
             feet.Move((motion+Vector3.up*falling)*dt);
+        }
+        void LateUpdate()
+        {
+            if(!visual || visual.Ragdolled)return;
+            float speed=feet && feet.enabled ? feet.velocity.magnitude : 0;visual.Pose(transform,false,speed,target && target.Health<=0);
+            if(style==Style.Swordsman && attackGesture>0)visual.PoseSwordAttack(alternateCut ? RiderCombat.SwordAttack.LeftToRight : RiderCombat.SwordAttack.RightToLeft,attackGesture/.55f);
         }
     }
     public sealed class OpponentArrow : MonoBehaviour

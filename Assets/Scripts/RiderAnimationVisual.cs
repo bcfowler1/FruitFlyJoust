@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FruitFlyJoust
@@ -31,6 +32,11 @@ namespace FruitFlyJoust
         private Quaternion transitionRotation;
         private string transitionState;
         private AuthoredPose authoredPose;
+        private readonly List<Rigidbody> ragdollBodies=new List<Rigidbody>();
+        private readonly List<Collider> ragdollColliders=new List<Collider>();
+        private readonly List<CharacterJoint> ragdollJoints=new List<CharacterJoint>();
+        public bool Ragdolled { get; private set; }
+        public Vector3 RagdollCenter { get { var hips=Bone(HumanBodyBones.Hips);return hips ? hips.position : VisualRootPosition; } }
         public float LastWaistAimDegrees { get; private set; }
         public float LastTorsoStabilizationDegrees { get; private set; }
         public Quaternion StableCameraRotation { get; private set; }=Quaternion.identity;
@@ -77,12 +83,13 @@ namespace FruitFlyJoust
         public void Pose(Transform anchor, bool mounted, float speed, bool defeated = false)
         {
             if (!body) return;
+            if(Ragdolled)return;
             bool useAuthored=mounted && transitionRemaining<=0 && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
             bool hasAuthoredScale=authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
             body.localScale=hasAuthoredScale ? authoredPose.riderLocalScale : Vector3.one*visualScale;
             if (body.parent != anchor) body.SetParent(anchor, false);
             body.localPosition = useAuthored ? authoredPose.riderLocalPosition : mounted ? new Vector3(0, mountedSeatHeight, mountedSeatForward) : Vector3.zero;
-            body.localRotation = useAuthored ? authoredPose.riderLocalRotation : Quaternion.identity; body.gameObject.SetActive(!defeated);
+            body.localRotation = useAuthored ? authoredPose.riderLocalRotation : Quaternion.identity; body.gameObject.SetActive(true);
             if(transitionRemaining>0)
             {
                 float progress=1-transitionRemaining/transitionDuration;
@@ -100,6 +107,43 @@ namespace FruitFlyJoust
                         var target=animator.GetBoneTransform(bone);if(!target)continue;
                         target.localPosition=saved.localPosition;target.localRotation=saved.localRotation;target.localScale=saved.localScale;
                     }
+        }
+        Transform Bone(HumanBodyBones bone) { return animator && animator.isHuman ? animator.GetBoneTransform(bone) : null; }
+        public void EnterRagdoll(Vector3 inheritedVelocity)
+        {
+            if(Ragdolled || !body || !animator || !animator.isHuman)return;
+            Ragdolled=true;transitionRemaining=0;body.gameObject.SetActive(true);body.SetParent(null,true);
+            if(grip)grip.enabled=false;animator.enabled=false;
+            HumanBodyBones[] bones={HumanBodyBones.Hips,HumanBodyBones.Spine,HumanBodyBones.Chest,HumanBodyBones.Head,
+                HumanBodyBones.LeftUpperArm,HumanBodyBones.LeftLowerArm,HumanBodyBones.RightUpperArm,HumanBodyBones.RightLowerArm,
+                HumanBodyBones.LeftUpperLeg,HumanBodyBones.LeftLowerLeg,HumanBodyBones.RightUpperLeg,HumanBodyBones.RightLowerLeg};
+            var map=new Dictionary<Transform,Rigidbody>();
+            foreach(var id in bones)
+            {
+                Transform bone=Bone(id);if(!bone || map.ContainsKey(bone))continue;
+                var rigid=bone.gameObject.AddComponent<Rigidbody>();rigid.mass=id==HumanBodyBones.Hips ? 4 : id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? 2 : .65f;
+                rigid.velocity=inheritedVelocity;rigid.angularVelocity=Vector3.Cross(Vector3.up,inheritedVelocity)*.18f;rigid.interpolation=RigidbodyInterpolation.Interpolate;
+                Collider collider;
+                if(id==HumanBodyBones.Head){var sphere=bone.gameObject.AddComponent<SphereCollider>();sphere.radius=.12f;collider=sphere;}
+                else {var capsule=bone.gameObject.AddComponent<CapsuleCollider>();capsule.direction=1;capsule.radius=id==HumanBodyBones.Hips || id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? .1f : .055f;capsule.height=capsule.radius*3.2f;collider=capsule;}
+                map.Add(bone,rigid);ragdollBodies.Add(rigid);ragdollColliders.Add(collider);
+            }
+            foreach(var pair in map)
+            {
+                Transform parent=pair.Key.parent;Rigidbody connected=null;
+                while(parent && !map.TryGetValue(parent,out connected))parent=parent.parent;
+                if(!connected)continue;
+                var joint=pair.Key.gameObject.AddComponent<CharacterJoint>();joint.connectedBody=connected;joint.enableProjection=true;
+                joint.lowTwistLimit=new SoftJointLimit{limit=-35};joint.highTwistLimit=new SoftJointLimit{limit=35};joint.swing1Limit=new SoftJointLimit{limit=50};joint.swing2Limit=new SoftJointLimit{limit=50};ragdollJoints.Add(joint);
+            }
+        }
+        public void ExitRagdoll()
+        {
+            if(!Ragdolled)return;
+            foreach(var rigid in ragdollBodies)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;Destroy(rigid);}
+            foreach(var joint in ragdollJoints)if(joint)Destroy(joint);foreach(var collider in ragdollColliders)if(collider)Destroy(collider);
+            ragdollBodies.Clear();ragdollJoints.Clear();ragdollColliders.Clear();Ragdolled=false;
+            animator.enabled=true;animator.Rebind();animator.Update(0);if(grip)grip.enabled=true;current=null;
         }
         public void Attack(string state) { if (animator) animator.CrossFade(state, .06f, 1, 0); }
         public void AimUpperBody(Transform frame,Vector3 worldDirection,float weight)

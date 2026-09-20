@@ -35,6 +35,13 @@ namespace FruitFlyJoust
         private bool recallActive,recallLanding;
         private Vector3 recallTarget;
         public bool RecallActive { get { return recallActive; } }
+        [Range(0,1)] public float hunger=.15f;
+        public float hungerPerMinute=.12f;
+        public float Hunger { get { return hunger; } }
+        public bool SeekingFood { get; private set; }
+        public float RiderAuthority { get; private set; }=1;
+        public int FoodEatenCount { get; private set; }
+        FlyFood foodTarget;
         public RidePhase Phase { get { return landing.Phase; } }
         public string SurfaceName { get { return perchSurface ? perchSurface.name : ""; } }
         [Min(.5f)] public float surfaceProbeDistance = 5;
@@ -105,6 +112,26 @@ namespace FruitFlyJoust
             heading = transform.eulerAngles.y;
             if(!GetComponent<DetailedFlyVisual>())gameObject.AddComponent<DetailedFlyVisual>();
         }
+        void Start(){EnsureFoodBits();}
+        void EnsureFoodBits()
+        {
+            if(FindObjectOfType<FlyFood>())return;
+            Vector3[] offsets={new Vector3(-8,0,-5),new Vector3(7,0,-2),new Vector3(-13,0,11),new Vector3(12,0,10),new Vector3(2,0,17),new Vector3(-18,0,-14)};
+            foreach(var offset in offsets)
+            {
+                Vector3 origin=new Vector3(offset.x,18,offset.z);
+                if(!Physics.Raycast(origin,Vector3.down,out var ground,30,1,QueryTriggerInteraction.Ignore))continue;
+                var bit=GameObject.CreatePrimitive(PrimitiveType.Sphere);bit.name="Fly food bit";bit.transform.position=ground.point+ground.normal*.18f;bit.transform.localScale=Vector3.one*.28f;
+                var material=new Material(Shader.Find("Standard"));material.color=new Color(.95f,.55f,.08f);bit.GetComponent<Renderer>().sharedMaterial=material;bit.AddComponent<FlyFood>();
+            }
+        }
+        FlyFood NearestFood()
+        {
+            FlyFood nearest=null;float distance=float.PositiveInfinity;
+            foreach(var food in FindObjectsOfType<FlyFood>())if(food.Available)
+            {float candidate=(food.transform.position-rb.position).sqrMagnitude;if(candidate<distance){distance=candidate;nearest=food;}}
+            return nearest;
+        }
 
         float Obstacle(Vector3 direction)
         {
@@ -116,10 +143,26 @@ namespace FruitFlyJoust
         void FixedUpdate()
         {
             float dt = Time.fixedDeltaTime;
+            hunger=Mathf.Clamp01(hunger+hungerPerMinute/60*dt);
             cornerGripGrace=Mathf.Max(0,cornerGripGrace-dt);
             Vector2 controlReins=rider.reins;float controlLift=rider.lift;
             bool recallSpur=false,recallBrake=false;
-            if(recallActive)
+            if(!foodTarget || !foodTarget.Available)foodTarget=NearestFood();
+            float foodDistance=foodTarget ? Vector3.Distance(rb.position,foodTarget.transform.position) : float.PositiveInfinity;
+            if(foodTarget && foodDistance<.75f)
+            {hunger=Mathf.Max(0,hunger-foodTarget.nutrition);foodTarget.Eat();FoodEatenCount++;foodTarget=null;SeekingFood=false;}
+            RiderAuthority=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,.9f,hunger));
+            SeekingFood=foodTarget && hunger>=.62f;
+            if(SeekingFood)
+            {
+                Vector3 toFood=foodTarget.transform.position-rb.position;Vector3 planar=Vector3.ProjectOnPlane(toFood,Vector3.up);
+                float turn=planar.sqrMagnitude>.01f ? Vector3.SignedAngle(transform.forward,planar.normalized,Vector3.up) : 0;
+                Vector2 forage=new Vector2(Mathf.Clamp(turn/40,-1,1),planar.magnitude>1 ? .65f : 0);
+                float forageLift=Mathf.Clamp((foodTarget.transform.position.y+(planar.magnitude>2 ? 1.5f : .35f)-rb.position.y)*.8f,-1,1);
+                controlReins=Vector2.Lerp(forage,controlReins,RiderAuthority);controlLift=Mathf.Lerp(forageLift,controlLift,RiderAuthority);
+                recallSpur=Phase==RidePhase.Perched && foodDistance>1;recallBrake=foodDistance<2;
+            }
+            if(recallActive && !SeekingFood)
             {
                 Vector3 toTarget=recallTarget-rb.position;
                 Vector3 planar=Vector3.ProjectOnPlane(toTarget,Vector3.up);
@@ -143,7 +186,7 @@ namespace FruitFlyJoust
             {
                 leftRein = Mathf.Max(0, -controlReins.x), rightRein = Mathf.Max(0, controlReins.x),
                 lift = FlightPace.ClimbRequest(controlReins.y, controlLift),
-                spur = rider.ConsumeSpur() || recallSpur, brake = rider.ConsumeBrake() || recallBrake, land = rider.land || recallLanding,
+                spur = rider.ConsumeSpur() || recallSpur, brake = rider.ConsumeBrake() || recallBrake, land = rider.land && RiderAuthority>.25f || recallLanding,
                 obstacleLeft = Obstacle(Quaternion.Euler(0, -35, 0) * transform.forward),
                 obstacleRight = Obstacle(Quaternion.Euler(0, 35, 0) * transform.forward),
                 obstacleAhead = Obstacle(transform.forward)
@@ -181,9 +224,9 @@ namespace FruitFlyJoust
                 wasDismounted=dismounted;IdleWalking=false;
                 if(!dismounted && perchSurface)
                 {
-                    surfaceDrive=Mathf.MoveTowards(surfaceDrive,rider.braking ? 0 : rider.reins.y*.8f,dt*3);
+                    surfaceDrive=Mathf.MoveTowards(surfaceDrive,rider.braking ? 0 : controlReins.y*.8f,dt*3);
                     Quaternion pose=perchSurface.transform.rotation*perchLocalRotation;
-                    pose=Quaternion.AngleAxis(rider.reins.x*95*dt,pose*Vector3.up)*pose;
+                    pose=Quaternion.AngleAxis(controlReins.x*95*dt,pose*Vector3.up)*pose;
                     perchLocalRotation=Quaternion.Inverse(perchSurface.transform.rotation)*pose;
                     rb.MoveRotation(pose);
                     Vector3 step=rb.position+pose*Vector3.forward*surfaceDrive*dt;
@@ -283,6 +326,7 @@ namespace FruitFlyJoust
             launchNormal = Vector3.up;
             cornerGripGrace=0;
             recallActive=recallLanding=false;
+            hunger=.15f;SeekingFood=false;RiderAuthority=1;foodTarget=null;
             brain.ResetBrain();
             rider.ResetCues();
         }
@@ -291,5 +335,6 @@ namespace FruitFlyJoust
             if(float.IsNaN(groundTarget.x)||float.IsNaN(groundTarget.y)||float.IsNaN(groundTarget.z))return false;
             recallTarget=groundTarget;recallActive=true;recallLanding=false;idleClock=0;return true;
         }
+        public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
     }
 }

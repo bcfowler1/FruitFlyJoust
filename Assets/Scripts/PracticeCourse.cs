@@ -55,7 +55,7 @@ namespace FruitFlyJoust
         void OnGUI()
         {
             GUI.color = new Color(.06f, .09f, .12f, .92f);
-            GUI.DrawTexture(new Rect(16, 16, 650, 220), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(16, 16, 650, 244), Texture2D.whiteTexture);
             GUI.color = Color.white;
             string objective = stage < 3 ? "Fly through hoop " + (stage + 1) + " of 3" : stage == 3 ?
                 "Circle the tall pillar: " + Mathf.RoundToInt(Mathf.Abs(orbit)) + " / 330 degrees" :
@@ -71,6 +71,7 @@ namespace FruitFlyJoust
                 "   " + (Application.isFocused ? "Input active" : "Click Game view to enable input"));
             GUI.Label(new Rect(30, 200, 620, 28), fly.Phase == RidePhase.Perched ?
                 "Perched on " + fly.SurfaceName + " — press A / Space to launch" : "Flight state: " + fly.Phase);
+            GUI.Label(new Rect(30,224,620,28),"Fly hunger: "+Mathf.RoundToInt(fly.Hunger*100)+"%   "+(fly.SeekingFood ? "Seeking food — rider authority "+Mathf.RoundToInt(fly.RiderAuthority*100)+"%" : "Following rider"));
             GUI.Label(new Rect(Screen.width / 2 - 5, Screen.height / 2 - 10, 20, 20), "+");
         }
     }
