@@ -96,8 +96,16 @@ namespace FruitFlyJoust
             while(rider.Health==health&&Clock<deadline)yield return null;
             Require(rider.Health<health,"enemy arrow damages rider");archer.enabled=false;
             Require(!rider.TakeDamage(float.NaN),"invalid damage refused");
+            Vector3 defeatPosition=rider.RiderPosition;
             rider.TakeDamage(1000);Require(rider.Defeated,"rider defeat state");
             Require(!rider.TakeDamage(10),"defeated rider refuses further damage");
+            int respawns=rider.PlayerRespawnCount;deadline=Clock+rider.defeatRespawnDelay+.75f;
+            while(rider.PlayerRespawnCount==respawns&&Clock<deadline)yield return null;
+            Require(!rider.Defeated && rider.Health==100 && rider.PlayerRespawnCount==respawns+1,"defeated rider automatically respawns at full health");
+            float respawnNearest=float.PositiveInfinity,defeatNearest=float.PositiveInfinity;
+            foreach(var opponent in FindObjectsOfType<CombatOpponent>())if(!opponent.Defeated)
+            {respawnNearest=Mathf.Min(respawnNearest,Vector3.Distance(rider.RiderPosition,opponent.transform.position));defeatNearest=Mathf.Min(defeatNearest,Vector3.Distance(defeatPosition,opponent.transform.position));}
+            Require(respawnNearest>defeatNearest,"player respawns farther from living opponents");
             timeout=0;Report("passed");UnityEditor.EditorApplication.isPlaying=false;
         }
         void Report(string status) {File.WriteAllText(Path.Combine(Application.dataPath,rider && rider.research ? "../Research/scientific-enemy-evaluation.json" : "../Research/enemy-play-evaluation.json"),

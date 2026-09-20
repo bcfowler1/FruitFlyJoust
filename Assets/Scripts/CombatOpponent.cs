@@ -13,6 +13,7 @@ namespace FruitFlyJoust
         private RiderCombat rider;
         private float cooldown, falling;
         private Vector3 spawn;
+        public bool Defeated { get { return !target || target.Health<=0; } }
         void Start()
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();

@@ -6,6 +6,22 @@ using FruitFlyJoust;
 
 public static class CombatTools
 {
+    public static void RunBatchEnemyChecks()
+    {
+        if(!Application.isBatchMode)throw new InvalidOperationException("Use this entry point only for batch verification.");
+        DateTime checkStarted=DateTime.UtcNow;
+        EditorSceneManager.OpenScene("Assets/CombatEncounter.unity");
+        EditorApplication.playModeStateChanged += state => {
+            if(state==PlayModeStateChange.EnteredPlayMode)RunEnemyChecks();
+            if(state==PlayModeStateChange.EnteredEditMode)
+            {
+                string report=System.IO.Path.Combine(Application.dataPath,"../Research/enemy-play-evaluation.json");
+                bool fresh=System.IO.File.Exists(report) && System.IO.File.GetLastWriteTimeUtc(report)>=checkStarted;
+                EditorApplication.Exit(fresh && System.IO.File.ReadAllText(report).Contains("\"status\":\"passed\"") ? 0 : 1);
+            }
+        };
+        EditorApplication.isPlaying=true;
+    }
     public static void RunBatchChecks()
     {
         if(!Application.isBatchMode)throw new InvalidOperationException("Use this entry point only for batch verification.");

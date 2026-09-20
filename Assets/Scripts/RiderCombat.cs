@@ -62,9 +62,15 @@ namespace FruitFlyJoust
         private bool practiceEnemies;
         private bool standaloneJousterSpawned;
         private GameObject standaloneJouster;
+        public float defeatRespawnDelay = 3;
+        private float defeatRespawnTimer = -1;
+        private Vector3 combatSpawnCenter;
+        public int PlayerRespawnCount { get; private set; }
+        public Vector3 LastPlayerRespawnPosition { get; private set; }
 
         void Start()
         {
+            combatSpawnCenter = RideRoot.position;
             saddle = mountedVisual.parent;
             var walker = new GameObject("Dismounted rider");
             walker.name = "Dismounted rider"; walker.layer = 2;
@@ -295,7 +301,13 @@ namespace FruitFlyJoust
             if(!research && !standaloneJousterSpawned && !automated)
             { standaloneJouster=CreateMountedJouster(null,RideRoot.position);standaloneJousterSpawned=true; }
             if (CombatPaused && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide) return;
-            if (Defeated && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide) return;
+            if (Defeated && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide)
+            {
+                if(defeatRespawnTimer<0)defeatRespawnTimer=defeatRespawnDelay;
+                defeatRespawnTimer-=Mathf.Max(0,CombatDeltaTime);
+                if(defeatRespawnTimer<=0)RespawnFarthestFromOpponents();
+                return;
+            }
             var input = Mounted ? RideInput : footInput;
             bool pad = WindowsGamepad.Read(out var sample);
             float interact = pad && sample.Held(WindowsGamepad.X) ? 1 : 0;
@@ -349,6 +361,7 @@ namespace FruitFlyJoust
             {
                 if(animationVisual)animationVisual.CancelMountTransition();
                 Health = 100;
+                defeatRespawnTimer=-1;
                 foreach (var target in FindObjectsOfType<CombatTarget>()) target.ResetTarget();
                 foreach (var arrow in FindObjectsOfType<CombatArrow>()) Destroy(arrow.gameObject);
                 foreach (var arrow in FindObjectsOfType<OpponentArrow>()) Destroy(arrow.gameObject);
@@ -492,10 +505,69 @@ namespace FruitFlyJoust
         {
             if (Defeated || damage <= 0 || float.IsNaN(damage) || float.IsInfinity(damage)) return false;
             Health = Mathf.Max(0, Health-damage);
-            message = Defeated ? "Rider defeated. Start / Backspace resets." : "Rider hit.";
+            if(Defeated)defeatRespawnTimer=defeatRespawnDelay;
+            message = Defeated ? "Rider defeated. Respawning away from opponents..." : "Rider hit.";
             return true;
         }
-        public void ResetHealth() { Health = 100; }
+        public void ResetHealth() { Health = 100; defeatRespawnTimer=-1; }
+        public void RespawnFarthestFromOpponents()
+        {
+            Vector3 position=FindFarthestOpponentSpawn();
+            Mounted=false;RideInput.enabled=false;RideInput.ResetCues();mountedVisual.gameObject.SetActive(false);
+            var head=saddle.Find("Rider head");if(head)head.gameObject.SetActive(false);
+            avatar.gameObject.SetActive(true);feet.enabled=false;avatar.position=position;
+            Vector3 toward=OpponentCentroid()-position;toward=Vector3.ProjectOnPlane(toward,Vector3.up);
+            avatar.rotation=toward.sqrMagnitude>.01f ? Quaternion.LookRotation(toward) : Quaternion.identity;
+            feet.enabled=true;footInput.enabled=true;falling=-2;unseatedFall=false;unseatVelocity=Vector3.zero;
+            Health=100;defeatRespawnTimer=-1;PlayerRespawnCount++;LastPlayerRespawnPosition=position;
+            foreach(var arrow in FindObjectsOfType<OpponentArrow>())Destroy(arrow.gameObject);
+            view.fly=avatar;view.rider=footInput;view.followAnchorRotation=false;view.SetOrientationSource(null,avatar);
+            weapon=Weapon.Sword;SetWeapon();message="Respawned at the safest point, farthest from opponents.";
+        }
+        Vector3 OpponentCentroid()
+        {
+            Vector3 sum=Vector3.zero;int count=0;
+            foreach(var opponent in FindObjectsOfType<CombatOpponent>())
+                if(opponent.gameObject.activeInHierarchy && !opponent.Defeated){sum+=opponent.transform.position;count++;}
+            foreach(var opponent in FindObjectsOfType<MountedJoustOpponent>())
+                if(opponent.gameObject.activeInHierarchy && opponent.RiderHealth && opponent.RiderHealth.Health>0){sum+=opponent.transform.position;count++;}
+            return count>0 ? sum/count : combatSpawnCenter;
+        }
+        float NearestOpponentDistanceSquared(Vector3 point)
+        {
+            float nearest=float.PositiveInfinity;
+            foreach(var opponent in FindObjectsOfType<CombatOpponent>())
+                if(opponent.gameObject.activeInHierarchy && !opponent.Defeated)nearest=Mathf.Min(nearest,(opponent.transform.position-point).sqrMagnitude);
+            foreach(var opponent in FindObjectsOfType<MountedJoustOpponent>())
+                if(opponent.gameObject.activeInHierarchy && opponent.RiderHealth && opponent.RiderHealth.Health>0)nearest=Mathf.Min(nearest,(opponent.transform.position-point).sqrMagnitude);
+            return nearest;
+        }
+        bool TryGroundSpawn(Vector3 planar,out Vector3 spawn)
+        {
+            var hits=Physics.RaycastAll(planar+Vector3.up*8,Vector3.down,20,1,QueryTriggerInteraction.Ignore);
+            System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+            foreach(var hit in hits)
+            {
+                if(Vector3.Dot(hit.normal,Vector3.up)<.75f)continue;
+                if(hit.collider.GetComponentInParent<CombatOpponent>() || hit.collider.GetComponentInParent<MountedJoustOpponent>() || hit.collider.GetComponent<CombatTarget>())continue;
+                spawn=hit.point+Vector3.up*.08f;return true;
+            }
+            spawn=default(Vector3);return false;
+        }
+        Vector3 FindFarthestOpponentSpawn()
+        {
+            Vector3 best=avatar && avatar.gameObject.activeInHierarchy ? avatar.position : combatSpawnCenter;
+            float bestScore=NearestOpponentDistanceSquared(best);
+            for(int ring=1;ring<=3;ring++)for(int step=0;step<24;step++)
+            {
+                float angle=step*Mathf.PI*2/24;
+                Vector3 planar=combatSpawnCenter+new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*(ring*4);
+                if(!TryGroundSpawn(planar,out var candidate))continue;
+                float score=NearestOpponentDistanceSquared(candidate);
+                if(score>bestScore){best=candidate;bestScore=score;}
+            }
+            return best;
+        }
         public Vector3 LanceTip { get { return Tip(); } }
         void OnGUI()
         {
