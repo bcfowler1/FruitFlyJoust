@@ -145,10 +145,19 @@ namespace FruitFlyJoust
 
         static Bounds RendererBounds(Renderer renderer,Transform relative)
         {
-            Bounds world=renderer.bounds;Vector3 c=world.center,e=world.extents;Bounds local=new Bounds();bool first=true;
+            Bounds source;
+            var skinned=renderer as SkinnedMeshRenderer;
+            if(skinned)source=skinned.localBounds;
+            else
+            {
+                var filter=renderer.GetComponent<MeshFilter>();
+                source=filter && filter.sharedMesh ? filter.sharedMesh.bounds : new Bounds(Vector3.zero,Vector3.zero);
+            }
+            Matrix4x4 toRelative=relative.worldToLocalMatrix*renderer.transform.localToWorldMatrix;
+            Vector3 c=source.center,e=source.extents;Bounds local=new Bounds();bool first=true;
             for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
             {
-                Vector3 point=relative.InverseTransformPoint(c+Vector3.Scale(e,new Vector3(x,y,z)));
+                Vector3 point=toRelative.MultiplyPoint3x4(c+Vector3.Scale(e,new Vector3(x,y,z)));
                 if(first){local=new Bounds(point,Vector3.zero);first=false;}else local.Encapsulate(point);
             }
             return local;
