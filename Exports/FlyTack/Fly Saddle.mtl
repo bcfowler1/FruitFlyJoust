@@ -1,0 +1,12 @@
+# Blender 4.5.1 LTS MTL File: 'Fly Saddle.blend'
+# www.blender.org
+
+newmtl 07_-_Default
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/lov3n/Documents/Codex/2026-09-16/3D Max/Horse/000 LAST UPDATE/final_horse/Saddle Western/Saddle final textures/Saddle_1001_AlbedoTransparency.png
+map_Ks C:/Users/lov3n/Documents/Codex/2026-09-16/3D Max/Horse/000 LAST UPDATE/final_horse/Saddle Western/Saddle final textures/Saddle_1001_MetallicSmoothness.png
