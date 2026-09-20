@@ -93,6 +93,10 @@ public static class FlyTackLabTools
 {
     public static void ValidateImportedTack()
     {
+        var editedSaddle=Resources.Load<GameObject>("FlyTack/Fly Saddle Edited");
+        var editedArmour=Resources.Load<GameObject>("FlyTack/Fly Armor Edited");
+        if(!editedSaddle || editedSaddle.GetComponentsInChildren<Renderer>(true).Length==0)throw new System.Exception("Edited Fly Saddle FBX has no renderable mesh.");
+        if(!editedArmour || editedArmour.GetComponentsInChildren<Renderer>(true).Length==0)throw new System.Exception("Edited Fly Armor FBX has no renderable mesh.");
         var source=Resources.Load<GameObject>("FlyTack/Horse Realistic");
         if(!source)throw new System.Exception("Imported Horse Realistic tack source is unavailable.");
         bool saddle=false,armour=false;
@@ -103,7 +107,7 @@ public static class FlyTackLabTools
         }
         if(!saddle || !armour)throw new System.Exception("Imported model does not expose both saddle and armour renderers.");
         string path=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Application.dataPath),"Research/fly-tack-preview.png"));GeneratePreview(path);
-        Debug.Log("FLY_TACK_VALIDATION_PASS: saddle and armour isolated and fitted to measured biological thorax bounds.");
+        Debug.Log("FLY_TACK_VALIDATION_PASS: edited saddle and armour are renderable and fitted to measured biological thorax bounds.");
         EditorApplication.Exit(0);
     }
 

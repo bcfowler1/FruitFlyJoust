@@ -56,25 +56,30 @@ namespace FruitFlyJoust
             var editedSaddle=Resources.Load<GameObject>("FlyTack/Fly Saddle Edited");
             var editedArmour=Resources.Load<GameObject>("FlyTack/Fly Armor Edited");
             if(!source && (!editedSaddle || !editedArmour)){Debug.LogWarning("Fly tack source model has not imported yet.",this);return;}
-            if(editedSaddle)BuildPiece(editedSaddle,"Saddle",new[]{"Fly Saddle"},SaddleMaterial());
-            else BuildPiece(source,"Saddle",new[]{"Saddle","Saddle Low","Saddle PA","Reins","Reins Head","Reins PA"},SaddleMaterial());
-            if(editedArmour)BuildPiece(editedArmour,"Armour",new[]{"Fly Armor"},ArmourMaterial());
-            else BuildPiece(source,"Armour",new[]{"Armour","Armour PA"},ArmourMaterial());
+            bool saddleBuilt=editedSaddle && BuildPiece(editedSaddle,"Saddle",null,SaddleMaterial(),"Fly Saddle");
+            if(!saddleBuilt && source)BuildPiece(source,"Saddle",new[]{"Saddle","Saddle Low","Saddle PA","Reins","Reins Head","Reins PA"},SaddleMaterial(),null);
+            bool armourBuilt=editedArmour && BuildPiece(editedArmour,"Armour",null,ArmourMaterial(),"Fly Armor");
+            if(!armourBuilt && source)BuildPiece(source,"Armour",new[]{"Armour","Armour PA"},ArmourMaterial(),null);
             Apply();
         }
 
-        void BuildPiece(GameObject source,string label,string[] rendererNames,Material material)
+        bool BuildPiece(GameObject source,string label,string[] rendererNames,Material material,string editedRendererName)
         {
             var anchor=new GameObject(label+" fit").transform;anchor.SetParent(generated,false);
             var model=Instantiate(source,anchor,false);model.name=label+" source mesh";
             bool found=false;
             foreach(var renderer in model.GetComponentsInChildren<Renderer>(true))
             {
-                bool keep=Array.Exists(rendererNames,n=>string.Equals(renderer.gameObject.name,n,StringComparison.OrdinalIgnoreCase));
+                // Edited Blender exports contain only the chosen tack piece, and
+                // Unity is free to rename their root/renderer objects on import.
+                bool keep=rendererNames==null || rendererNames.Length==0 || Array.Exists(rendererNames,n=>string.Equals(renderer.gameObject.name,n,StringComparison.OrdinalIgnoreCase));
                 renderer.enabled=keep;
-                if(keep){renderer.sharedMaterial=material;found=true;}
+                if(keep){renderer.sharedMaterial=material;if(!string.IsNullOrEmpty(editedRendererName))renderer.gameObject.name=editedRendererName;found=true;}
             }
-            if(!found)Debug.LogWarning("No "+label+" renderer was found in the imported horse model.",this);
+            if(found)return true;
+            Debug.LogWarning("No "+label+" renderer was found in "+source.name+"; using the original tack fallback when available.",this);
+            if(Application.isPlaying)Destroy(anchor.gameObject);else DestroyImmediate(anchor.gameObject);
+            return false;
         }
 
         public void Apply()
@@ -117,7 +122,7 @@ namespace FruitFlyJoust
             if(!anchor)return;anchor.gameObject.SetActive(visible);if(!visible)return;
             anchor.localPosition=thorax.center+Vector3.up*thorax.extents.y+Vector3.Scale(offset,thorax.size);
             bool edited=anchor.GetComponentInChildren<Renderer>(true) && Array.Exists(anchor.GetComponentsInChildren<Renderer>(true),r=>r.gameObject.name=="Fly Saddle" || r.gameObject.name=="Fly Armor");
-            anchor.localRotation=edited ? Quaternion.identity : Quaternion.Euler(rotation);
+            anchor.localRotation=Quaternion.Euler(rotation);
             var model=anchor.childCount>0 ? anchor.GetChild(0) : null;if(!model)return;
             model.localPosition=Vector3.zero;model.localRotation=Quaternion.identity;model.localScale=Vector3.one;
             Bounds source=RendererBounds(model,anchor);
