@@ -89,6 +89,7 @@ namespace FruitFlyJoust
             }
             // Keep rider on the thorax rather than the placeholder's raised back.
             var visual=GetComponent<RiderAnimationVisual>();if(visual){visual.visualScale=.78f;visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;}
+            FlyTackFitter.Ensure(root.transform);
         }
         void Update()
         {

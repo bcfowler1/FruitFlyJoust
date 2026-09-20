@@ -1,0 +1,19 @@
+{
+  "format": "FruitFlyJoust.FlyTack.v1",
+  "saddleOffset": { "x": 0.0, "y": 0.025, "z": -0.025 },
+  "saddleRotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
+  "saddleSize": { "x": 0.92, "y": 0.34, "z": 0.72 },
+  "armourOffset": { "x": 0.0, "y": -0.015, "z": 0.04 },
+  "armourRotation": { "x": 0.0, "y": 0.0, "z": 0.0 },
+  "armourSize": { "x": 1.06, "y": 0.88, "z": 1.18 },
+  "showSaddle": true,
+  "showArmour": true,
+  "saddle": true,
+  "saddleLow": false,
+  "saddlePolyArt": false,
+  "reins": false,
+  "reinsHead": false,
+  "reinsPolyArt": false,
+  "armour": true,
+  "armourPolyArt": false
+}
