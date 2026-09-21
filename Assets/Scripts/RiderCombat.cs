@@ -290,10 +290,11 @@ namespace FruitFlyJoust
         }
         public bool TryMount()
         {
+            if(fly && fly.Dead){message="The fly is dead and cannot be mounted.";return false;}
             if (!Perched || Vector3.Distance(avatar.position, RideRoot.position) > 2.8f)
             { message = "Approach the perched fly to mount."; return false; }
-            if (Physics.Linecast(avatar.position + Vector3.up * .6f, RideRoot.position, 1,
-                QueryTriggerInteraction.Ignore)) { message = "Mounting path is blocked."; return false; }
+            if (MountingPathBlocked(avatar.position + Vector3.up * .6f, RideRoot.position))
+            { message = "Mounting path is blocked."; return false; }
             if(animationVisual)animationVisual.BeginMountTransition(true);
             Mounted = true; avatar.gameObject.SetActive(false); RideInput.enabled = true;
             mountedVisual.gameObject.SetActive(true);
@@ -301,6 +302,19 @@ namespace FruitFlyJoust
             view.fly = RideRoot; view.rider = RideInput; view.followAnchorRotation=true; weapon = Weapon.Lance;
             view.SetOrientationSource(animationVisual ? animationVisual.Head : null,RideRoot);
             SetWeapon(); message = "Mounted; grip retained at every orientation."; return true;
+        }
+        bool MountingPathBlocked(Vector3 start,Vector3 end)
+        {
+            Vector3 delta=end-start;float distance=delta.magnitude;if(distance<.01f)return false;
+            foreach(var hit in Physics.RaycastAll(start,delta/distance,distance,1,QueryTriggerInteraction.Ignore))
+            {
+                Transform target=hit.collider.transform;
+                // The destination ray necessarily enters the fly's own capsule.
+                // That is not an obstruction to mounting it.
+                if(target==RideRoot || target.IsChildOf(RideRoot) || target==avatar || target.IsChildOf(avatar))continue;
+                return true;
+            }
+            return false;
         }
         public bool ForceUnseat(Vector3 impulse)
         {
@@ -518,6 +532,7 @@ namespace FruitFlyJoust
         public bool CallFlyNear()
         {
             if(Mounted || !fly)return false;
+            if(fly.Dead){message="The fly is dead and cannot answer the call.";return false;}
             Vector3 forward=Vector3.ProjectOnPlane(view.transform.forward,Vector3.up).normalized;
             if(forward.sqrMagnitude<.01f)forward=avatar.forward;
             Vector3[] offsets={-forward*1.5f,avatar.right*1.5f,-avatar.right*1.5f};
@@ -604,7 +619,8 @@ namespace FruitFlyJoust
             GUI.color = new Color(.04f, .08f, .12f, .95f);
             GUI.DrawTexture(new Rect(16, Screen.height-198, 740, 182), Texture2D.whiteTexture); GUI.color = Color.white;
             if(animationVisual) animationVisual.mountTransitions=GUI.Toggle(new Rect(24,Screen.height-192,380,24),animationVisual.mountTransitions,"Borrowed mount transitions (experimental)");
-            GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Rider HP: " + Mathf.CeilToInt(Health)+(Mounted && playerFlyHealth ? "   Fly HP: "+Mathf.CeilToInt(playerFlyHealth.Health) : ""));
+            string flyStatus=fly && fly.Dead ? "DEAD" : fly ? fly.Phase.ToString() : "Unavailable";
+            GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Rider HP: " + Mathf.CeilToInt(Health)+(playerFlyHealth ? "   Fly HP: "+Mathf.CeilToInt(playerFlyHealth.Health)+" ("+flyStatus+")" : ""));
             GUI.Label(new Rect(30, Screen.height-97, 720, 24), "C / X: mount   F / Y: weapon   Sword: X cut L-R, B cut R-L, RT thrust");
             GUI.Label(new Rect(30, Screen.height-72, 720, 24), "Bow: hold LT to draw/release   D-pad Down / H: call fly   Draw: " + Mathf.RoundToInt(charge*100) + "%");
             GUI.Label(new Rect(30, Screen.height-47, 720, 24), message);

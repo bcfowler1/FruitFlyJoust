@@ -15,8 +15,14 @@ namespace FruitFlyJoust
             Transform corpse=clone ? Instantiate(source.gameObject,source.position,source.rotation).transform : source;
             corpse.name="Dead fly corpse";corpse.SetParent(null,true);corpse.gameObject.SetActive(true);
             foreach(var behaviour in corpse.GetComponentsInChildren<MonoBehaviour>())if(!(behaviour is FlyCorpse))behaviour.enabled=false;
-            foreach(var rigid in corpse.GetComponentsInChildren<Rigidbody>())Destroy(rigid);
-            foreach(var collider in corpse.GetComponentsInChildren<Collider>())Destroy(collider);
+            // A cloned fly can contain an active rider ragdoll. Joints must be
+            // removed before their required Rigidbody components.
+            foreach(var joint in corpse.GetComponentsInChildren<Joint>())
+                {if(clone)DestroyImmediate(joint);else Destroy(joint);}
+            foreach(var rigid in corpse.GetComponentsInChildren<Rigidbody>())
+                {if(clone)DestroyImmediate(rigid);else Destroy(rigid);}
+            foreach(var collider in corpse.GetComponentsInChildren<Collider>())
+                {if(clone)DestroyImmediate(collider);else Destroy(collider);}
             var result=corpse.gameObject.AddComponent<FlyCorpse>();result.Build(inheritedVelocity);return result;
         }
         void Build(Vector3 inheritedVelocity)

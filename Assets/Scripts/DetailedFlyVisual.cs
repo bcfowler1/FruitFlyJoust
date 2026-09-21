@@ -99,8 +99,10 @@ namespace FruitFlyJoust
         }
         void LateUpdate()
         {
-            if(!root)return;root.SetActive(detailed);foreach(var r in old)if(r)r.enabled=!detailed;
-            if(!detailed)return;
+            if(!root)return;
+            bool visible=motor && !motor.Dead;
+            root.SetActive(detailed && visible);foreach(var r in old)if(r)r.enabled=!detailed && visible;
+            if(!detailed || !visible){wingSpeedScale=0;return;}
             root.transform.localPosition=motor.bodyVisual.localPosition;
             root.transform.localRotation=motor.bodyVisual.localRotation*Quaternion.Euler(0,-90,0);
             bool walking=motor.Phase==RidePhase.Perched && motor.SurfaceWalkingSpeed>.01f;

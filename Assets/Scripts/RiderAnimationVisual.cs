@@ -145,10 +145,23 @@ namespace FruitFlyJoust
         public void ExitRagdoll()
         {
             if(!Ragdolled)return;
-            foreach(var rigid in ragdollBodies)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;Destroy(rigid);}
-            foreach(var joint in ragdollJoints)if(joint)Destroy(joint);foreach(var collider in ragdollColliders)if(collider)Destroy(collider);
+            // CharacterJoint requires the Rigidbody on the same object. Queue the
+            // joints for destruction first so Unity does not reject removal of a
+            // body that is still a required component dependency.
+            foreach(var joint in ragdollJoints)if(joint){joint.connectedBody=null;Destroy(joint);}
+            foreach(var collider in ragdollColliders)if(collider)Destroy(collider);
+            var bodiesToRemove=ragdollBodies.ToArray();
+            foreach(var rigid in bodiesToRemove)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;}
+            StartCoroutine(RemoveRagdollBodiesAfterJoints(bodiesToRemove));
             ragdollBodies.Clear();ragdollJoints.Clear();ragdollColliders.Clear();Ragdolled=false;
             animator.enabled=true;animator.Rebind();animator.Update(0);if(grip)grip.enabled=true;current=null;
+        }
+        System.Collections.IEnumerator RemoveRagdollBodiesAfterJoints(Rigidbody[] bodies)
+        {
+            // Destroy is applied at the end of the frame. Wait until the joints
+            // are actually gone before removing their required body components.
+            yield return null;
+            foreach(var rigid in bodies)if(rigid)Destroy(rigid);
         }
         public void Attack(string state) { if (animator) animator.CrossFade(state, .06f, 1, 0); }
         public void AimUpperBody(Transform frame,Vector3 worldDirection,float weight)
