@@ -74,6 +74,7 @@ namespace FruitFlyJoust
             Require(detail && meshRoot && meshRoot.GetComponentsInChildren<MeshRenderer>().Length==69,"detailed 69-part NeuroMechFly mesh loaded");
             Require(detail.UsesMeasuredWingCycle,"flight wings use the published measured three-axis FMech cycle");
             Require(detail.UsesSpectralWingMaterial,"both biomodel wings use the translucent spectral material with enhanced veins");
+            Require(detail.UsesMeasuredWingVeins,"wing vein contrast is derived from both measured biomodel meshes rather than procedural UV lines");
             Require(detail.UsesSpectralEyeMaterial,"both biomodel eyes retain red while using the spectral orange sheen material");
             Require(detail.UsesDepthBodyMaterial,"biomodel body and leg meshes use shadow-receiving ambient-depth materials");
             Transform head=null;foreach(Transform part in meshRoot)if(part.name=="0/Head")head=part;

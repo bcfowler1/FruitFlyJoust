@@ -22,7 +22,7 @@ Shader "FruitFlyJoust/SpectralWing"
         sampler2D _MainTex;
         fixed4 _BaseColor, _VeinColor;
         half _Iridescence, _VeinStrength;
-        struct Input { float2 uv_MainTex; float3 viewDir; };
+        struct Input { float2 uv_MainTex; float3 viewDir; float4 color : COLOR; };
 
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
@@ -31,16 +31,10 @@ Shader "FruitFlyJoust/SpectralWing"
             float phase=edge*11.2+uv.x*1.6+uv.y*.7;
             float3 spectrum=.5+.5*cos(phase+float3(0,2.094,4.189));
 
-            float vein=0;
-            vein=max(vein,1-smoothstep(.010,.027,abs(uv.y-(.18+.20*uv.x))));
-            vein=max(vein,1-smoothstep(.010,.027,abs(uv.y-(.39+.13*uv.x))));
-            vein=max(vein,1-smoothstep(.010,.027,abs(uv.y-(.61-.09*uv.x))));
-            vein=max(vein,1-smoothstep(.010,.027,abs(uv.y-(.82-.19*uv.x))));
-            float crossA=abs(uv.x-(.26+.035*sin(uv.y*12)));
-            float crossB=abs(uv.x-(.53+.028*sin(uv.y*15+1.2)));
-            float crossC=abs(uv.x-(.76+.022*sin(uv.y*11+2.1)));
-            vein=max(vein,(1-smoothstep(.009,.024,min(crossA,min(crossB,crossC))))*smoothstep(.08,.2,uv.y)*(1-smoothstep(.84,.97,uv.y)));
-            vein=saturate(vein*_VeinStrength);
+            // Vertex color is derived from curvature in the original 9k-vertex
+            // NeuroMechFly wing mesh. It follows the measured ridges instead of
+            // drawing an unrelated texture-space vein pattern.
+            float vein=saturate(IN.color.r*_VeinStrength);
 
             float3 membrane=lerp(_BaseColor.rgb,spectrum,_Iridescence*(.28+.58*edge));
             o.Albedo=lerp(membrane,_VeinColor.rgb,vein);

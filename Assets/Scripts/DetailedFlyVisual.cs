@@ -35,10 +35,11 @@ namespace FruitFlyJoust
             return Mathf.Lerp(MinimumFlightFlapsPerSecond,MaximumFlightFlapsPerSecond,Mathf.InverseLerp(.5f,8f,speed));
         }
         Vector3 flightFrameSourceCenter,flightFrameTargetCenter;Quaternion flightFrameRotation=Quaternion.identity;
-        int spectralWingMaterials,spectralEyeMaterials,depthBodyMaterials;
+        int spectralWingMaterials,spectralEyeMaterials,depthBodyMaterials,measuredWingVeinMeshes;
         public bool UsesSpectralWingMaterial { get { return spectralWingMaterials==2; } }
         public bool UsesSpectralEyeMaterial { get { return spectralEyeMaterials==2; } }
         public bool UsesDepthBodyMaterial { get { return depthBodyMaterials>20; } }
+        public bool UsesMeasuredWingVeins { get { return measuredWingVeinMeshes==2; } }
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
         {
@@ -63,7 +64,7 @@ namespace FruitFlyJoust
                 var vertices=new Vector3[source.vertices.Length/3];for(int i=0;i<vertices.Length;i++)vertices[i]=ResearchViewer.Position(source.vertices[i*3],source.vertices[i*3+1],source.vertices[i*3+2])*500;
                 for(int i=0;i<source.triangles.Length;i+=3){int first=source.triangles[i];source.triangles[i]=source.triangles[i+2];source.triangles[i+2]=first;}
                 var mesh=new Mesh{name="NeuroMechFly "+source.id,indexFormat=IndexFormat.UInt32};mesh.vertices=vertices;mesh.triangles=source.triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();
-                if(wingMeshes.Contains(source.id))GeneratePlanarUV(mesh);
+                if(wingMeshes.Contains(source.id) && GenerateWingSurfaceData(mesh))measuredWingVeinMeshes++;
                 meshes.Add(mesh);lookup.Add(source.id,mesh);
             }
             parts=new Transform[data.geoms.Length];
@@ -215,7 +216,7 @@ namespace FruitFlyJoust
                 parts[i].localRotation=Quaternion.Slerp(parts[i].localRotation,rotation,wing || sampled ? 1 : smoothing);
             }
         }
-        static void GeneratePlanarUV(Mesh mesh)
+        static bool GenerateWingSurfaceData(Mesh mesh)
         {
             Vector3 size=mesh.bounds.size,min=mesh.bounds.min;int normal=size.x<=size.y && size.x<=size.z ? 0 : size.y<=size.z ? 1 : 2;
             var vertices=mesh.vertices;var uv=new Vector2[vertices.Length];
@@ -227,6 +228,21 @@ namespace FruitFlyJoust
                     new Vector2(p.x/Mathf.Max(.0001f,size.x),p.y/Mathf.Max(.0001f,size.y));
             }
             mesh.uv=uv;
+            int[] triangles=mesh.triangles;var faceNormals=new Vector3[triangles.Length/3];var vertexNormals=new Vector3[vertices.Length];var samples=new int[vertices.Length];
+            for(int t=0;t<faceNormals.Length;t++)
+            {
+                int a=triangles[t*3],b=triangles[t*3+1],c=triangles[t*3+2];Vector3 face=Vector3.Cross(vertices[b]-vertices[a],vertices[c]-vertices[a]).normalized;faceNormals[t]=face;
+                vertexNormals[a]+=face;vertexNormals[b]+=face;vertexNormals[c]+=face;samples[a]++;samples[b]++;samples[c]++;
+            }
+            for(int i=0;i<vertexNormals.Length;i++)vertexNormals[i].Normalize();
+            var curvature=new float[vertices.Length];
+            for(int t=0;t<faceNormals.Length;t++)for(int corner=0;corner<3;corner++)
+            {int index=triangles[t*3+corner];curvature[index]+=1-Mathf.Abs(Vector3.Dot(vertexNormals[index],faceNormals[t]));}
+            for(int i=0;i<curvature.Length;i++)curvature[i]/=Mathf.Max(1,samples[i]);
+            var sorted=(float[])curvature.Clone();Array.Sort(sorted);float low=sorted[Mathf.FloorToInt((sorted.Length-1)*.78f)],high=sorted[Mathf.FloorToInt((sorted.Length-1)*.96f)];
+            var colors=new Color[vertices.Length];float minimum=1,maximum=0;
+            for(int i=0;i<colors.Length;i++){float mask=Mathf.SmoothStep(0,1,Mathf.InverseLerp(low,high,curvature[i]));colors[i]=new Color(mask,mask,mask,1);minimum=Mathf.Min(minimum,mask);maximum=Mathf.Max(maximum,mask);}
+            mesh.colors=colors;return maximum-minimum>.8f;
         }
         static Material CreateWingMaterial(ResearchViewer.GeomData source)
         {
@@ -248,7 +264,7 @@ namespace FruitFlyJoust
         {
             Shader shader=Shader.Find("FruitFlyJoust/FlyBodyDepth");if(!shader)return ResearchViewer.CreateBodyMaterial(source);
             var material=new Material(shader){name="Depth-textured biomodel body"};
-            material.SetColor("_BaseColor",new Color(source.rgba[0],source.rgba[1],source.rgba[2],1));
+            material.SetColor("_Color",new Color(source.rgba[0],source.rgba[1],source.rgba[2],1));
             material.SetFloat("_OcclusionStrength",.56f);material.SetFloat("_TextureStrength",.105f);material.SetFloat("_Smoothness",.3f);
             return material;
         }
