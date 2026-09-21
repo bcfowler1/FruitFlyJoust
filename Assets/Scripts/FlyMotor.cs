@@ -45,9 +45,11 @@ namespace FruitFlyJoust
         public float Hunger { get { return hunger; } }
         public float CurrentHungerPerMinute { get; private set; }
         public bool SeekingFood { get; private set; }
+        public bool Feeding { get; private set; }
         public float RiderAuthority { get; private set; }=1;
         public int FoodEatenCount { get; private set; }
         FlyFood foodTarget;
+        FlyFood countedFoodTarget;
         public bool Dead { get; private set; }
         public float FlightSpeed { get { return rb ? rb.velocity.magnitude : 0; } }
         public RidePhase Phase { get { return landing.Phase; } }
@@ -163,10 +165,17 @@ namespace FruitFlyJoust
             bool recallSpur=false,recallBrake=false;
             if(!foodTarget || !foodTarget.Available)foodTarget=NearestFood();
             float foodDistance=foodTarget ? Vector3.Distance(rb.position,foodTarget.transform.position) : float.PositiveInfinity;
-            if(foodTarget && foodDistance<.75f)
-            {hunger=Mathf.Max(0,hunger-foodTarget.nutrition);foodTarget.Eat();FoodEatenCount++;foodTarget=null;SeekingFood=false;}
+            Feeding=false;
+            if(foodTarget && foodDistance<.75f && hunger>.01f)
+            {
+                float nutrition=foodTarget.Consume(dt);Feeding=nutrition>0;hunger=Mathf.Max(0,hunger-nutrition);
+                if(Feeding && countedFoodTarget!=foodTarget){FoodEatenCount++;countedFoodTarget=foodTarget;}
+                if(!foodTarget.Available || hunger<=.01f){foodTarget=null;SeekingFood=false;Feeding=false;}
+            }
             RiderAuthority=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,.9f,hunger));
-            SeekingFood=foodTarget && hunger>=.62f;
+            var riderCombat=GetComponent<RiderCombat>();bool dismounted=riderCombat && !riderCombat.Mounted;
+            bool opportunisticFeeding=dismounted && foodTarget && foodDistance<2.5f && hunger>.05f;
+            SeekingFood=foodTarget && (hunger>=.62f || opportunisticFeeding);
             if(SeekingFood)
             {
                 Vector3 toFood=foodTarget.transform.position-rb.position;Vector3 planar=Vector3.ProjectOnPlane(toFood,Vector3.up);
@@ -233,7 +242,6 @@ namespace FruitFlyJoust
                 }
                 grounded = true;
                 SurfaceWalkingSpeed=0;
-                var combat=GetComponent<RiderCombat>();bool dismounted=combat && !combat.Mounted;
                 if(dismounted && !wasDismounted){idleHome=rb.position;idleClock=0;}
                 wasDismounted=dismounted;IdleWalking=false;
                 if(!dismounted && perchSurface)
@@ -267,6 +275,26 @@ namespace FruitFlyJoust
                 }
                 if(dismounted && autonomousIdle && perchSurface)
                 {
+                    if(SeekingFood && foodTarget)
+                    {
+                        Quaternion pose=perchSurface.transform.rotation*perchLocalRotation;
+                        Vector3 normal=pose*Vector3.up;
+                        Vector3 toward=Vector3.ProjectOnPlane(foodTarget.transform.position-rb.position,normal);
+                        if(toward.sqrMagnitude>.01f)
+                        {
+                            Vector3 forward=Vector3.ProjectOnPlane(pose*Vector3.forward,normal).normalized;
+                            float turn=Vector3.SignedAngle(forward,toward.normalized,normal);
+                            pose=Quaternion.AngleAxis(Mathf.Clamp(turn,-120*dt,120*dt),normal)*pose;
+                            perchLocalRotation=Quaternion.Inverse(perchSurface.transform.rotation)*pose;rb.MoveRotation(pose);
+                            if(foodDistance>.6f)
+                            {
+                                Vector3 step=rb.position+(pose*Vector3.forward)*.55f*dt;
+                                if(Physics.Raycast(step,-normal,out var foodGround,surfaceProbeDistance,1,QueryTriggerInteraction.Ignore) && foodGround.collider==perchSurface && HasFootprint(foodGround,step))
+                                {perchLocalPosition=perchSurface.transform.InverseTransformPoint(step);rb.MovePosition(step);IdleWalking=true;SurfaceWalkingSpeed=.55f;}
+                            }
+                        }
+                        return;
+                    }
                     idleClock+=dt;
                     if(idleClock%4>2 && idleClock%4<2.5f && Vector3.Distance(rb.position,idleHome)<.65f)
                     {
@@ -341,7 +369,7 @@ namespace FruitFlyJoust
             launchNormal = Vector3.up;
             cornerGripGrace=0;
             recallActive=recallLanding=false;
-            hunger=.15f;SeekingFood=false;RiderAuthority=1;foodTarget=null;
+            hunger=.15f;SeekingFood=Feeding=false;RiderAuthority=1;foodTarget=countedFoodTarget=null;
             brain.ResetBrain();
             rider.ResetCues();
         }

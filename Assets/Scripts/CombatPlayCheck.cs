@@ -159,11 +159,12 @@ namespace FruitFlyJoust
             Require(acrobaticFillSeconds>85 && acrobaticFillSeconds<95,"fast acrobatic flight fills the reset hunger meter in about ninety seconds");
             var foodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);foodObject.name="Mounted walking food check";
             foodObject.transform.position=walkStart+combat.fly.transform.forward*.25f;foodObject.transform.localScale=Vector3.one*.2f;
-            var food=foodObject.AddComponent<FlyFood>();food.nutrition=.5f;int meals=combat.fly.FoodEatenCount;combat.fly.SetHunger(.8f);
+            var food=foodObject.AddComponent<FlyFood>();food.nutrition=.5f;int meals=combat.fly.FoodEatenCount;combat.fly.SetHunger(.8f);float originalFoodScale=foodObject.transform.localScale.x;
             walkingRequest=new Vector2(.4f,1);
             yield return new WaitForSeconds(.5f);
             Require(Vector3.Distance(walkStart,combat.fly.transform.position)>.1f && combat.fly.Phase==RidePhase.Perched && combat.fly.SurfaceWalkingSpeed>.1f,"grounded stick steers and walks without launching");
-            Require(combat.fly.FoodEatenCount==meals+1 && combat.fly.Hunger<.4f,"mounted fly eats a food bit while walking over it");
+            Require(combat.fly.FoodEatenCount==meals+1 && combat.fly.Hunger<.8f && food.RemainingFraction<1 && food.RemainingFraction>.7f && foodObject.transform.localScale.x<originalFoodScale,
+                "mounted fly feeds gradually and visibly reduces food while walking over it");
             Destroy(foodObject);
             combat.fly.SetHunger(.95f);yield return new WaitForFixedUpdate();
             Require(combat.fly.SeekingFood && combat.fly.RiderAuthority<.2f,"very hungry fly overrides the reins and seeks available food");
@@ -177,6 +178,13 @@ namespace FruitFlyJoust
             yield return new WaitForSeconds(.2f);
             Require(Vector3.Distance(stopped,combat.fly.transform.position)<.01f,"grounded stick release stops walking");
             Require(combat.TryDismount() && !combat.Mounted, "safe dismount from actual perch");
+            var idleFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);idleFoodObject.name="Dismounted autonomous feeding check";
+            idleFoodObject.transform.position=combat.fly.transform.position+combat.fly.transform.forward*.45f;idleFoodObject.transform.localScale=Vector3.one*.24f;
+            var idleFood=idleFoodObject.AddComponent<FlyFood>();idleFood.nutrition=.6f;combat.fly.SetHunger(.5f);
+            yield return new WaitForSeconds(1.05f);
+            Require(combat.fly.FoodEatenCount>meals+1 && idleFood.RemainingFraction<.72f && idleFood.RemainingFraction>.65f && combat.fly.Hunger<.35f,
+                "nearby dismounted fly autonomously feeds for one second and consumes thirty percent of remaining food");
+            Destroy(idleFoodObject);combat.fly.SetHunger(.15f);
             yield return new WaitForSeconds(.3f);
             Require(combat.FootAvatar.GetComponent<CharacterController>().isGrounded, "foot controller on floor");
             yield return new WaitForSeconds(.8f);
