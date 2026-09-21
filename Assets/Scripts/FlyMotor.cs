@@ -43,6 +43,7 @@ namespace FruitFlyJoust
         public int FoodEatenCount { get; private set; }
         FlyFood foodTarget;
         public bool Dead { get; private set; }
+        public float FlightSpeed { get { return rb ? rb.velocity.magnitude : 0; } }
         public RidePhase Phase { get { return landing.Phase; } }
         public string SurfaceName { get { return perchSurface ? perchSurface.name : ""; } }
         [Min(.5f)] public float surfaceProbeDistance = 5;

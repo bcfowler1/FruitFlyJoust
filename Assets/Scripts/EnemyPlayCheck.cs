@@ -42,6 +42,7 @@ namespace FruitFlyJoust
                 Require(initialCompetence<.25f && jouster.Mounted,"mounted jouster begins at low competency");
                 yield return WaitClock(.25f);
                 Require(jouster.WingMotionDegrees>5,"mounted fly mirrors the animated biological wing stroke");
+                Require(jouster.WingSpeedScale>0,"living opponent wing animation is driven by flight speed");
                 Require(jouster.GroundClearance>=.55f,"live enemy fly remains above the ground collision surface");
                 Require(jouster.RiderForwardAlignment>.9f,"opponent rider faces the lance and travel direction while mounted");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
@@ -55,8 +56,8 @@ namespace FruitFlyJoust
                 jouster.RiderHealth.Hit(1000);yield return WaitClock(3.2f);
                 Require(jouster.Mounted && jouster.RespawnCount==1 && jouster.Competence>initialCompetence,
                     "defeated mounted jouster respawns one competency level stronger");
-                Require(jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
-                    "respawned opponent rider remains aligned and centered on the thorax");
+                Require(jouster.AnatomicalForwardAlignment>.9f && jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
+                    "respawned opponent fly and rider remain aligned and centered on the thorax");
                 float respawnFlyHealth=jouster.FlyHealth.Health;
                 Require(rider.TestLanceHit(jouster.FlyHealth,2) && jouster.FlyHealth.Health<respawnFlyHealth,
                     "respawned enemy fly independently takes lance damage");
@@ -65,6 +66,8 @@ namespace FruitFlyJoust
                 Require(jouster.ReceiveFlyLanceContact(5),"destroying the enemy fly unseats its rider");
                 Require(jouster.LastFlyCorpse && (flyVelocity.sqrMagnitude<.01f || Vector3.Dot(jouster.LastFlyCorpse.Velocity,flyVelocity.normalized)>.1f),
                     "dead moving fly becomes a ragdoll corpse retaining forward velocity");
+                bool corpseAnimation=false;foreach(var behaviour in jouster.LastFlyCorpse.GetComponentsInChildren<MonoBehaviour>())if(behaviour!=jouster.LastFlyCorpse && behaviour.enabled)corpseAnimation=true;
+                Require(!corpseAnimation,"dead fly corpse has no active wing animation");
                 Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,

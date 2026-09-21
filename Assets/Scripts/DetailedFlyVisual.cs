@@ -25,7 +25,7 @@ namespace FruitFlyJoust
         readonly List<Renderer> old=new List<Renderer>();float clock;
         readonly Dictionary<string,Vector3> legPivots=new Dictionary<string,Vector3>();
         readonly Dictionary<string,FlightEntry> flightPose=new Dictionary<string,FlightEntry>();
-        Vector3 thoraxPosition,headPivot;Quaternion thoraxRotation;float gaitRate,flightBlend,idleAnimationClock,wingClock,wingDifferential;
+        Vector3 thoraxPosition,headPivot;Quaternion thoraxRotation;float gaitRate,flightBlend,idleAnimationClock,wingClock,wingDifferential,wingSpeedScale;
         Vector3 flightFrameSourceCenter,flightFrameTargetCenter;Quaternion flightFrameRotation=Quaternion.identity;
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
@@ -117,7 +117,9 @@ namespace FruitFlyJoust
             Quaternion headIdle=Quaternion.AngleAxis(headRoll,Vector3.forward)*
                 Quaternion.AngleAxis(Mathf.Sin(idleAnimationClock*1.15f+.7f)*1.5f,Vector3.right);
             flightBlend=Mathf.MoveTowards(flightBlend,flying ? 1 : 0,Time.deltaTime*3.5f);
-            if(flying && wingProfile!=null)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*wingProfile.display_frequency_hz,1);
+            float flightSpeed=motor ? motor.FlightSpeed : 0;
+            wingSpeedScale=motor && motor.Dead ? 0 : Mathf.Lerp(.35f,1.35f,Mathf.InverseLerp(.5f,8f,flightSpeed));
+            if(flying && wingProfile!=null && wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*wingProfile.display_frequency_hz*wingSpeedScale,1);
             gaitRate=Mathf.MoveTowards(gaitRate,walking ? Mathf.Min(.85f,motor.SurfaceWalkingSpeed/.8f)*motor.SurfaceWalkingDirection : 0,Time.deltaTime*2);
             if(walking)clock+=Time.deltaTime*gaitRate;
             float sample=Mathf.Repeat(clock/data.frame_seconds,data.poses.Length);int a=(int)sample,b=(a+1)%data.poses.Length;float blend=sample-a;
@@ -163,7 +165,7 @@ namespace FruitFlyJoust
                     float side=data.geoms[i].name.Contains("LWing") ? 1 : -1;
                     // Sample the published three-axis FMech wing cycle. The 218 Hz source
                     // is displayed stroboscopically at 31 Hz to avoid frame-rate aliasing.
-                    Vector3 measured=SampleWingCycle(wingClock);
+                    Vector3 measured=SampleWingCycle(wingClock)*Mathf.Lerp(.45f,1f,Mathf.InverseLerp(.5f,7f,flightSpeed));
                     float steering=Mathf.Clamp(motor.intent.turn,-1,1);
                     float banking=Mathf.Clamp(motor.rider.roll,-1,1);
                     float differential=steering*wingProfile.turn_differential+banking*wingProfile.bank_differential;
@@ -203,6 +205,7 @@ namespace FruitFlyJoust
 #if UNITY_EDITOR
         public bool UsesMeasuredWingCycle { get { return wingProfile!=null && wingProfile.angles_degrees!=null && wingProfile.angles_degrees.Length>=96 && wingProfile.source_frequency_hz>200; } }
         public float WingSteeringDifferential { get { return wingDifferential; } }
+        public float WingSpeedScale { get { return wingSpeedScale; } }
         public float MaximumFlightPoseError()
         {
             if(data==null || parts==null || flightPose.Count==0 || flightBlend<.999f)return float.PositiveInfinity;

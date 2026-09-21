@@ -33,13 +33,19 @@ namespace FruitFlyJoust
         CharacterController feet;
         CombatOpponent groundAI;
         CombatTarget health,mountHealth;
-        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale;
-        Quaternion saddleBaseRotation;
+        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale;
+        Quaternion saddleBaseRotation,flyTemplateLocalRotation;
         float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1;
 
         public void Initialize(RiderCombat rider,GameObject biologicalVisual,Transform saddleTemplate,Transform rideRoot,Material sharedRiderMaterial,Material sharedWeaponMaterial,Vector3 position)
         {
             player=rider;biologicalTemplate=biologicalVisual;riderMaterial=sharedRiderMaterial;weaponMaterial=sharedWeaponMaterial;spawn=position;
+            if(biologicalTemplate)
+            {
+                flyTemplateLocalPosition=biologicalTemplate.transform.localPosition;
+                flyTemplateLocalRotation=biologicalTemplate.transform.localRotation;
+                flyTemplateLocalScale=biologicalTemplate.transform.localScale;
+            }
             health=GetComponent<CombatTarget>();
             var placeholder=GetComponent<Renderer>();if(placeholder)placeholder.enabled=false;
             var primitiveCollider=GetComponent<CapsuleCollider>();if(primitiveCollider)Destroy(primitiveCollider);
@@ -68,9 +74,9 @@ namespace FruitFlyJoust
                 flyVisual=Instantiate(biologicalTemplate,transform,false).transform;flyVisual.name="Enemy biological fly";
                 // The biomodel vertices are authored in the player's ride-root frame. Preserve
                 // the complete root transform; guessed offsets/scale shear the assembled fly.
-                flyVisual.localPosition=biologicalTemplate.transform.localPosition;
-                flyVisual.localRotation=biologicalTemplate.transform.localRotation;
-                flyVisual.localScale=biologicalTemplate.transform.localScale;
+                flyVisual.localPosition=flyTemplateLocalPosition;
+                flyVisual.localRotation=flyTemplateLocalRotation;
+                flyVisual.localScale=flyTemplateLocalScale;
                 Quaternion originalRotation=flyVisual.localRotation;
                 Transform head=flyVisual.Find("0/Head"),thorax=flyVisual.Find("0/Thorax");
                 if(head && thorax)
@@ -162,6 +168,7 @@ namespace FruitFlyJoust
             return (headRenderer.bounds.center-tail).normalized;
         }
         public float WingMotionDegrees { get { return poseMirror ? poseMirror.MaximumWingMotion : 0; } }
+        public float WingSpeedScale { get { return poseMirror ? poseMirror.WingSpeedScale : 0; } }
         public float RiderThoraxDistance
         {
             get
@@ -192,6 +199,7 @@ namespace FruitFlyJoust
                 if(respawnTimer<0){respawnTimer=3;if(groundAI)groundAI.enabled=false;if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*.5f);}
                 respawnTimer-=dt;if(respawnTimer<=0)RespawnStronger();return;
             }
+            if(Mounted && mountHealth && mountHealth.Health<=0){ReceiveLanceContact(3);return;}
             contactCooldown=Mathf.Max(0,contactCooldown-dt);
             if(Mounted)Fly(dt);else if(!groundAI)Fall(dt);
         }
@@ -241,7 +249,11 @@ namespace FruitFlyJoust
             if(riderVisual)riderVisual.BeginMountTransition(false);
             if(flyVisual)
             {
-                if(mountHealth && mountHealth.Health<=0)LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
+                if(mountHealth && mountHealth.Health<=0)
+                {
+                    if(poseMirror)poseMirror.StopWings();
+                    LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
+                }
                 flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
             }
             if(lance){lance.SetParent(null,true);Destroy(lance.gameObject,2);lance=null;}
@@ -331,32 +343,59 @@ namespace FruitFlyJoust
     [DefaultExecutionOrder(100)]
     sealed class BiologicalPoseMirror : MonoBehaviour
     {
+        [System.Serializable] sealed class WingProfile { public float[] angles_degrees; public float display_frequency_hz=18; }
         Transform source;
         Transform[] sourceParts,targetParts;
-        Quaternion[] previousRotations;
+        Quaternion[] previousRotations,restRotations;
+        WingProfile wingProfile;float wingClock,wingSpeedScale;
+        MountedJoustOpponent owner;
         public float MaximumWingMotion { get; private set; }
+        public float WingSpeedScale { get { return wingSpeedScale; } }
         public void Initialize(Transform template)
         {
-            source=template;sourceParts=new Transform[source.childCount];targetParts=new Transform[transform.childCount];previousRotations=new Quaternion[transform.childCount];
+            source=template;owner=GetComponentInParent<MountedJoustOpponent>();
+            var wingAsset=Resources.Load<TextAsset>("FlyWingAnimationProfile");if(wingAsset)wingProfile=JsonUtility.FromJson<WingProfile>(wingAsset.text);
+            sourceParts=new Transform[source.childCount];targetParts=new Transform[transform.childCount];previousRotations=new Quaternion[transform.childCount];restRotations=new Quaternion[transform.childCount];
             for(int i=0;i<sourceParts.Length;i++)sourceParts[i]=source.GetChild(i);
-            for(int i=0;i<targetParts.Length;i++){targetParts[i]=transform.GetChild(i);previousRotations[i]=targetParts[i].localRotation;}
+            for(int i=0;i<targetParts.Length;i++){targetParts[i]=transform.GetChild(i);previousRotations[i]=restRotations[i]=targetParts[i].localRotation;}
             CopyPose();
         }
         void LateUpdate(){CopyPose();}
         void CopyPose()
         {
             if(!source || sourceParts==null)return;int count=Mathf.Min(sourceParts.Length,targetParts.Length);
+            float speed=owner ? owner.CurrentVelocity.magnitude : 0;
+            bool alive=owner && owner.Mounted && owner.FlyHealth && owner.FlyHealth.Health>0;
+            wingSpeedScale=alive ? Mathf.Lerp(.35f,1.35f,Mathf.InverseLerp(.5f,8f,speed)) : 0;
+            if(wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*(wingProfile!=null ? wingProfile.display_frequency_hz : 18)*wingSpeedScale,1);
+            Vector3 measured=SampleWing(wingClock)*Mathf.Lerp(.45f,1f,Mathf.InverseLerp(.5f,7f,speed));
             for(int i=0;i<count;i++)
             {
                 if(!sourceParts[i] || !targetParts[i])continue;
                 targetParts[i].localPosition=sourceParts[i].localPosition;
-                targetParts[i].localRotation=sourceParts[i].localRotation;
+                bool wing=targetParts[i].name.Contains("Wing");
+                if(wing)
+                {
+                    float side=targetParts[i].name.Contains("LWing") ? 1 : -1;
+                    targetParts[i].localRotation=wingSpeedScale<=0 ? restRotations[i] :
+                        Quaternion.AngleAxis(side*(50+measured.x),Vector3.up)*
+                        Quaternion.AngleAxis(measured.y,Vector3.forward)*
+                        Quaternion.AngleAxis(side*measured.z,Vector3.right)*restRotations[i];
+                }
+                else targetParts[i].localRotation=sourceParts[i].localRotation;
                 targetParts[i].localScale=sourceParts[i].localScale;
                 targetParts[i].gameObject.SetActive(sourceParts[i].gameObject.activeSelf);
-                if(targetParts[i].name.Contains("Wing"))MaximumWingMotion=Mathf.Max(MaximumWingMotion,Quaternion.Angle(previousRotations[i],targetParts[i].localRotation));
+                if(wing)MaximumWingMotion=Mathf.Max(MaximumWingMotion,Quaternion.Angle(previousRotations[i],targetParts[i].localRotation));
                 previousRotations[i]=targetParts[i].localRotation;
             }
         }
+        Vector3 SampleWing(float phase)
+        {
+            if(wingProfile==null || wingProfile.angles_degrees==null || wingProfile.angles_degrees.Length<6)return new Vector3(Mathf.Sin(phase*Mathf.PI*2)*45,0,0);
+            int count=wingProfile.angles_degrees.Length/3;float sample=phase*count;int a=Mathf.FloorToInt(sample)%count,b=(a+1)%count;float t=sample-Mathf.Floor(sample);
+            int x=a*3,y=b*3;return Vector3.Lerp(new Vector3(wingProfile.angles_degrees[x],wingProfile.angles_degrees[x+1],wingProfile.angles_degrees[x+2]),new Vector3(wingProfile.angles_degrees[y],wingProfile.angles_degrees[y+1],wingProfile.angles_degrees[y+2]),t);
+        }
+        public void StopWings(){wingSpeedScale=0;for(int i=0;i<targetParts.Length;i++)if(targetParts[i] && targetParts[i].name.Contains("Wing")){targetParts[i].localRotation=restRotations[i];previousRotations[i]=restRotations[i];}}
     }
 }
 
