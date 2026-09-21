@@ -41,7 +41,7 @@ namespace FruitFlyJoust
         public float speedHungerPerMeterPerMinute=.018f;
         public float turnHungerPerDegreePerMinute=.0012f;
         public float climbHungerPerMeterPerMinute=.035f;
-        public float rollHungerPerDegreePerMinute=.0008f;
+        public float rollHungerPerDegreePerMinute=.00042f;
         public float Hunger { get { return hunger; } }
         public float CurrentHungerPerMinute { get; private set; }
         public bool SeekingFood { get; private set; }
