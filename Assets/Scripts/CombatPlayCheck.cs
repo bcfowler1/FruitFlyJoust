@@ -62,6 +62,7 @@ namespace FruitFlyJoust
             Require(combat && combat.FootAvatar, "runtime rider created");
             var seat=combat.fly.GetComponent<RiderAnimationVisual>();
             Require(seat && Mathf.Abs(seat.mountedSeatHeight+.33f)<.001f && Mathf.Abs(seat.mountedSeatForward+.16f)<.001f && Mathf.Abs(seat.visualScale-RiderCombat.CanonicalRiderVisualScale)<.001f,"detailed mounted seat settings applied after rider creation");
+            Require(combat.HeldLanceColliderCount==0,"held jousting lance has no physics collider that can interfere with steering");
             var wallFrame=new GameObject("Temporary wall rider frame");wallFrame.transform.rotation=Quaternion.Euler(0,0,90);
             seat.StabilizeTorsoAgainstGravity(wallFrame.transform);
             Require(seat.LastTorsoStabilizationDegrees>50 && seat.LastTorsoStabilizationDegrees<=55,

@@ -153,9 +153,17 @@ namespace FruitFlyJoust
 
         float Obstacle(Vector3 direction)
         {
-            // Cast from beyond our own capsule; the environment is on layer 0.
-            return Physics.SphereCast(transform.position, .35f, direction, out var hit, 5, 1,
-                QueryTriggerInteraction.Ignore) ? 1 - hit.distance / 5 : 0;
+            // Tack, hit volumes, rider gear, and the held lance all live under this
+            // fly. A single unfiltered SphereCast could mistake any of them for a
+            // wall and bias steering to one side.
+            float nearest=float.PositiveInfinity;
+            foreach(var hit in Physics.SphereCastAll(transform.position,.35f*RiderCombat.FlyAssemblyScale,direction,5,1,QueryTriggerInteraction.Ignore))
+            {
+                Transform candidate=hit.collider.transform;
+                if(candidate==transform || candidate.IsChildOf(transform) || hit.collider.attachedRigidbody==rb)continue;
+                nearest=Mathf.Min(nearest,hit.distance);
+            }
+            return float.IsPositiveInfinity(nearest) ? 0 : 1-nearest/5;
         }
 
         void FixedUpdate()

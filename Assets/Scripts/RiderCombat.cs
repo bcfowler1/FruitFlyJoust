@@ -56,6 +56,15 @@ namespace FruitFlyJoust
         public float SwordGripError { get { return weaponVisual ? Vector3.Distance(weaponVisual.localPosition,swordHandPose.position) : float.PositiveInfinity; } }
         public float LanceGripError { get { return weapon==Weapon.Lance && lanceModel && animationVisual && animationVisual.Hand(false) ? LanceGeometry.GripError(lanceModel,animationVisual.Hand(false).position) : float.PositiveInfinity; } }
         public float LanceReach { get { return weapon==Weapon.Lance && animationVisual && animationVisual.Hand(false) ? Vector3.Distance(animationVisual.Hand(false).position,Tip()) : 0; } }
+        public int HeldLanceColliderCount
+        {
+            get
+            {
+                if(!lanceModel)return 0;int count=0;
+                foreach(var collider in lanceModel.GetComponentsInChildren<Collider>())if(collider && collider.enabled)count++;
+                return count;
+            }
+        }
         private Vector3 lastTip;
         private float padInteractBefore, padWeaponBefore;
         private bool callBefore;
@@ -700,6 +709,7 @@ namespace FruitFlyJoust
         public Vector3 LanceTip { get { return Tip(); } }
         void OnGUI()
         {
+            DrawHungerHud();
             GUI.color = new Color(.04f, .08f, .12f, .95f);
             GUI.DrawTexture(new Rect(16, Screen.height-198, 740, 182), Texture2D.whiteTexture); GUI.color = Color.white;
             if(animationVisual) animationVisual.mountTransitions=GUI.Toggle(new Rect(24,Screen.height-192,400,24),animationVisual.mountTransitions,"Horse-style mount and left dismount transitions");
@@ -718,6 +728,21 @@ namespace FruitFlyJoust
                 { SetPractice(practice,enabledEnemies); }
                 if (animationVisual) animationVisual.legGrip = GUI.Toggle(new Rect(400,Screen.height-161,180,24),animationVisual.legGrip,"Thorax leg grip");
             }
+        }
+        void DrawHungerHud()
+        {
+            if(!fly)return;
+            float value=Mathf.Clamp01(fly.Hunger),authority=Mathf.Clamp01(fly.RiderAuthority);
+            Rect panel=new Rect(Screen.width-294,18,276,78),bar=new Rect(Screen.width-280,46,248,16);
+            Color previous=GUI.color;GUI.color=new Color(.035f,.055f,.075f,.9f);GUI.DrawTexture(panel,Texture2D.whiteTexture);
+            GUI.color=new Color(.12f,.15f,.17f,1);GUI.DrawTexture(bar,Texture2D.whiteTexture);
+            GUI.color=Color.Lerp(new Color(.25f,.8f,.3f),new Color(1f,.28f,.08f),value);
+            GUI.DrawTexture(new Rect(bar.x,bar.y,bar.width*value,bar.height),Texture2D.whiteTexture);
+            GUI.color=Color.white;
+            string state=fly.Feeding ? "feeding" : fly.SeekingFood ? "seeking food / resisting reins" : authority<.65f ? "becoming unruly" : "responsive";
+            GUI.Label(new Rect(panel.x+12,panel.y+6,panel.width-24,22),"FLY HUNGER  "+Mathf.RoundToInt(value*100)+"%");
+            GUI.Label(new Rect(panel.x+12,panel.y+48,panel.width-24,22),state+"   control "+Mathf.RoundToInt(authority*100)+"%");
+            GUI.color=previous;
         }
         void CreatePractice()
         {
