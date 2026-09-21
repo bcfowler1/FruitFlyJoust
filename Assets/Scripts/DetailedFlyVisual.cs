@@ -35,6 +35,9 @@ namespace FruitFlyJoust
             return Mathf.Lerp(MinimumFlightFlapsPerSecond,MaximumFlightFlapsPerSecond,Mathf.InverseLerp(.5f,8f,speed));
         }
         Vector3 flightFrameSourceCenter,flightFrameTargetCenter;Quaternion flightFrameRotation=Quaternion.identity;
+        int spectralWingMaterials,spectralEyeMaterials;
+        public bool UsesSpectralWingMaterial { get { return spectralWingMaterials==2; } }
+        public bool UsesSpectralEyeMaterial { get { return spectralEyeMaterials==2; } }
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
         {
@@ -52,19 +55,25 @@ namespace FruitFlyJoust
             foreach(var r in motor.bodyVisual.GetComponentsInChildren<Renderer>())
                 if(r.transform.name!="Rider" && r.transform.name!="Rider head" && !r.GetComponentInParent<Animator>())old.Add(r);
             root=new GameObject("Detailed NeuroMechFly appearance");root.transform.SetParent(transform,false);
-            var lookup=new Dictionary<int,Mesh>();
+            var lookup=new Dictionary<int,Mesh>();var wingMeshes=new HashSet<int>();
+            foreach(var geom in data.geoms)if(geom.name.Contains("Wing"))wingMeshes.Add(geom.mesh);
             foreach(var source in data.meshes)
             {
                 var vertices=new Vector3[source.vertices.Length/3];for(int i=0;i<vertices.Length;i++)vertices[i]=ResearchViewer.Position(source.vertices[i*3],source.vertices[i*3+1],source.vertices[i*3+2])*500;
                 for(int i=0;i<source.triangles.Length;i+=3){int first=source.triangles[i];source.triangles[i]=source.triangles[i+2];source.triangles[i+2]=first;}
-                var mesh=new Mesh{name="NeuroMechFly "+source.id,indexFormat=IndexFormat.UInt32};mesh.vertices=vertices;mesh.triangles=source.triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();meshes.Add(mesh);lookup.Add(source.id,mesh);
+                var mesh=new Mesh{name="NeuroMechFly "+source.id,indexFormat=IndexFormat.UInt32};mesh.vertices=vertices;mesh.triangles=source.triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();
+                if(wingMeshes.Contains(source.id))GeneratePlanarUV(mesh);
+                meshes.Add(mesh);lookup.Add(source.id,mesh);
             }
             parts=new Transform[data.geoms.Length];
             for(int i=0;i<parts.Length;i++)
             {
                 var source=data.geoms[i];var part=new GameObject(source.name);part.transform.SetParent(root.transform,false);
-                part.AddComponent<MeshFilter>().sharedMesh=lookup[source.mesh];var material=ResearchViewer.CreateBodyMaterial(source);
+                part.AddComponent<MeshFilter>().sharedMesh=lookup[source.mesh];bool wing=source.name.Contains("Wing");bool eye=source.name.EndsWith("Eye");
+                var material=wing ? CreateWingMaterial(source) : eye ? CreateEyeMaterial() : ResearchViewer.CreateBodyMaterial(source);
                 part.AddComponent<MeshRenderer>().sharedMaterial=material;materials.Add(material);parts[i]=part.transform;
+                if(wing && material.shader && material.shader.name=="FruitFlyJoust/SpectralWing")spectralWingMaterials++;
+                if(eye && material.shader && material.shader.name=="FruitFlyJoust/SpectralEye")spectralEyeMaterials++;
                 if(source.name.EndsWith("Coxa"))
                 {
                     legPivots[source.name.Substring(2,2)]=ResearchViewer.Position(data.poses[0].positions[i*3],data.poses[0].positions[i*3+1],data.poses[0].positions[i*3+2])*500;
@@ -203,6 +212,35 @@ namespace FruitFlyJoust
                 parts[i].localPosition=Vector3.Lerp(parts[i].localPosition,position,wing || sampled ? 1 : smoothing);
                 parts[i].localRotation=Quaternion.Slerp(parts[i].localRotation,rotation,wing || sampled ? 1 : smoothing);
             }
+        }
+        static void GeneratePlanarUV(Mesh mesh)
+        {
+            Vector3 size=mesh.bounds.size,min=mesh.bounds.min;int normal=size.x<=size.y && size.x<=size.z ? 0 : size.y<=size.z ? 1 : 2;
+            var vertices=mesh.vertices;var uv=new Vector2[vertices.Length];
+            for(int i=0;i<vertices.Length;i++)
+            {
+                Vector3 p=vertices[i]-min;
+                uv[i]=normal==0 ? new Vector2(p.z/Mathf.Max(.0001f,size.z),p.y/Mathf.Max(.0001f,size.y)) :
+                    normal==1 ? new Vector2(p.x/Mathf.Max(.0001f,size.x),p.z/Mathf.Max(.0001f,size.z)) :
+                    new Vector2(p.x/Mathf.Max(.0001f,size.x),p.y/Mathf.Max(.0001f,size.y));
+            }
+            mesh.uv=uv;
+        }
+        static Material CreateWingMaterial(ResearchViewer.GeomData source)
+        {
+            Shader shader=Shader.Find("FruitFlyJoust/SpectralWing") ?? Shader.Find("Standard");var material=new Material(shader){name="Spectral biomodel wing"};
+            Color tint=new Color(.62f,.82f,.94f,.34f);material.SetColor(shader.name=="FruitFlyJoust/SpectralWing" ? "_BaseColor" : "_Color",tint);
+            if(shader.name=="FruitFlyJoust/SpectralWing")
+            {material.SetColor("_VeinColor",new Color(.13f,.085f,.055f,.95f));material.SetFloat("_Iridescence",.78f);material.SetFloat("_VeinStrength",.95f);}
+            return material;
+        }
+        static Material CreateEyeMaterial()
+        {
+            Shader shader=Shader.Find("FruitFlyJoust/SpectralEye") ?? Shader.Find("Standard");var material=new Material(shader){name="Spectral biomodel eye"};
+            if(shader.name=="FruitFlyJoust/SpectralEye")
+            {material.SetColor("_BaseColor",new Color(.48f,.018f,.012f,1));material.SetColor("_SheenColor",new Color(1,.25f,.01f,1));material.SetFloat("_SheenStrength",.74f);}
+            else {material.color=new Color(.66f,.055f,.018f,1);material.SetFloat("_Glossiness",.86f);}
+            return material;
         }
         Vector3 SampleWingCycle(float phase)
         {
