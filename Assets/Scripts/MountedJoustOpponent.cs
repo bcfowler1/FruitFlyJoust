@@ -222,7 +222,11 @@ namespace FruitFlyJoust
             if(ReplacementMountScheduled)
             {
                 replacementMountTimer-=dt;
-                if(replacementMountTimer<=0){ReplaceDestroyedMount();return;}
+                if(replacementMountTimer<=0)
+                {
+                    ReplacementMountScheduled=false;replacementMountTimer=-1;
+                    if(player)player.EnsureEnemyMountReplacement(transform.parent,spawn,competencyLevel+1);
+                }
             }
             contactCooldown=Mathf.Max(0,contactCooldown-dt);
             if(Mounted)Fly(dt);else if(!groundAI)Fall(dt);
@@ -343,24 +347,6 @@ namespace FruitFlyJoust
             foreach(var zone in GetComponentsInChildren<MountedHitZone>())
             {var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;zone.gameObject.SetActive(false);Destroy(zone.gameObject);}
             BuildMount();BuildHitZones();ResetPose();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
-        }
-        void ReplaceDestroyedMount()
-        {
-            float survivingRiderHealth=health ? health.Health : 100;
-            ReplacementMountScheduled=false;replacementMountTimer=-1;FlyEscaping=false;
-            if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
-            foreach(var zone in GetComponentsInChildren<MountedHitZone>())
-            {
-                var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;
-                var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;
-                zone.gameObject.SetActive(false);Destroy(zone.gameObject);
-            }
-            BuildMount();BuildHitZones();if(health && survivingRiderHealth<health.maximumHealth)health.Hit(health.maximumHealth-survivingRiderHealth);
-            feet.enabled=false;transform.position=spawn;
-            transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
-            Mounted=true;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;
-            if(riderVisual){riderVisual.ExitRagdoll();riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
-            lastLanceTip=LanceTip;
         }
 #if UNITY_EDITOR
         IEnumerator CaptureRenderedOpponent()

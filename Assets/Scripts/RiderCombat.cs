@@ -669,13 +669,22 @@ namespace FruitFlyJoust
             message = "Gameplay targets use the body clock; target collisions are outside MuJoCo.";
         }
         GameObject CreateMountedJouster(Transform parent,Vector3 center)
+        { return CreateMountedJousterAt(parent,center+RideRoot.right*10+Vector3.up*4,0); }
+        GameObject CreateMountedJousterAt(Transform parent,Vector3 position,int competency)
         {
             var mounted=GameObject.CreatePrimitive(PrimitiveType.Capsule);mounted.name="Mounted enemy jouster";
             if(parent)mounted.transform.SetParent(parent);mounted.GetComponent<Renderer>().sharedMaterial=weaponMaterial;
             mounted.AddComponent<CombatTarget>();var jouster=mounted.AddComponent<MountedJoustOpponent>();
+            jouster.competencyLevel=competency;
             var biological=RideRoot.Find("Detailed NeuroMechFly appearance");
-            jouster.Initialize(this,biological ? biological.gameObject : null,saddle,RideRoot,riderMaterial,weaponMaterial,center+RideRoot.right*10+Vector3.up*4);
+            jouster.Initialize(this,biological ? biological.gameObject : null,saddle,RideRoot,riderMaterial,weaponMaterial,position);
             return mounted;
+        }
+        public void EnsureEnemyMountReplacement(Transform parent,Vector3 position,int competency)
+        {
+            foreach(var opponent in FindObjectsOfType<MountedJoustOpponent>())
+                if(opponent && (opponent.Mounted || opponent.FlyEscaping))return;
+            CreateMountedJousterAt(parent,position,competency);
         }
         public void SetPractice(bool active,bool enemies)
         {

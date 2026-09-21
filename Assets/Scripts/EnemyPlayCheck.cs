@@ -115,8 +115,10 @@ namespace FruitFlyJoust
                     "unseated opponent survives bounded fall damage and continues ground combat");
                 Require(!jouster.RiderRagdolled,"surviving opponent recovers from ragdoll after landing");
                 float replacementDeadline=Clock+7;while(jouster.ReplacementMountScheduled && Clock<replacementDeadline)yield return null;
-                Require(!jouster.ReplacementMountScheduled && jouster.Mounted && FindObjectsOfType<MountedJoustOpponent>().Length==mountedEnemyCountBeforeFlyDeath,
-                    "replacement fly remounts the existing enemy without multiplying enemy riders");
+                int mountedEnemyCount=0;foreach(var candidate in FindObjectsOfType<MountedJoustOpponent>())if(candidate.Mounted)mountedEnemyCount++;
+                Require(!jouster.ReplacementMountScheduled && !jouster.Mounted && jouster.GetComponent<CombatOpponent>() &&
+                    mountedEnemyCount==1 && FindObjectsOfType<MountedJoustOpponent>().Length==mountedEnemyCountBeforeFlyDeath+1,
+                    "surviving rider stays grounded while exactly one replacement flying jouster enters combat");
                 jouster.gameObject.SetActive(false);
             }
             var opponents=FindObjectsOfType<CombatOpponent>();
