@@ -74,6 +74,9 @@ namespace FruitFlyJoust
         public Vector3 LastPlayerRespawnPosition { get; private set; }
         public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
         public int RiderRagdollBodyCount { get { return animationVisual ? animationVisual.RagdollBodyCount : 0; } }
+        public bool RiderTransitioning { get { return animationVisual && animationVisual.Transitioning; } }
+        public Vector3 RenderedRiderPosition { get { return animationVisual ? animationVisual.RagdollCenter : RiderPosition; } }
+        public float LastDismountLateral { get; private set; }
         public float RiderVisualHeight { get { return animationVisual ? animationVisual.VisualHeight : 0; } }
         public float OnFootVisualScale { get { return animationVisual ? animationVisual.visualScale : .6f; } }
         public CombatTarget PlayerFlyHealth { get { return playerFlyHealth; } }
@@ -107,6 +110,7 @@ namespace FruitFlyJoust
             animationVisual = existingAnimation ? existingAnimation : gameObject.AddComponent<RiderAnimationVisual>();
             if (existingAnimation || animationVisual.Create(saddle, riderMaterial))
             {
+                animationVisual.mountTransitions=true;
                 figure.GetComponent<Renderer>().enabled = false;
                 var renderer = mountedVisual.GetComponent<Renderer>(); if (renderer) renderer.enabled = false;
                 var head = saddle.Find("Rider head"); if (head && head.GetComponent<Renderer>()) head.GetComponent<Renderer>().enabled = false;
@@ -325,8 +329,12 @@ namespace FruitFlyJoust
         {
             if (!Perched) { message = "Perch before dismounting."; return false; }
             Vector3 origin = RideRoot.position + Vector3.up * 2;
-            // Choose a safe world-upright foothold; walls do not automatically dismount the rider.
-            foreach (Vector3 offset in new[] { Vector3.right * 1.4f, Vector3.left * 1.4f, Vector3.back * 1.4f })
+            Vector3 flyForward=Vector3.ProjectOnPlane(RideRoot.forward,Vector3.up).normalized;
+            if(flyForward.sqrMagnitude<.01f)flyForward=Vector3.forward;
+            Vector3 flyLeft=Vector3.Cross(flyForward,Vector3.up).normalized;
+            // A horse-style dismount goes to the mount's left. Only use rear/right
+            // fallbacks when that side has no safe, world-upright foothold.
+            foreach (Vector3 offset in new[] { flyLeft*1.4f,(flyLeft-flyForward*.35f).normalized*1.4f,-flyForward*1.4f,-flyLeft*1.4f })
             {
                 if (!Physics.Raycast(origin + offset, Vector3.down, out var hit, 5, 1,
                     QueryTriggerInteraction.Ignore) || Vector3.Dot(hit.normal, Vector3.up) < .75f) continue;
@@ -335,7 +343,8 @@ namespace FruitFlyJoust
                     1, QueryTriggerInteraction.Ignore)) continue;
                 DropLance(RideVelocity);Mounted = false; RideInput.enabled = false; mountedVisual.gameObject.SetActive(false);
                 var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(false);
-                avatar.position = position; avatar.rotation = Quaternion.Euler(0, view.transform.eulerAngles.y, 0);
+                avatar.position=position;avatar.rotation=Quaternion.LookRotation(flyForward,Vector3.up);
+                LastDismountLateral=Vector3.Dot(position-RideRoot.position,RideRoot.right);
                 avatar.gameObject.SetActive(true); falling = 0; RideInput.ResetCues();
                 if(animationVisual)animationVisual.BeginMountTransition(false);
                 view.fly = avatar; view.rider = footInput; view.followAnchorRotation=false;
@@ -679,7 +688,7 @@ namespace FruitFlyJoust
         {
             GUI.color = new Color(.04f, .08f, .12f, .95f);
             GUI.DrawTexture(new Rect(16, Screen.height-198, 740, 182), Texture2D.whiteTexture); GUI.color = Color.white;
-            if(animationVisual) animationVisual.mountTransitions=GUI.Toggle(new Rect(24,Screen.height-192,380,24),animationVisual.mountTransitions,"Borrowed mount transitions (experimental)");
+            if(animationVisual) animationVisual.mountTransitions=GUI.Toggle(new Rect(24,Screen.height-192,400,24),animationVisual.mountTransitions,"Horse-style mount and left dismount transitions");
             string flyStatus=fly && fly.Dead ? "DEAD" : fly ? fly.Phase.ToString() : "Unavailable";
             GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Rider HP: " + Mathf.CeilToInt(Health)+(playerFlyHealth ? "   Fly HP: "+Mathf.CeilToInt(playerFlyHealth.Health)+" ("+flyStatus+")" : ""));
             GUI.Label(new Rect(30, Screen.height-97, 720, 24), "C / X: mount   F / Y: weapon   Sword: X cut L-R, B cut R-L, RT thrust");

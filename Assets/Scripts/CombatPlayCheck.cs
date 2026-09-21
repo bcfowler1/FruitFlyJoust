@@ -179,7 +179,11 @@ namespace FruitFlyJoust
             Vector3 stopped=combat.fly.transform.position;
             yield return new WaitForSeconds(.2f);
             Require(Vector3.Distance(stopped,combat.fly.transform.position)<.01f,"grounded stick release stops walking");
+            Vector3 mountedRiderPosition=combat.RenderedRiderPosition;
             Require(combat.TryDismount() && !combat.Mounted, "safe dismount from actual perch");
+            Require(combat.LastDismountLateral<-.7f,"player dismounts on the forward-facing fly's left side when that foothold is clear");
+            Require(combat.RiderTransitioning && Vector3.Distance(mountedRiderPosition,combat.RenderedRiderPosition)<.03f,
+                "left dismount begins with the rendered rider continuously at the saddle instead of teleporting");
             Require(combat.LastDroppedLance && combat.LastDroppedLance.useGravity,
                 "dismount drops the full lance as a physical object instead of making it vanish");
             var idleFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);idleFoodObject.name="Dismounted autonomous feeding check";
@@ -273,7 +277,10 @@ namespace FruitFlyJoust
             Require(hoverMountCycle.Phase==RidePhase.Landing,"hover mount regression begins while recall is descending");
             hoverMountCycle.ResumeFlight();
             Require(hoverMountCycle.Phase==RidePhase.Flying,"hover mount immediately returns the landing cycle to rider-controlled flight");
+            Vector3 walkingRiderPosition=combat.RenderedRiderPosition;
             Require(combat.TryMount() && combat.Mounted, "deliberate remount near perched fly");
+            Require(combat.RiderTransitioning && Vector3.Distance(walkingRiderPosition,combat.RenderedRiderPosition)<.03f,
+                "mount animation begins continuously from the rider's walking position");
             Require(!combat.fly.RecallActive,"remount cancels recall landing control before returning authority to the rider");
             climbRequest=true;
             yield return new WaitForFixedUpdate();yield return new WaitForFixedUpdate();
