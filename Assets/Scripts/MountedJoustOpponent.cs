@@ -61,7 +61,7 @@ namespace FruitFlyJoust
             health=GetComponent<CombatTarget>();
             var placeholder=GetComponent<Renderer>();if(placeholder)placeholder.enabled=false;
             var primitiveCollider=GetComponent<CapsuleCollider>();if(primitiveCollider)Destroy(primitiveCollider);
-            feet=gameObject.AddComponent<CharacterController>();feet.height=1.2f;feet.radius=.25f;feet.center=new Vector3(0,.6f,0);feet.enabled=false;
+            feet=gameObject.AddComponent<CharacterController>();feet.height=1.2f*RiderCombat.RiderBodyScale;feet.radius=.25f*RiderCombat.RiderBodyScale;feet.center=new Vector3(0,.6f*RiderCombat.RiderBodyScale,0);feet.enabled=false;
             riderAnchor=new GameObject("Enemy saddle").transform;riderAnchor.SetParent(transform,false);
             if(saddleTemplate && rideRoot)
             {
@@ -71,7 +71,7 @@ namespace FruitFlyJoust
                 riderAnchor.localScale=new Vector3(saddleScale.x/Mathf.Max(.0001f,rootScale.x),saddleScale.y/Mathf.Max(.0001f,rootScale.y),saddleScale.z/Mathf.Max(.0001f,rootScale.z));
             }
             saddleBasePosition=riderAnchor.localPosition;saddleBaseRotation=riderAnchor.localRotation;saddleBaseScale=riderAnchor.localScale;
-            riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=.78f;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;riderVisual.mountTransitions=true;
+            riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=RiderCombat.CanonicalRiderVisualScale;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;riderVisual.mountTransitions=true;
             riderVisual.Create(riderAnchor,riderMaterial);riderVisual.Pose(riderAnchor,true,0);
             BuildMount();BuildHitZones();ResetPose();
 #if UNITY_EDITOR
@@ -137,8 +137,8 @@ namespace FruitFlyJoust
         void BuildHitZones()
         {
             var riderZone=new GameObject("Enemy rider hitbox");riderZone.transform.SetParent(riderAnchor,false);
-            riderZone.transform.localPosition=new Vector3(0,.28f,-.03f);
-            var riderCollider=riderZone.AddComponent<CapsuleCollider>();riderCollider.direction=1;riderCollider.center=new Vector3(0,.35f,0);riderCollider.height=1.25f;riderCollider.radius=.28f;
+            riderZone.transform.localPosition=new Vector3(0,.28f,-.03f)*RiderCombat.FlyAssemblyScale;
+            var riderCollider=riderZone.AddComponent<CapsuleCollider>();riderCollider.direction=1;riderCollider.center=new Vector3(0,.35f,0)*RiderCombat.FlyAssemblyScale;riderCollider.height=1.25f*RiderCombat.FlyAssemblyScale;riderCollider.radius=.28f*RiderCombat.FlyAssemblyScale;
             var previousRootHealth=health;health=riderZone.AddComponent<CombatTarget>();health.maximumHealth=100;health.ResetTarget();
             var riderHit=riderZone.AddComponent<MountedHitZone>();riderHit.owner=this;riderHit.fly=false;
             if(previousRootHealth)previousRootHealth.enabled=false;
@@ -271,10 +271,10 @@ namespace FruitFlyJoust
             Vector3 desiredVelocity=transform.forward*4.5f+Vector3.up*1.1f;
             velocity=Vector3.Lerp(velocity,desiredVelocity,1-Mathf.Exp(-1.4f*dt));
             Vector3 movement=velocity*dt;
-            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))
+            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f*RiderCombat.FlyAssemblyScale,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
                 velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.2f;
-                transform.position=obstacle.point+obstacle.normal*.52f;
+                transform.position=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
             }
             else transform.position+=movement;
         }
@@ -305,16 +305,17 @@ namespace FruitFlyJoust
             velocity=Vector3.Lerp(velocity,transform.forward*(Mathf.Lerp(3.5f,8f,skill)*FlyMotor.SpeedMultiplierForHunger(EnemyHunger)),1-Mathf.Exp(-2.5f*dt));
             EnemyHunger=Mathf.Clamp01(EnemyHunger+dt*(.002f+velocity.magnitude*.0008f));
             Vector3 movement=velocity*dt;
-            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))
+            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f*RiderCombat.FlyAssemblyScale,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
-                transform.position=obstacle.point+obstacle.normal*.52f;
+                transform.position=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
                 velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.5f;
             }
             else transform.position+=movement;
             if(EnvironmentRaycast(transform.position+Vector3.up*.5f,Vector3.down,2,out var floor) && Vector3.Dot(floor.normal,Vector3.up)>.65f)
             {
                 float clearance=Vector3.Dot(transform.position-floor.point,floor.normal);
-                if(clearance<.58f){transform.position+=floor.normal*(.58f-clearance);velocity=Vector3.ProjectOnPlane(velocity,floor.normal)+floor.normal*Mathf.Max(0,Vector3.Dot(velocity,floor.normal));}
+                float minimumClearance=.58f*RiderCombat.FlyAssemblyScale;
+                if(clearance<minimumClearance){transform.position+=floor.normal*(minimumClearance-clearance);velocity=Vector3.ProjectOnPlane(velocity,floor.normal)+floor.normal*Mathf.Max(0,Vector3.Dot(velocity,floor.normal));}
             }
             Vector3 tip=LanceTip;
             if(player.Mounted && contactCooldown<=0 && velocity.magnitude>4)

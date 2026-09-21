@@ -48,12 +48,13 @@ namespace FruitFlyJoust
         public float mountedSeatHeight = .2f;
         public float mountedSeatForward;
         public float visualScale = RiderCombat.CanonicalRiderVisualScale;
-        public Vector3 MountedLocalPosition { get { return authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward); } }
-        public Vector3 MountedLocalScale { get { return authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalScale : Vector3.one*visualScale; } }
+        public Vector3 MountedLocalPosition { get { return (authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward))*RiderCombat.FlyAssemblyScale; } }
+        public Vector3 MountedLocalScale { get { return Vector3.one*visualScale; } }
         public Transform Hand(bool left) { return animator && animator.isHuman ? animator.GetBoneTransform(left ? HumanBodyBones.LeftHand : HumanBodyBones.RightHand) : null; }
         public Transform Head { get { return animator && animator.isHuman ? animator.GetBoneTransform(HumanBodyBones.Head) : null; } }
         public Vector3 VisualRootPosition { get { return body ? body.position : new Vector3(float.PositiveInfinity,float.PositiveInfinity,float.PositiveInfinity); } }
         public Vector3 VisualWorldScale { get { return body ? body.lossyScale : Vector3.zero; } }
+        public Vector3 VisualLocalScale { get { return body ? body.localScale : Vector3.zero; } }
         public void SetClock(float simulationDelta)
         {
             if (!animator) return;
@@ -91,21 +92,9 @@ namespace FruitFlyJoust
             if (!body) return;
             if(Ragdolled)return;
             bool useAuthored=mounted && transitionRemaining<=0 && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
-            bool hasAuthoredScale=mounted && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
             if (body.parent != anchor) body.SetParent(anchor, false);
-            if(hasAuthoredScale)body.localScale=authoredPose.riderLocalScale;
-            else
-            {
-                // visualScale is a world-size gameplay setting. Ground opponents may
-                // arrive through a scaled encounter or former mount hierarchy; using
-                // it directly as a local scale made those fighters visibly undersized.
-                Vector3 parentScale=anchor ? anchor.lossyScale : Vector3.one;
-                body.localScale=new Vector3(
-                    visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.x)),
-                    visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.y)),
-                    visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.z)));
-            }
-            body.localPosition = useAuthored ? authoredPose.riderLocalPosition : mounted ? new Vector3(0, mountedSeatHeight, mountedSeatForward) : Vector3.up*unmountedVerticalOffset;
+            body.localScale=Vector3.one*visualScale;
+            body.localPosition = mounted ? (useAuthored ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward))*RiderCombat.FlyAssemblyScale : Vector3.up*unmountedVerticalOffset;
             body.localRotation = useAuthored ? authoredPose.riderLocalRotation : Quaternion.identity; body.gameObject.SetActive(true);
             if(transitionRemaining>0)
             {

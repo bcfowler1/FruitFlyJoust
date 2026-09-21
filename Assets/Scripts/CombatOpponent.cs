@@ -26,6 +26,8 @@ namespace FruitFlyJoust
         public bool WeaponVisible { get { return weaponVisual && weaponVisual.gameObject.activeInHierarchy; } }
         public float VisualHeight { get { return visual ? visual.VisualHeight : 0; } }
         public Vector3 VisualWorldScale { get { return visual ? visual.VisualWorldScale : Vector3.zero; } }
+        public Vector3 VisualLocalScale { get { return visual ? visual.VisualLocalScale : Vector3.zero; } }
+        public Vector3 ActorWorldScale { get { return transform.lossyScale; } }
         public float SightRange { get { return sightRange; } }
         public bool RiderVisible { get; private set; }
         public bool HasSpyglass { get; private set; }
@@ -41,7 +43,7 @@ namespace FruitFlyJoust
             rider = FindObjectOfType<RiderCombat>(); spawn = transform.position;
             // Match the player's on-foot body and collision dimensions. Perception
             // remains expressed in world metres and is intentionally not scaled.
-            feet.height=1.2f;feet.radius=.2f;feet.center=new Vector3(0,.6f,0);
+            feet.height=1.2f*RiderCombat.RiderBodyScale;feet.radius=.2f*RiderCombat.RiderBodyScale;feet.center=new Vector3(0,.6f*RiderCombat.RiderBodyScale,0);
             // CharacterController provides collision; remove the primitive's duplicate capsule.
             var primitive = GetComponent<CapsuleCollider>(); if (primitive) Destroy(primitive);
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;

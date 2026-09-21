@@ -128,7 +128,7 @@ namespace FruitFlyJoust
                     var visual = gameObject.AddComponent<RiderAnimationVisual>();
                     if (walkingLab || unifiedLab)
                     {
-                        visual.visualScale = .78f;
+                        visual.visualScale = RiderCombat.CanonicalRiderVisualScale;
                         visual.mountedSeatHeight = -.33f;
                         visual.mountedSeatForward = -.16f;
                     }

@@ -159,12 +159,14 @@ namespace FruitFlyJoust
                 var controller=groundEnemy.GetComponent<CharacterController>();
                 Require(groundEnemy.VisualHeight>0 && heightRatio>.9f && heightRatio<1.1f && groundEnemy.GroundFootError<1.5f,
                     "ground opponent matches the player rider scale and walking surface");
-                Require(controller && Mathf.Abs(controller.height-1.2f)<.001f && Mathf.Abs(controller.radius-.2f)<.001f,
+                Require(controller && Mathf.Abs(controller.height-1.2f*RiderCombat.RiderBodyScale)<.001f && Mathf.Abs(controller.radius-.2f*RiderCombat.RiderBodyScale)<.001f,
                     "ground opponent collision dimensions match the player rider");
-                Vector3 worldScale=groundEnemy.VisualWorldScale;
-                Require(Mathf.Abs(worldScale.x-worldScale.y)<.015f && Mathf.Abs(worldScale.y-worldScale.z)<.015f &&
-                    Mathf.Abs(worldScale.y-RiderCombat.CanonicalRiderVisualScale)<.015f,
-                    "ground opponent has canonical full world scale before the player dismounts");
+                Vector3 localScale=groundEnemy.VisualLocalScale,actorScale=groundEnemy.ActorWorldScale;
+                Require(Mathf.Abs(localScale.x-RiderCombat.CanonicalRiderVisualScale)<.015f &&
+                    Mathf.Abs(localScale.y-RiderCombat.CanonicalRiderVisualScale)<.015f &&
+                    Mathf.Abs(localScale.z-RiderCombat.CanonicalRiderVisualScale)<.015f &&
+                    Mathf.Abs(actorScale.x-1)<.015f && Mathf.Abs(actorScale.y-1)<.015f && Mathf.Abs(actorScale.z-1)<.015f,
+                    "ground opponent starts with the canonical local body scale on an unscaled gameplay root");
                 Require(groundEnemy.SightRange>=15,"ground opponent attention radius remains in world units after visual scaling");
             }
             if(opponents.Length>0)

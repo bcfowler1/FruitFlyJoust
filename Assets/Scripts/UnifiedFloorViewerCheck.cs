@@ -104,7 +104,7 @@ namespace FruitFlyJoust
                     session=frame.session;
                     Require(viewer.unifiedLab && viewer.trainedFlight && frame.neurons==0,"trained scientific lab distinct from connectome mode");
                     var visual=viewer.GetComponent<RiderAnimationVisual>();
-                    Require(visual && Mathf.Abs(visual.mountedSeatHeight+.33f)<1e-6f && Mathf.Abs(visual.visualScale-.78f)<1e-6f,"correct fitted thorax seat");
+                    Require(visual && Mathf.Abs(visual.mountedSeatHeight+.33f)<1e-6f && Mathf.Abs(visual.visualScale-RiderCombat.CanonicalRiderVisualScale)<1e-6f,"correct fitted thorax seat");
                     viewer.RequestPause(true);stage=1;
                 }
                 else if(stage==1 && frame.paused)

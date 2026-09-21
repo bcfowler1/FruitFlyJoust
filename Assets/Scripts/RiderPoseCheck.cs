@@ -38,7 +38,7 @@ namespace FruitFlyJoust
             var material=actor.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;
             Destroy(actor);yield return null;
             anchor.transform.rotation=Quaternion.identity;
-            var visual=anchor.AddComponent<RiderAnimationVisual>();visual.visualScale=.78f;
+            var visual=anchor.AddComponent<RiderAnimationVisual>();visual.visualScale=RiderCombat.CanonicalRiderVisualScale;
             visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;visual.mountTransitions=true;
             TransitionRequire(visual.Create(anchor.transform,material),"transition visual created");
             visual.Pose(anchor.transform,true,0);visual.SetClock(.1f);

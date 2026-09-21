@@ -56,7 +56,7 @@ namespace FruitFlyJoust
             if(wingAsset)wingProfile=JsonUtility.FromJson<WingProfile>(wingAsset.text);
             foreach(var r in motor.bodyVisual.GetComponentsInChildren<Renderer>())
                 if(r.transform.name!="Rider" && r.transform.name!="Rider head" && !r.GetComponentInParent<Animator>())old.Add(r);
-            root=new GameObject("Detailed NeuroMechFly appearance");root.transform.SetParent(transform,false);
+            root=new GameObject("Detailed NeuroMechFly appearance");root.transform.SetParent(transform,false);root.transform.localScale=Vector3.one*RiderCombat.FlyAssemblyScale;
             var lookup=new Dictionary<int,Mesh>();var wingMeshes=new HashSet<int>();
             foreach(var geom in data.geoms)if(geom.name.Contains("Wing"))wingMeshes.Add(geom.mesh);
             foreach(var source in data.meshes)
@@ -108,14 +108,14 @@ namespace FruitFlyJoust
                 flightFrameSourceCenter=(sf+sh)*.5f;flightFrameTargetCenter=(tf+th)*.5f;
             }
             // Keep rider on the thorax rather than the placeholder's raised back.
-            var visual=GetComponent<RiderAnimationVisual>();if(visual){visual.visualScale=.78f;visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;}
+            var visual=GetComponent<RiderAnimationVisual>();if(visual){visual.visualScale=RiderCombat.CanonicalRiderVisualScale;visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;}
             FlyTackFitter.Ensure(root.transform);
         }
         void Update()
         {
             // RiderCombat creates this component in Start; configure after all Starts.
             var visual=GetComponent<RiderAnimationVisual>();
-            if(visual && detailed){visual.visualScale=.78f;visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;}
+            if(visual && detailed){visual.visualScale=RiderCombat.CanonicalRiderVisualScale;visual.mountedSeatHeight=-.33f;visual.mountedSeatForward=-.16f;}
         }
         void LateUpdate()
         {

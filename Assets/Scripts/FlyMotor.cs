@@ -122,6 +122,7 @@ namespace FruitFlyJoust
         {
             rb = GetComponent<Rigidbody>();
             capsule = GetComponent<CapsuleCollider>();
+            capsule.radius*=RiderCombat.FlyAssemblyScale;capsule.height*=RiderCombat.FlyAssemblyScale;capsule.center*=RiderCombat.FlyAssemblyScale;
             rb.useGravity = false;
             rb.constraints = RigidbodyConstraints.FreezeRotation;
             rb.interpolation = RigidbodyInterpolation.Interpolate;

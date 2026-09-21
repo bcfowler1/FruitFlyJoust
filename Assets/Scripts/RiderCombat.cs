@@ -4,7 +4,11 @@ namespace FruitFlyJoust
 {
     public sealed class RiderCombat : MonoBehaviour
     {
-        public const float CanonicalRiderVisualScale=.78f;
+        public const float LegacyRiderVisualScale=.78f;
+        public const float LegacyMountedRiderScale=.6421116f;
+        public const float CanonicalRiderVisualScale=1f;
+        public const float RiderBodyScale=CanonicalRiderVisualScale/LegacyRiderVisualScale;
+        public const float FlyAssemblyScale=CanonicalRiderVisualScale/LegacyMountedRiderScale;
         public FlyMotor fly;
         public ResearchViewer research;
         public RiderAnimationVisual existingAnimation;
@@ -91,6 +95,9 @@ namespace FruitFlyJoust
         {
             combatSpawnCenter = RideRoot.position;
             saddle = mountedVisual.parent;
+            // The scientific fly and saddle were fitted around the saved .642 rider. Convert
+            // their shared spatial frame once when moving the rider convention to 1.0.
+            saddle.localPosition*=FlyAssemblyScale;
             var walker = new GameObject("Dismounted rider");
             walker.name = "Dismounted rider"; walker.layer = 2;
             avatar = walker.transform; avatar.localScale = Vector3.one;
@@ -99,8 +106,8 @@ namespace FruitFlyJoust
             figure.transform.localPosition = new Vector3(0, .6f, 0);
             figure.transform.localScale = new Vector3(.4f, .6f, .4f);
             figure.GetComponent<Renderer>().sharedMaterial = riderMaterial;
-            feet = walker.AddComponent<CharacterController>(); feet.height = 1.2f; feet.radius = .2f;
-            feet.center = new Vector3(0, .6f, 0);
+            feet = walker.AddComponent<CharacterController>(); feet.height = 1.2f*RiderBodyScale; feet.radius = .2f*RiderBodyScale;
+            feet.center = new Vector3(0, .6f*RiderBodyScale, 0);
             footInput = walker.AddComponent<RiderInput>(); walker.SetActive(false);
             var pole = GameObject.CreatePrimitive(PrimitiveType.Cube); pole.name = "Rider weapon";
             Destroy(pole.GetComponent<Collider>());
@@ -126,7 +133,7 @@ namespace FruitFlyJoust
         void BuildPlayerFlyHealth()
         {
             var zone=new GameObject("Player fly hitbox");zone.transform.SetParent(RideRoot,false);zone.transform.localPosition=new Vector3(0,-.05f,0);
-            var collider=zone.AddComponent<BoxCollider>();collider.size=new Vector3(1.15f,.8f,1.65f);collider.isTrigger=true;
+            var collider=zone.AddComponent<BoxCollider>();collider.size=new Vector3(1.15f,.8f,1.65f)*FlyAssemblyScale;collider.isTrigger=true;
             playerFlyHealth=zone.AddComponent<CombatTarget>();playerFlyHealth.maximumHealth=120;playerFlyHealth.ResetTarget();
         }
         public bool TakeFlyDamage(float damage)
