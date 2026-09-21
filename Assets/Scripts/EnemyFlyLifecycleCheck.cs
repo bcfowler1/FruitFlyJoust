@@ -49,12 +49,15 @@ namespace FruitFlyJoust
         IEnumerator RunUnseatCase()
         {
             yield return FreshJouster();var enemy=FindObjectOfType<MountedJoustOpponent>();Require(enemy && enemy.Mounted,"mounted enemy spawned for unseat case");
-            int before=FindObjectsOfType<MountedJoustOpponent>().Length;Require(enemy.ReceiveLanceContact(5),"healthy rider accepts unseating contact");
+            int before=FindObjectsOfType<MountedJoustOpponent>().Length;Vector3 riderBefore=enemy.RenderedRiderPosition;Require(enemy.ReceiveLanceContact(5),"healthy rider accepts unseating contact");
+            Require(Vector3.Distance(riderBefore,enemy.RenderedRiderPosition)<.03f,"unseating preserves the rendered rider position on the first falling frame");
             var detached=FindObjectOfType<DetachedEnemyFly>();Require(detached && enemy.FlyEscaping && enemy.RiderRagdolled,"healthy fly remains visible while rider falls");
-            Vector3 previous=detached.transform.position;float maximumStep=0,deadline=Time.time+3;
-            while(detached && Time.time<deadline){yield return null;maximumStep=Mathf.Max(maximumStep,Vector3.Distance(previous,detached.transform.position));previous=detached.transform.position;}
+            Vector3 previous=detached.transform.position,previousRider=enemy.RenderedRiderPosition;float maximumStep=0,maximumRiderStep=0,deadline=Time.time+3;
+            while(detached && Time.time<deadline){yield return null;maximumStep=Mathf.Max(maximumStep,Vector3.Distance(previous,detached.transform.position));previous=detached.transform.position;maximumRiderStep=Mathf.Max(maximumRiderStep,Vector3.Distance(previousRider,enemy.RenderedRiderPosition));previousRider=enemy.RenderedRiderPosition;}
             Require(detached && maximumStep<.3f,"circling fly moves continuously without teleporting");
-            deadline=Time.time+16;while(!enemy.Mounted && Time.time<deadline)yield return null;
+            deadline=Time.time+16;while(!enemy.Mounted && Time.time<deadline){yield return null;maximumRiderStep=Mathf.Max(maximumRiderStep,Vector3.Distance(previousRider,enemy.RenderedRiderPosition));previousRider=enemy.RenderedRiderPosition;}
+            while(enemy.RiderTransitioning && Time.time<deadline+3){yield return null;maximumRiderStep=Mathf.Max(maximumRiderStep,Vector3.Distance(previousRider,enemy.RenderedRiderPosition));previousRider=enemy.RenderedRiderPosition;}
+            Require(maximumRiderStep<.35f,"rendered rider remains continuous through fall, ground recovery, and remount (largest frame step="+maximumRiderStep.ToString("F3")+")");
             int mounted=0;foreach(var candidate in FindObjectsOfType<MountedJoustOpponent>())if(candidate.Mounted)mounted++;
             Require(enemy.Mounted && enemy.ReturnedRemountCount==1,"same rider remounts returning fly");
             Require(mounted==1 && FindObjectsOfType<MountedJoustOpponent>().Length==before,"unseat recovery does not duplicate mounted jousters");

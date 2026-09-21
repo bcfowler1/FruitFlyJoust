@@ -37,6 +37,7 @@ namespace FruitFlyJoust
         private readonly List<Collider> ragdollColliders=new List<Collider>();
         private readonly List<CharacterJoint> ragdollJoints=new List<CharacterJoint>();
         public bool Ragdolled { get; private set; }
+        public bool Transitioning { get { return transitionRemaining>0; } }
         public int RagdollBodyCount { get { return ragdollBodies.Count; } }
         public Vector3 RagdollCenter { get { var hips=Bone(HumanBodyBones.Hips);return hips ? hips.position : VisualRootPosition; } }
         public float LastWaistAimDegrees { get; private set; }
@@ -149,6 +150,8 @@ namespace FruitFlyJoust
         public void ExitRagdoll()
         {
             if(!Ragdolled)return;
+            Transform hips=Bone(HumanBodyBones.Hips);
+            Vector3 preservedHips=hips ? hips.position : body.position;
             // CharacterJoint requires the Rigidbody on the same object. Queue the
             // joints for destruction first so Unity does not reject removal of a
             // body that is still a required component dependency.
@@ -158,7 +161,13 @@ namespace FruitFlyJoust
             foreach(var rigid in bodiesToRemove)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;}
             StartCoroutine(RemoveRagdollBodiesAfterJoints(bodiesToRemove));
             ragdollBodies.Clear();ragdollJoints.Clear();ragdollColliders.Clear();Ragdolled=false;
-            animator.enabled=true;animator.Rebind();animator.Update(0);if(grip)grip.enabled=true;current=null;
+            animator.enabled=true;animator.Rebind();animator.Update(0);
+            // Rebind restores the animated skeleton around its old visual root while
+            // the physics hips may have landed elsewhere. Shift the visual root so
+            // the first recovered animation frame begins at the last rendered hips.
+            hips=Bone(HumanBodyBones.Hips);
+            if(hips)body.position+=preservedHips-hips.position;
+            if(grip)grip.enabled=true;current=null;
         }
         System.Collections.IEnumerator RemoveRagdollBodiesAfterJoints(Rigidbody[] bodies)
         {

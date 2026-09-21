@@ -25,6 +25,8 @@ namespace FruitFlyJoust
         public Rigidbody LastDroppedLance { get; private set; }
         public float LanceGripError { get { return lance && riderVisual && riderVisual.Hand(false) ? LanceGeometry.GripError(lance,riderVisual.Hand(false).position) : float.PositiveInfinity; } }
         public float LanceReach { get { return lance && riderVisual && riderVisual.Hand(false) ? Vector3.Distance(riderVisual.Hand(false).position,LanceTip) : 0; } }
+        public Vector3 RenderedRiderPosition { get { return riderVisual ? riderVisual.RagdollCenter : transform.position; } }
+        public bool RiderTransitioning { get { return riderVisual && riderVisual.Transitioning; } }
         public float GroundClearance
         {
             get
@@ -67,7 +69,7 @@ namespace FruitFlyJoust
                 riderAnchor.localScale=new Vector3(saddleScale.x/Mathf.Max(.0001f,rootScale.x),saddleScale.y/Mathf.Max(.0001f,rootScale.y),saddleScale.z/Mathf.Max(.0001f,rootScale.z));
             }
             saddleBasePosition=riderAnchor.localPosition;saddleBaseRotation=riderAnchor.localRotation;saddleBaseScale=riderAnchor.localScale;
-            riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=.78f;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;
+            riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=.78f;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;riderVisual.mountTransitions=true;
             riderVisual.Create(riderAnchor,riderMaterial);riderVisual.Pose(riderAnchor,true,0);
             BuildMount();BuildHitZones();ResetPose();
 #if UNITY_EDITOR
@@ -276,6 +278,7 @@ namespace FruitFlyJoust
         }
         void LateUpdate()
         {
+            if(riderVisual)riderVisual.AdvanceTransition(player ? player.CombatDeltaTime : Time.deltaTime);
             if(riderVisual)riderVisual.Pose(Mounted && riderAnchor ? riderAnchor : transform,Mounted,Mounted ? 0 : velocity.magnitude,health && health.Health<=0);
             Transform hand=riderVisual ? riderVisual.Hand(false) : null;
             if(Mounted && lance && hand)LanceGeometry.AlignGrip(lance,lance,hand.position,riderAnchor ? riderAnchor.rotation : transform.rotation);
@@ -335,7 +338,6 @@ namespace FruitFlyJoust
             if(!Mounted || impact<3)return false;
             Mounted=false;FlyEscaping=false;verticalSpeed=2;peakFallSpeed=0;
             if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*2);
-            if(riderVisual)riderVisual.BeginMountTransition(false);
             if(flyVisual)
             {
                 if(mountHealth && mountHealth.Health<=0)
@@ -381,6 +383,7 @@ namespace FruitFlyJoust
         public bool RemountReturnedFly(Transform returnedFly)
         {
             if(!returnedFly || !RiderReadyForFlyReturn)return false;
+            if(riderVisual)riderVisual.BeginMountTransition(true);
             if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
             transform.position=returnedFly.position;Vector3 forward=Vector3.ProjectOnPlane(returnedFly.forward,Vector3.up);
             if(forward.sqrMagnitude>.01f)transform.rotation=Quaternion.LookRotation(forward,Vector3.up);
@@ -388,7 +391,7 @@ namespace FruitFlyJoust
             returnedFly.localRotation=flyMountedLocalRotation;returnedFly.localScale=flyMountedLocalScale;flyVisual=returnedFly;
             foreach(var collider in returnedFly.GetComponentsInChildren<Collider>())collider.enabled=true;
             FlyEscaping=false;Mounted=true;feet.enabled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;
-            BuildLance();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
+            BuildLance();if(riderVisual)riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);
             lastLanceTip=LanceTip;ReturnedRemountCount++;return true;
         }
         void Fall(float dt)
@@ -396,7 +399,7 @@ namespace FruitFlyJoust
             if(feet.isGrounded && verticalSpeed<=0)
             {
                 LastFallDamage=Mathf.Clamp((peakFallSpeed-4)*5,0,30);if(LastFallDamage>0)health.Hit(LastFallDamage);
-                if(health.Health>0 && riderVisual)riderVisual.ExitRagdoll();
+                if(health.Health>0 && riderVisual){riderVisual.ExitRagdoll();riderVisual.BeginMountTransition(false);}
                 verticalSpeed=-2;groundAI=gameObject.AddComponent<CombatOpponent>();groundAI.style=CombatOpponent.Style.Swordsman;
                 groundAI.speed=Mathf.Lerp(1.2f,2.7f,Competence);groundAI.attackInterval=Mathf.Lerp(1.8f,.75f,Competence);return;
             }
