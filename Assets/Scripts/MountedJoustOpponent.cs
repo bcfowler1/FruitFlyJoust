@@ -313,8 +313,18 @@ namespace FruitFlyJoust
                     if(poseMirror)poseMirror.StopWings();
                     LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
                     ReplacementMountScheduled=true;replacementMountTimer=6;
+                    flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
                 }
-                flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
+                else
+                {
+                    // The rider was unseated but the mount is alive. Previously this
+                    // branch destroyed the fly visual, making a rider hit look like a
+                    // killed fly with no corpse. Detach the living mount and let it make
+                    // a readable escape instead.
+                    FlyEscaping=true;flyVisual.SetParent(null,true);
+                    var escape=flyVisual.gameObject.AddComponent<DetachedEnemyFly>();
+                    escape.Initialize(this,player ? player.RiderPosition : transform.position-transform.forward,velocity);
+                }
             }
             if(lance){lance.SetParent(null,true);Destroy(lance.gameObject,2);lance=null;}
             feet.enabled=true;return true;
@@ -325,6 +335,7 @@ namespace FruitFlyJoust
             if(mountHealth.Health<=0)return ReceiveLanceContact(Mathf.Max(impact,3));
             contactCooldown=.35f;return true;
         }
+        public void FinishDetachedFlyEscape(){FlyEscaping=false;flyVisual=null;poseMirror=null;}
         void Fall(float dt)
         {
             if(feet.isGrounded && verticalSpeed<=0)
@@ -396,6 +407,29 @@ namespace FruitFlyJoust
     {
         public MountedJoustOpponent owner;
         public bool fly;
+    }
+
+    public sealed class DetachedEnemyFly : MonoBehaviour
+    {
+        MountedJoustOpponent owner;Vector3 velocity,direction;float age;
+        public void Initialize(MountedJoustOpponent source,Vector3 threat,Vector3 inheritedVelocity)
+        {
+            owner=source;direction=Vector3.ProjectOnPlane(transform.position-threat,Vector3.up).normalized;
+            if(direction.sqrMagnitude<.1f)direction=Vector3.ProjectOnPlane(transform.forward,Vector3.up).normalized;
+            Vector3 planar=Vector3.ProjectOnPlane(inheritedVelocity,Vector3.up);
+            velocity=(planar.sqrMagnitude>.01f ? planar.normalized : direction)*Mathf.Min(3.5f,Mathf.Max(1.5f,planar.magnitude));
+            foreach(var collider in GetComponentsInChildren<Collider>())collider.enabled=false;
+        }
+        void Update()
+        {
+            float dt=Time.deltaTime;age+=dt;
+            Vector3 desired=(direction+Vector3.up*.18f).normalized*3.5f;
+            velocity=Vector3.Lerp(velocity,desired,1-Mathf.Exp(-1.2f*dt));
+            if(velocity.sqrMagnitude>.01f)transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(velocity.normalized,Vector3.up),55*dt);
+            transform.position+=velocity*dt;
+            if(age<8)return;
+            if(owner)owner.FinishDetachedFlyEscape();Destroy(gameObject);
+        }
     }
 
     // The detailed fly is assembled from 69 independently animated biomodel parts.
