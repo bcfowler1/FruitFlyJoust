@@ -25,6 +25,7 @@ namespace FruitFlyJoust
         public bool Ragdolled { get { return visual && visual.Ragdolled; } }
         public bool WeaponVisible { get { return weaponVisual && weaponVisual.gameObject.activeInHierarchy; } }
         public float VisualHeight { get { return visual ? visual.VisualHeight : 0; } }
+        public Vector3 VisualWorldScale { get { return visual ? visual.VisualWorldScale : Vector3.zero; } }
         public float SightRange { get { return sightRange; } }
         public bool RiderVisible { get; private set; }
         public bool HasSpyglass { get; private set; }

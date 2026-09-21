@@ -153,6 +153,9 @@ namespace FruitFlyJoust
                     "ground opponent matches the player rider scale and walking surface");
                 Require(controller && Mathf.Abs(controller.height-1.2f)<.001f && Mathf.Abs(controller.radius-.2f)<.001f,
                     "ground opponent collision dimensions match the player rider");
+                Vector3 worldScale=groundEnemy.VisualWorldScale;
+                Require(Mathf.Abs(worldScale.x-worldScale.y)<.015f && Mathf.Abs(worldScale.y-worldScale.z)<.015f &&
+                    worldScale.y>.7f,"ground opponent retains full, uniform world scale after leaving any mount hierarchy");
                 Require(groundEnemy.SightRange>=15,"ground opponent attention radius remains in world units after visual scaling");
             }
             if(opponents.Length>0)

@@ -78,6 +78,7 @@ namespace FruitFlyJoust
         public Vector3 RenderedRiderPosition { get { return animationVisual ? animationVisual.RagdollCenter : RiderPosition; } }
         public float LastDismountLateral { get; private set; }
         public float RiderVisualHeight { get { return animationVisual ? animationVisual.VisualHeight : 0; } }
+        public Vector3 RiderVisualWorldScale { get { return animationVisual ? animationVisual.VisualWorldScale : Vector3.zero; } }
         public float OnFootVisualScale { get { return animationVisual ? animationVisual.visualScale : .6f; } }
         public CombatTarget PlayerFlyHealth { get { return playerFlyHealth; } }
         public Vector3 FlyHitPosition { get { return playerFlyHealth ? playerFlyHealth.transform.position : RideRoot.position; } }
