@@ -88,6 +88,8 @@ namespace FruitFlyJoust
                     "defeated mounted jouster respawns one competency level stronger");
                 Require(!rider.PlayerCameraCanSee(jouster.LastRespawnPosition,1.25f),
                     "defeated enemy jouster respawns outside the player camera view");
+                Require(rider.LastEnemyRespawnUsesCornerEntry,
+                    "enemy fly enters from beyond an upper corner or a farther lower camera corner");
                 Require(jouster.AnatomicalForwardAlignment>.9f && jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
                     "respawned opponent fly and rider remain aligned and centered on the thorax");
                 var enemyFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);enemyFoodObject.name="Enemy return feeding check";

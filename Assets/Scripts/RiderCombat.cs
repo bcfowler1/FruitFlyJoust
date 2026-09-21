@@ -73,6 +73,8 @@ namespace FruitFlyJoust
         public int PlayerRespawnCount { get; private set; }
         public Vector3 LastPlayerRespawnPosition { get; private set; }
         public Vector3 LastEnemyRespawnPosition { get; private set; }
+        public bool LastEnemyRespawnUsesCornerEntry { get; private set; }
+        private int enemyRespawnSequence;
         public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
         public int RiderRagdollBodyCount { get { return animationVisual ? animationVisual.RagdollBodyCount : 0; } }
         public bool RiderTransitioning { get { return animationVisual && animationVisual.Transitioning; } }
@@ -778,11 +780,35 @@ namespace FruitFlyJoust
                 }
                 return true;
             }
-            if(Valid(preferred)){LastEnemyRespawnPosition=preferred;return preferred;}
             Camera camera=view ? view.GetComponent<Camera>() : null;
             Vector3 cameraForward=camera ? Vector3.ProjectOnPlane(camera.transform.forward,Vector3.up).normalized : Vector3.forward;
             if(cameraForward.sqrMagnitude<.01f)cameraForward=Vector3.forward;
             float altitude=Mathf.Max(preferred.y,playerPosition.y+3);
+            LastEnemyRespawnUsesCornerEntry=false;
+            if(camera)
+            {
+                // Enter beyond the upper corners at the nearer distance, or beyond
+                // the lower corners farther away. Cycling prevents every replacement
+                // from arriving through the same lane.
+                Vector3[] viewportEntries={
+                    new Vector3(-.14f,1.14f,14),new Vector3(1.14f,1.14f,14),
+                    new Vector3(-.2f,-.2f,22),new Vector3(1.2f,-.2f,22)};
+                int start=enemyRespawnSequence++%viewportEntries.Length;
+                for(int offset=0;offset<viewportEntries.Length;offset++)
+                {
+                    Vector3 entry=viewportEntries[(start+offset)%viewportEntries.Length];
+                    Ray ray=camera.ViewportPointToRay(new Vector3(entry.x,entry.y,0));
+                    Vector3 candidate=ray.GetPoint(entry.z);
+                    // Never place a lower-corner arrival beneath the floor or table.
+                    var floors=Physics.RaycastAll(new Vector3(candidate.x,playerPosition.y+20,candidate.z),Vector3.down,50,1,QueryTriggerInteraction.Ignore);
+                    float floor=float.NegativeInfinity;
+                    foreach(var hit in floors)
+                        if(!hit.collider.attachedRigidbody && Vector3.Dot(hit.normal,Vector3.up)>.65f)floor=Mathf.Max(floor,hit.point.y);
+                    if(floor>float.NegativeInfinity)candidate.y=Mathf.Max(candidate.y,floor+2);
+                    if(!Valid(candidate))continue;
+                    LastEnemyRespawnPosition=candidate;LastEnemyRespawnUsesCornerEntry=true;return candidate;
+                }
+            }
             Vector3 best=preferred;float bestScore=float.NegativeInfinity;
             for(int ring=0;ring<3;ring++)for(int step=0;step<32;step++)
             {
