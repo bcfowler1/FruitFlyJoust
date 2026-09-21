@@ -21,7 +21,7 @@ namespace FruitFlyJoust
         {
             get
             {
-                return Physics.Raycast(transform.position+Vector3.up*.5f,Vector3.down,out var hit,100,1,QueryTriggerInteraction.Ignore) && Vector3.Dot(hit.normal,Vector3.up)>.65f ?
+                return EnvironmentRaycast(transform.position+Vector3.up*.5f,Vector3.down,100,out var hit) && Vector3.Dot(hit.normal,Vector3.up)>.65f ?
                     Vector3.Dot(transform.position-hit.point,hit.normal) : float.PositiveInfinity;
             }
         }
@@ -190,6 +190,11 @@ namespace FruitFlyJoust
                 return Vector3.Dot(riderForward,travelForward);
             }
         }
+        public Vector3 SaddleLocalPosition { get { return riderAnchor ? riderAnchor.localPosition : Vector3.positiveInfinity; } }
+        public Vector3 RiderLocalPosition
+        {
+            get { return riderAnchor && riderVisual ? riderAnchor.InverseTransformPoint(riderVisual.VisualRootPosition) : Vector3.positiveInfinity; }
+        }
         public CombatTarget RiderHealth { get { return health; } }
         public CombatTarget FlyHealth { get { return mountHealth; } }
         void Update()
@@ -219,13 +224,13 @@ namespace FruitFlyJoust
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
             velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
             Vector3 movement=velocity*dt;
-            if(movement.sqrMagnitude>.0001f && Physics.SphereCast(transform.position,.48f,movement.normalized,out var obstacle,movement.magnitude+.08f,1,QueryTriggerInteraction.Ignore))
+            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
                 transform.position=obstacle.point+obstacle.normal*.52f;
                 velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.5f;
             }
             else transform.position+=movement;
-            if(Physics.Raycast(transform.position+Vector3.up*.5f,Vector3.down,out var floor,2,1,QueryTriggerInteraction.Ignore) && Vector3.Dot(floor.normal,Vector3.up)>.65f)
+            if(EnvironmentRaycast(transform.position+Vector3.up*.5f,Vector3.down,2,out var floor) && Vector3.Dot(floor.normal,Vector3.up)>.65f)
             {
                 float clearance=Vector3.Dot(transform.position-floor.point,floor.normal);
                 if(clearance<.58f){transform.position+=floor.normal*(.58f-clearance);velocity=Vector3.ProjectOnPlane(velocity,floor.normal)+floor.normal*Mathf.Max(0,Vector3.Dot(velocity,floor.normal));}
@@ -239,7 +244,22 @@ namespace FruitFlyJoust
                 else if(riderContact<.42f){player.ForceUnseat(velocity.normalized*3+Vector3.up*1.5f);contactCooldown=2;}
             }
             lastLanceTip=tip;
-            if(Vector3.Distance(transform.position,target)>30)transform.position=spawn;
+        }
+        bool IsOwnCollider(Collider collider)
+        { return collider && (collider.transform==transform || collider.transform.IsChildOf(transform)); }
+        bool EnvironmentRaycast(Vector3 origin,Vector3 direction,float distance,out RaycastHit nearest)
+        {
+            nearest=default(RaycastHit);float best=float.PositiveInfinity;bool found=false;
+            foreach(var hit in Physics.RaycastAll(origin,direction,distance,1,QueryTriggerInteraction.Ignore))
+                if(!IsOwnCollider(hit.collider) && hit.distance<best){nearest=hit;best=hit.distance;found=true;}
+            return found;
+        }
+        bool EnvironmentSphereCast(Vector3 origin,float radius,Vector3 direction,float distance,out RaycastHit nearest)
+        {
+            nearest=default(RaycastHit);float best=float.PositiveInfinity;bool found=false;
+            foreach(var hit in Physics.SphereCastAll(origin,radius,direction,distance,1,QueryTriggerInteraction.Ignore))
+                if(!IsOwnCollider(hit.collider) && hit.distance<best){nearest=hit;best=hit.distance;found=true;}
+            return found;
         }
         static float DistanceToSegment(Vector3 point,Vector3 a,Vector3 b)
         { Vector3 ab=b-a;float t=Mathf.Clamp01(Vector3.Dot(point-a,ab)/Mathf.Max(.0001f,ab.sqrMagnitude));return Vector3.Distance(point,a+ab*t); }

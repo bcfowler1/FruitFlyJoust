@@ -47,6 +47,18 @@ namespace FruitFlyJoust
                 Require(jouster.RiderForwardAlignment>.9f,"opponent rider faces the lance and travel direction while mounted");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
                 Require(jouster.RiderHealth.GetComponent<Collider>() && jouster.FlyHealth.GetComponent<Collider>(),"mounted rider and fly have active lance hit volumes");
+                Vector3 saddleLocal=jouster.SaddleLocalPosition,riderLocal=jouster.RiderLocalPosition,previousRoot=jouster.transform.position;
+                float maximumSaddleDrift=0,maximumRiderDrift=0,maximumRootStep=0;float stabilityDeadline=Clock+.6f;
+                while(Clock<stabilityDeadline)
+                {
+                    yield return null;
+                    maximumSaddleDrift=Mathf.Max(maximumSaddleDrift,Vector3.Distance(saddleLocal,jouster.SaddleLocalPosition));
+                    maximumRiderDrift=Mathf.Max(maximumRiderDrift,Vector3.Distance(riderLocal,jouster.RiderLocalPosition));
+                    maximumRootStep=Mathf.Max(maximumRootStep,Vector3.Distance(previousRoot,jouster.transform.position));previousRoot=jouster.transform.position;
+                }
+                Require(maximumSaddleDrift<.001f && maximumRiderDrift<.001f,
+                    "opponent saddle and rider remain fixed to the thorax frame while turning");
+                Require(maximumRootStep<.5f,"opponent flight position advances continuously without frame teleports");
                 float riderBefore=jouster.RiderHealth.Health;
                 Require(rider.TestLanceHit(jouster.RiderHealth,2),"player lance route accepts mounted rider contact");
                 Require(jouster.RiderHealth.Health<riderBefore && FindObjectOfType<FloatingDamageNumber>(),"mounted rider hit shows damage and remaining hit points");
