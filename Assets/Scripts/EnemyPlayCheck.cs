@@ -115,6 +115,27 @@ namespace FruitFlyJoust
             while((rider.research ? !rider.research.IsPerched : rider.fly.Phase!=RidePhase.Perched) && Clock<deadline)yield return null;
             landing=false;Require(rider.TryDismount(),"rider dismounted for encounter");
             Vector3 origin=rider.FootAvatar.position;
+            int scoutIndex=0;
+            foreach(var unit in opponents)
+            {
+                var controller=unit.GetComponent<CharacterController>();controller.enabled=false;
+                unit.transform.position=origin+Vector3.forward*21+Vector3.right*(scoutIndex++*1.5f)+Vector3.up;
+                controller.enabled=true;unit.enabled=true;
+            }
+            Physics.SyncTransforms();yield return WaitClock(.2f);
+            int spyglassCount=0;CombatOpponent scout=null;
+            foreach(var unit in opponents)if(unit.HasSpyglass){spyglassCount++;scout=unit;}
+            Require(spyglassCount==1 && scout && scout.SpyglassVisible && scout.RiderVisible,
+                "one distant ground unit visibly equips a 24-unit spyglass when all units are outside ordinary awareness");
+            yield return WaitClock(2.1f);
+            bool shared=false;foreach(var unit in opponents)if(unit!=scout && unit.SharedAwareness)shared=true;
+            Require(shared,"spyglass scout conveys the player direction to nearby allies after two seconds");
+            Vector3 incoming=(scout.transform.position-origin).normalized;Vector3 evadeStart=scout.transform.position;
+            scout.GetComponent<CombatTarget>().Hit(5,incoming);yield return WaitClock(.45f);
+            bool warned=false;foreach(var unit in opponents)if(unit!=scout && unit.EvadingIncomingFire)warned=true;
+            Require(scout.EvadingIncomingFire && Vector3.Dot(scout.transform.position-evadeStart,incoming)>.02f,
+                "unit hit by an unseen arrow moves away along the incoming-fire direction");
+            Require(warned,"arrow-hit unit warns nearby allies so they scatter from incoming fire");
             foreach(var opponent in opponents)
             {
                 var controller=opponent.GetComponent<CharacterController>();controller.enabled=false;

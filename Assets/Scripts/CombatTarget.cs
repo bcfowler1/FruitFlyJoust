@@ -18,11 +18,15 @@ namespace FruitFlyJoust
         public void ResetTarget()
         { Health = maximumHealth;LastDamage=0;if (appearance) appearance.material.color = initialColor; }
         public bool Hit(float damage)
+        { return Hit(damage,Vector3.zero); }
+        public bool Hit(float damage,Vector3 incomingDirection)
         {
             if (Health <= 0 || float.IsNaN(damage) || float.IsInfinity(damage) || damage <= 0) return false;
             float before=Health;Health = Mathf.Max(0, Health - damage);LastDamage=before-Health;
             if(appearance)appearance.material.color = Health <= 0 ? Color.gray : Color.Lerp(Color.red, initialColor, Health / maximumHealth);
             FloatingDamageNumber.Create(transform,LastDamage,Health);
+            var opponent=GetComponentInParent<CombatOpponent>();
+            if(opponent && incomingDirection.sqrMagnitude>.0001f)opponent.ReactToArrow(incomingDirection);
             return true;
         }
         void OnDestroy() { if (appearance) Destroy(appearance.material); }
@@ -93,7 +97,7 @@ namespace FruitFlyJoust
                 1, QueryTriggerInteraction.Ignore))
             {
                 var target = hit.collider.GetComponentInParent<CombatTarget>();
-                if (target) target.Hit(damage);
+                if (target) target.Hit(damage,velocity.normalized);
                 Destroy(gameObject); return;
             }
             transform.position += movement; velocity += Physics.gravity * dt;
