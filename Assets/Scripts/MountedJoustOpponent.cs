@@ -281,7 +281,12 @@ namespace FruitFlyJoust
             if(riderVisual)riderVisual.AdvanceTransition(player ? player.CombatDeltaTime : Time.deltaTime);
             if(riderVisual)riderVisual.Pose(Mounted && riderAnchor ? riderAnchor : transform,Mounted,Mounted ? 0 : velocity.magnitude,health && health.Health<=0);
             Transform hand=riderVisual ? riderVisual.Hand(false) : null;
-            if(Mounted && lance && hand)LanceGeometry.AlignGrip(lance,lance,hand.position,riderAnchor ? riderAnchor.rotation : transform.rotation);
+            if(Mounted && lance && hand)
+            {
+                Quaternion couch=riderAnchor ? riderAnchor.rotation : transform.rotation;
+                Quaternion rotation=LanceGeometry.RaisedForWall(lance,lance,hand.position,couch,transform);
+                LanceGeometry.AlignGrip(lance,lance,hand.position,rotation);
+            }
         }
         void Fly(float dt)
         {
@@ -290,6 +295,10 @@ namespace FruitFlyJoust
             float miss=(1-skill)*3.4f;
             Vector3 aim=target+transform.right*Mathf.Sin(clock*.73f+1.1f)*miss+Vector3.up*Mathf.Sin(clock*.41f)*miss*.3f;
             Vector3 desired=(aim-transform.position).normalized;
+            // Begin steering away while the couched lance still has clearance;
+            // body-only collision detection reacts several metres too late.
+            if(StaticEnvironmentAhead(transform.position+Vector3.up*.15f,transform.forward,Mathf.Clamp(LanceReach,1,4),out var lanceObstacle))
+                desired=(desired+lanceObstacle.normal*1.35f+Vector3.up*.3f).normalized;
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
             velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
             EnemyHunger=Mathf.Clamp01(EnemyHunger+dt*(.002f+velocity.magnitude*.0008f));
@@ -330,6 +339,26 @@ namespace FruitFlyJoust
             foreach(var hit in Physics.SphereCastAll(origin,radius,direction,distance,1,QueryTriggerInteraction.Ignore))
                 if(!IsOwnCollider(hit.collider) && hit.distance<best){nearest=hit;best=hit.distance;found=true;}
             return found;
+        }
+        bool StaticEnvironmentAhead(Vector3 origin,Vector3 direction,float distance,out RaycastHit nearest)
+        {
+            nearest=default(RaycastHit);float best=float.PositiveInfinity;bool found=false;
+            foreach(var hit in Physics.SphereCastAll(origin,.2f,direction,distance,1,QueryTriggerInteraction.Ignore))
+            {
+                if(IsOwnCollider(hit.collider) || hit.collider.attachedRigidbody ||
+                   hit.collider.GetComponentInParent<CharacterController>() || hit.collider.GetComponentInParent<CombatTarget>())continue;
+                if(hit.distance<best){nearest=hit;best=hit.distance;found=true;}
+            }
+            return found;
+        }
+        bool HasStableWalkableSupport()
+        {
+            if(!feet || !feet.enabled || !feet.isGrounded)return false;
+            if(!EnvironmentRaycast(transform.position+Vector3.up*.18f,Vector3.down,.5f,out var hit))return false;
+            if(Vector3.Dot(hit.normal,Vector3.up)<.65f || hit.collider.attachedRigidbody)return false;
+            if(hit.collider.GetComponentInParent<CharacterController>() || hit.collider.GetComponentInParent<MountedJoustOpponent>())return false;
+            float clearance=Vector3.Dot(transform.position-hit.point,hit.normal);
+            return clearance>=-.04f && clearance<=.22f;
         }
         static float DistanceToSegment(Vector3 point,Vector3 a,Vector3 b)
         { Vector3 ab=b-a;float t=Mathf.Clamp01(Vector3.Dot(point-a,ab)/Mathf.Max(.0001f,ab.sqrMagnitude));return Vector3.Distance(point,a+ab*t); }
@@ -396,7 +425,7 @@ namespace FruitFlyJoust
         }
         void Fall(float dt)
         {
-            if(feet.isGrounded && verticalSpeed<=0)
+            if(verticalSpeed<=0 && HasStableWalkableSupport())
             {
                 LastFallDamage=Mathf.Clamp((peakFallSpeed-4)*5,0,30);if(LastFallDamage>0)health.Hit(LastFallDamage);
                 if(health.Health>0 && riderVisual){riderVisual.ExitRagdoll();riderVisual.BeginMountTransition(false);}

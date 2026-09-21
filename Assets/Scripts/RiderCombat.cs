@@ -199,7 +199,9 @@ namespace FruitFlyJoust
             }
             if (weapon == Weapon.Lance && Mounted && weaponVisual && animationVisual.Hand(false))
             {
-                LanceGeometry.AlignGrip(lanceModel,weaponVisual,animationVisual.Hand(false).position,RideRoot.rotation);
+                Vector3 hand=animationVisual.Hand(false).position;
+                Quaternion rotation=LanceGeometry.RaisedForWall(lanceModel,weaponVisual,hand,RideRoot.rotation,transform);
+                LanceGeometry.AlignGrip(lanceModel,weaponVisual,hand,rotation);
             }
         }
         void SetWeapon()
@@ -777,6 +779,33 @@ namespace FruitFlyJoust
             var handle=HandleRenderer(model);return handle ? handle.bounds.center : (model ? model.position : Vector3.zero);
         }
         public static float GripError(Transform model,Vector3 handPosition){return Vector3.Distance(GripPoint(model),handPosition);}
+        public static Quaternion RaisedForWall(Transform model,Transform root,Vector3 handPosition,Quaternion forwardRotation,Transform owner)
+        {
+            if(!model || !root)return forwardRotation;
+            // Measure the authored weapon after restoring its ordinary couch pose.
+            AlignGrip(model,root,handPosition,forwardRotation);
+            float reach=0;Vector3 forward=forwardRotation*Vector3.forward;
+            foreach(var renderer in model.GetComponentsInChildren<Renderer>())
+            {
+                Bounds bounds=renderer.bounds;
+                float projection=Vector3.Dot(bounds.center-handPosition,forward)+Vector3.Dot(bounds.extents,
+                    new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));
+                reach=Mathf.Max(reach,projection);
+            }
+            RaycastHit nearest=default(RaycastHit);float distance=float.PositiveInfinity;
+            foreach(var hit in Physics.SphereCastAll(handPosition,.09f,forward,reach+.15f,1,QueryTriggerInteraction.Ignore))
+            {
+                Transform candidate=hit.collider.transform;
+                if(owner && (candidate==owner || candidate.IsChildOf(owner)))continue;
+                if(hit.collider.attachedRigidbody || hit.collider.GetComponentInParent<CharacterController>() ||
+                   hit.collider.GetComponentInParent<CombatTarget>())continue;
+                if(hit.distance<distance){nearest=hit;distance=hit.distance;}
+            }
+            if(float.IsPositiveInfinity(distance))return forwardRotation;
+            float proximity=1-Mathf.Clamp01((distance-.12f)/Mathf.Max(.1f,reach));
+            float raise=Mathf.SmoothStep(0,58,proximity);
+            return Quaternion.AngleAxis(-raise,forwardRotation*Vector3.right)*forwardRotation;
+        }
         public static void AlignGrip(Transform model,Transform root,Vector3 handPosition,Quaternion rotation)
         {
             if(!model || !root)return;

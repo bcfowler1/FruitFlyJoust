@@ -155,6 +155,19 @@ namespace FruitFlyJoust
                     "ground opponent collision dimensions match the player rider");
                 Require(groundEnemy.SightRange>=15,"ground opponent attention radius remains in world units after visual scaling");
             }
+            if(opponents.Length>0)
+            {
+                var airborne=opponents[0];var airborneController=airborne.GetComponent<CharacterController>();
+                Vector3 savedPosition=airborne.transform.position;Quaternion savedRotation=airborne.transform.rotation;
+                airborneController.enabled=false;airborne.transform.position=savedPosition+Vector3.up*2;airborneController.enabled=true;
+                Physics.SyncTransforms();yield return WaitClock(.12f);float suspendedY=airborne.transform.position.y;
+                yield return WaitClock(.3f);
+                Require(!airborne.SupportedByWalkableGround && airborne.UnsupportedTime>.15f && airborne.transform.position.y<suspendedY-.05f,
+                    "unsupported ground opponent stops walking and falls instead of remaining suspended in midair");
+                airborneController.enabled=false;airborne.transform.position=savedPosition;airborne.transform.rotation=savedRotation;airborneController.enabled=true;
+                Physics.SyncTransforms();yield return WaitClock(.12f);
+                Require(airborne.SupportedByWalkableGround,"ground opponent reacquires a real walkable surface after falling");
+            }
             foreach(var opponent in opponents) opponent.enabled=false;
             foreach(var arrow in FindObjectsOfType<OpponentArrow>()) Destroy(arrow.gameObject);
             rider.ResetHealth();

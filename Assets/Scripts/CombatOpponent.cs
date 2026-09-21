@@ -15,7 +15,7 @@ namespace FruitFlyJoust
         private RiderAnimationVisual visual;
         private Transform weaponVisual;
         private Transform spyglassVisual;
-        private float cooldown, falling, attackGesture, strikeDelay;
+        private float cooldown, falling, attackGesture, strikeDelay, supportCheckTimer, unsupportedTime;
         private float spyglassObservation,sharedAwarenessTime,evadeTime;
         private Vector3 sharedTarget,evadeDirection;
         private bool strikePending, alternateCut;
@@ -32,6 +32,8 @@ namespace FruitFlyJoust
         public bool EvadingIncomingFire { get { return evadeTime>0; } }
         public bool SpyglassVisible { get { return spyglassVisual && spyglassVisual.gameObject.activeInHierarchy; } }
         public float GroundFootError { get; private set; }
+        public bool SupportedByWalkableGround { get; private set; }
+        public float UnsupportedTime { get { return unsupportedTime; } }
         void Start()
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();
@@ -47,6 +49,7 @@ namespace FruitFlyJoust
             visual.visualScale=rider ? rider.OnFootVisualScale : .6f;visual.Pose(transform,false,0);
             float groundY=transform.TransformPoint(feet.center).y-feet.height*.5f;
             GroundFootError=visual.AlignFeetToWorldY(groundY+.01f);BuildWeapon(material);BuildSpyglass(material);
+            RefreshGroundSupport();
         }
         void BuildSpyglass(Material material)
         {
@@ -72,6 +75,9 @@ namespace FruitFlyJoust
             if (!rider || rider.Defeated || rider.CombatPaused) return;
             float dt = rider.CombatDeltaTime;
             if (dt <= 0) return;
+            supportCheckTimer-=dt;
+            if(supportCheckTimer<=0){RefreshGroundSupport();supportCheckTimer=.08f;}
+            unsupportedTime=SupportedByWalkableGround ? 0 : unsupportedTime+dt;
             cooldown = Mathf.Max(0, cooldown-dt);
             attackGesture=Mathf.Max(0,attackGesture-dt);
             sharedAwarenessTime=Mathf.Max(0,sharedAwarenessTime-dt);evadeTime=Mathf.Max(0,evadeTime-dt);
@@ -124,9 +130,33 @@ namespace FruitFlyJoust
                     cooldown = attackInterval;
                 }
             }
-            if (feet.isGrounded) falling = -2;
+            // CharacterController.isGrounded can briefly be true against a fly,
+            // weapon, or another fighter. Only a nearby static, upward-facing
+            // surface may promote this actor into its walking state.
+            if(!SupportedByWalkableGround)motion=Vector3.zero;
+            if (feet.isGrounded && SupportedByWalkableGround) falling = -2;
             falling += Physics.gravity.y*dt;
             feet.Move((motion+Vector3.up*falling)*dt);
+        }
+        void RefreshGroundSupport()
+        {
+            SupportedByWalkableGround=false;
+            Vector3 origin=transform.position+Vector3.up*.18f;
+            float nearest=float.PositiveInfinity;
+            foreach(var hit in Physics.RaycastAll(origin,Vector3.down,.5f,1,QueryTriggerInteraction.Ignore))
+            {
+                if(!hit.collider || hit.distance>=nearest || Vector3.Dot(hit.normal,Vector3.up)<.65f)continue;
+                Transform candidate=hit.collider.transform;
+                if(candidate==transform || candidate.IsChildOf(transform))continue;
+                // Characters, mounts, loose weapons, and corpses are transient
+                // contacts; accepting one is what left recovered riders in midair.
+                if(hit.collider.GetComponentInParent<CharacterController>() ||
+                   hit.collider.GetComponentInParent<MountedJoustOpponent>() ||
+                   hit.collider.attachedRigidbody)continue;
+                float clearance=Vector3.Dot(transform.position-hit.point,hit.normal);
+                if(clearance<-.04f || clearance>.22f)continue;
+                nearest=hit.distance;SupportedByWalkableGround=true;
+            }
         }
         void UpdateSpyglassAssignment()
         {
@@ -179,7 +209,8 @@ namespace FruitFlyJoust
         void LateUpdate()
         {
             if(!visual || visual.Ragdolled)return;
-            float speed=feet && feet.enabled ? feet.velocity.magnitude : 0;visual.Pose(transform,false,speed,target && target.Health<=0);
+            float speed=feet && feet.enabled && SupportedByWalkableGround ? Vector3.ProjectOnPlane(feet.velocity,Vector3.up).magnitude : 0;
+            visual.Pose(transform,false,speed,target && target.Health<=0);
             if(style==Style.Swordsman && attackGesture>0)visual.PoseSwordAttack(alternateCut ? RiderCombat.SwordAttack.LeftToRight : RiderCombat.SwordAttack.RightToLeft,attackGesture/.55f);
         }
         void OnDestroy(){if(weaponVisual)Destroy(weaponVisual.gameObject);if(spyglassVisual)Destroy(spyglassVisual.gameObject);if(ownsVisual && visual)Destroy(visual);}
