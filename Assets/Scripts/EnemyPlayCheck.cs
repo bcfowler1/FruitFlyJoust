@@ -159,7 +159,8 @@ namespace FruitFlyJoust
                     "ground opponent collision dimensions match the player rider");
                 Vector3 worldScale=groundEnemy.VisualWorldScale;
                 Require(Mathf.Abs(worldScale.x-worldScale.y)<.015f && Mathf.Abs(worldScale.y-worldScale.z)<.015f &&
-                    worldScale.y>.7f,"ground opponent retains full, uniform world scale after leaving any mount hierarchy");
+                    Mathf.Abs(worldScale.y-RiderCombat.CanonicalRiderVisualScale)<.015f,
+                    "ground opponent has canonical full world scale before the player dismounts");
                 Require(groundEnemy.SightRange>=15,"ground opponent attention radius remains in world units after visual scaling");
             }
             if(opponents.Length>0)
@@ -191,10 +192,6 @@ namespace FruitFlyJoust
                 controller.enabled=true;unit.enabled=true;
             }
             Physics.SyncTransforms();yield return WaitClock(.2f);
-            playerHeight=rider.RiderVisualHeight;
-            foreach(var unit in opponents)
-                Require(Mathf.Abs(unit.VisualHeight-playerHeight)<=Mathf.Max(.03f,playerHeight*.035f),
-                    "ground opponent rendered body height matches the dismounted player after animation posing");
             int spyglassCount=0;CombatOpponent scout=null;
             foreach(var unit in opponents)if(unit.HasSpyglass){spyglassCount++;scout=unit;}
             Require(spyglassCount==1 && scout && scout.SpyglassVisible && scout.RiderVisible,

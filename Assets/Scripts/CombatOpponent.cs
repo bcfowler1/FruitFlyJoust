@@ -47,7 +47,7 @@ namespace FruitFlyJoust
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
             visual=GetComponent<RiderAnimationVisual>();
             if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.Create(transform,material);}
-            visual.visualScale=rider ? rider.OnFootVisualScale : .6f;visual.Pose(transform,false,0);
+            visual.visualScale=rider ? rider.OnFootVisualScale : RiderCombat.CanonicalRiderVisualScale;visual.Pose(transform,false,0);
             float groundY=transform.TransformPoint(feet.center).y-feet.height*.5f;
             GroundFootError=visual.AlignFeetToWorldY(groundY+.01f);BuildWeapon(material);BuildSpyglass(material);
             RefreshGroundSupport();
@@ -212,7 +212,6 @@ namespace FruitFlyJoust
             if(!visual || visual.Ragdolled)return;
             float speed=feet && feet.enabled && SupportedByWalkableGround ? Vector3.ProjectOnPlane(feet.velocity,Vector3.up).magnitude : 0;
             visual.Pose(transform,false,speed,target && target.Health<=0);
-            if(rider && !rider.Mounted)visual.MatchRenderedWorldHeight(rider.RiderVisualHeight);
             if(style==Style.Swordsman && attackGesture>0)visual.PoseSwordAttack(alternateCut ? RiderCombat.SwordAttack.LeftToRight : RiderCombat.SwordAttack.RightToLeft,attackGesture/.55f);
         }
         void OnDestroy(){if(weaponVisual)Destroy(weaponVisual.gameObject);if(spyglassVisual)Destroy(spyglassVisual.gameObject);if(ownsVisual && visual)Destroy(visual);}

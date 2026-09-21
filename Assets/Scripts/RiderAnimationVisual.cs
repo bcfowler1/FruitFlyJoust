@@ -47,7 +47,7 @@ namespace FruitFlyJoust
         public Quaternion StableCameraRotation { get; private set; }=Quaternion.identity;
         public float mountedSeatHeight = .2f;
         public float mountedSeatForward;
-        public float visualScale = .6f;
+        public float visualScale = RiderCombat.CanonicalRiderVisualScale;
         public Vector3 MountedLocalPosition { get { return authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward); } }
         public Vector3 MountedLocalScale { get { return authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalScale : Vector3.one*visualScale; } }
         public Transform Hand(bool left) { return animator && animator.isHuman ? animator.GetBoneTransform(left ? HumanBodyBones.LeftHand : HumanBodyBones.RightHand) : null; }
@@ -238,19 +238,6 @@ namespace FruitFlyJoust
                 if(!body)return 0;var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return 0;
                 Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);return bounds.size.y;
             }
-        }
-        public void MatchRenderedWorldHeight(float targetHeight)
-        {
-            if(!body || Ragdolled || targetHeight<=.01f)return;
-            var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return;
-            Bounds before=renderers[0].bounds;foreach(var renderer in renderers)before.Encapsulate(renderer.bounds);
-            if(before.size.y<=.01f)return;
-            float ratio=Mathf.Clamp(targetHeight/before.size.y,.75f,1.35f);
-            if(Mathf.Abs(ratio-1)<.005f)return;
-            float footY=before.min.y;body.localScale*=ratio;
-            Bounds after=renderers[0].bounds;foreach(var renderer in renderers)after.Encapsulate(renderer.bounds);
-            // Scale around the visual root, then restore the planted foot height.
-            body.position+=Vector3.up*(footY-after.min.y);
         }
         public float AlignFeetToWorldY(float worldY)
         {
