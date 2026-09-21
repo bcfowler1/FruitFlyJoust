@@ -21,6 +21,7 @@ namespace FruitFlyJoust
         public bool FlyEscaping { get; private set; }
         public bool ReplacementMountScheduled { get; private set; }
         public float EnemyHunger { get; private set; }=.35f;
+        public float EnemyTopSpeed { get { return Mathf.Lerp(3.5f,8f,Competence)*FlyMotor.SpeedMultiplierForHunger(EnemyHunger); } }
         public int ReturnedRemountCount { get; private set; }
         public Rigidbody LastDroppedLance { get; private set; }
         public Vector3 LastRespawnPosition { get; private set; }
@@ -301,7 +302,7 @@ namespace FruitFlyJoust
             if(StaticEnvironmentAhead(transform.position+Vector3.up*.15f,transform.forward,Mathf.Clamp(LanceReach,1,4),out var lanceObstacle))
                 desired=(desired+lanceObstacle.normal*1.35f+Vector3.up*.3f).normalized;
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
-            velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
+            velocity=Vector3.Lerp(velocity,transform.forward*(Mathf.Lerp(3.5f,8f,skill)*FlyMotor.SpeedMultiplierForHunger(EnemyHunger)),1-Mathf.Exp(-2.5f*dt));
             EnemyHunger=Mathf.Clamp01(EnemyHunger+dt*(.002f+velocity.magnitude*.0008f));
             Vector3 movement=velocity*dt;
             if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))

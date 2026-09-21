@@ -50,6 +50,10 @@ namespace FruitFlyJoust
                 Require(Mathf.Abs(rider.LanceReach-jouster.LanceReach)<.03f,
                     "player and opponent have equal effective lance reach from the hand");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
+                jouster.SetEnemyHunger(0);float enemyFedTop=jouster.EnemyTopSpeed;
+                jouster.SetEnemyHunger(1);float enemyHungryTop=jouster.EnemyTopSpeed;jouster.SetEnemyHunger(.35f);
+                Require(Mathf.Abs(enemyHungryTop/enemyFedTop-.9f)<.001f,
+                    "enemy fly top speed uses the same restrained hunger scaling");
                 Require(jouster.RiderHealth.GetComponent<Collider>() && jouster.FlyHealth.GetComponent<Collider>(),"mounted rider and fly have active lance hit volumes");
                 Vector3 saddleLocal=jouster.SaddleLocalPosition,riderLocal=jouster.RiderLocalPosition,previousRoot=jouster.transform.position;
                 float maximumSaddleDrift=0,maximumRiderDrift=0,maximumRootStep=0;float stabilityDeadline=Clock+.6f;

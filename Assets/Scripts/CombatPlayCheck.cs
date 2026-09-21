@@ -175,6 +175,10 @@ namespace FruitFlyJoust
             Require(cruisingHunger>restingHunger && acrobaticHunger>cruisingHunger,"flight, speed, turning, climbing, and rolling progressively increase hunger");
             float acrobaticFillSeconds=(1-.15f)/acrobaticHunger*60;
             Require(acrobaticFillSeconds>85 && acrobaticFillSeconds<95,"fast acrobatic flight fills the reset hunger meter in about ninety seconds");
+            float fedTopSpeed=FlyMotor.TopSpeedForHunger(0),starvingTopSpeed=FlyMotor.TopSpeedForHunger(1);
+            Require(Mathf.Abs(starvingTopSpeed/fedTopSpeed-.9f)<.001f &&
+                Mathf.Abs(combat.fly.HungerAdjustedTopSpeed-FlyMotor.TopSpeedForHunger(combat.fly.Hunger))<.001f,
+                "fly hunger smoothly reduces only the top-speed ceiling by ten percent total");
             var foodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);foodObject.name="Mounted walking food check";
             foodObject.transform.position=walkStart+combat.fly.transform.forward*.25f;foodObject.transform.localScale=Vector3.one*.2f;
             var food=foodObject.AddComponent<FlyFood>();food.nutrition=.5f;int meals=combat.fly.FoodEatenCount;combat.fly.SetHunger(.8f);float originalFoodScale=foodObject.transform.localScale.x;

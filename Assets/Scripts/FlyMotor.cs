@@ -46,6 +46,9 @@ namespace FruitFlyJoust
         public float climbHungerPerMeterPerMinute=.035f;
         public float rollHungerPerDegreePerMinute=.00042f;
         public float Hunger { get { return hunger; } }
+        public const float UnhinderedTopSpeed=18f;
+        public float HungerSpeedMultiplier { get { return SpeedMultiplierForHunger(hunger); } }
+        public float HungerAdjustedTopSpeed { get { return TopSpeedForHunger(hunger); } }
         public float CurrentHungerPerMinute { get; private set; }
         public bool SeekingFood { get; private set; }
         public bool Feeding { get; private set; }
@@ -339,7 +342,8 @@ namespace FruitFlyJoust
             Quaternion targetRotation = approaching && supported ? SurfaceGeometry.Pose(guidedForward, surface.normal) :
                 Quaternion.Euler(0, heading, 0)*Quaternion.AngleAxis(rollAngle+naturalBankAngle,Vector3.forward);
             rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 220 * dt));
-            speed = Mathf.Lerp(speed, approaching ? 0 : intent.speed,
+            float requestedSpeed=approaching ? 0 : Mathf.Min(intent.speed,HungerAdjustedTopSpeed);
+            speed = Mathf.Lerp(speed, requestedSpeed,
                 1 - Mathf.Exp(-(approaching ? 4 : senses.spur ? 10 : senses.brake ? 6 : 2) * dt));
             float vertical = approaching ? -Mathf.Min(2, supported ? Mathf.Max(.15f, gap * 2) : 2) : intent.climb;
             if (Phase == RidePhase.Launching) vertical = 3.5f;
@@ -418,6 +422,8 @@ namespace FruitFlyJoust
             brain.ResetBrain();
         }
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
+        public static float SpeedMultiplierForHunger(float value){return Mathf.Lerp(1f,.9f,Mathf.Clamp01(value));}
+        public static float TopSpeedForHunger(float value){return UnhinderedTopSpeed*SpeedMultiplierForHunger(value);}
         public float CalculateHungerPerMinute(bool flying,float flightSpeed,float turnDegreesPerSecond,float climbMetersPerSecond,float rollDegreesPerSecond)
         {
             float rate=Mathf.Max(0,hungerPerMinute);if(!flying)return rate;
