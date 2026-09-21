@@ -265,6 +265,7 @@ namespace FruitFlyJoust
             yield return new WaitForSeconds(.7f);
             Require(target.Health == 55, "on-foot full-draw arrow deals 45 damage to a reset target");
             Require(combat.TryMount() && combat.Mounted, "deliberate remount near perched fly");
+            Require(!combat.fly.RecallActive,"remount cancels recall landing control before returning authority to the rider");
             Require(combat.mountedVisual.gameObject.activeSelf, "mounted rider restored");
             target.ResetTarget(); Require(target.Health == 100, "target reset");
             combat.SelectWeapon(RiderCombat.Weapon.Bow);

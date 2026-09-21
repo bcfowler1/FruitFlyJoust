@@ -69,6 +69,8 @@ namespace FruitFlyJoust
         public int PlayerRespawnCount { get; private set; }
         public Vector3 LastPlayerRespawnPosition { get; private set; }
         public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
+        public float RiderVisualHeight { get { return animationVisual ? animationVisual.VisualHeight : 0; } }
+        public float OnFootVisualScale { get { return animationVisual ? animationVisual.visualScale : .6f; } }
         public CombatTarget PlayerFlyHealth { get { return playerFlyHealth; } }
         public Vector3 FlyHitPosition { get { return playerFlyHealth ? playerFlyHealth.transform.position : RideRoot.position; } }
 
@@ -299,6 +301,7 @@ namespace FruitFlyJoust
             if (MountingPathBlocked(avatar.position + Vector3.up * .6f, RideRoot.position))
             { message = "Mounting path is blocked."; return false; }
             if(animationVisual)animationVisual.BeginMountTransition(true);
+            if(fly)fly.CancelRecall();
             Mounted = true; avatar.gameObject.SetActive(false); RideInput.enabled = true;
             mountedVisual.gameObject.SetActive(true);
             var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(true);

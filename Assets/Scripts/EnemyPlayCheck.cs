@@ -80,6 +80,12 @@ namespace FruitFlyJoust
                     "dead moving fly becomes a ragdoll corpse retaining forward velocity");
                 bool corpseAnimation=false;foreach(var behaviour in jouster.LastFlyCorpse.GetComponentsInChildren<MonoBehaviour>())if(behaviour!=jouster.LastFlyCorpse && behaviour.enabled)corpseAnimation=true;
                 Require(!corpseAnimation,"dead fly corpse has no active wing animation");
+                float corpseStartY=jouster.LastFlyCorpse.transform.position.y;
+                yield return WaitClock(.8f);
+                Require(jouster.LastFlyCorpse && jouster.LastFlyCorpse.minimumLifetime>=15,
+                    "dead enemy fly remains as a corpse for at least fifteen seconds");
+                Require(jouster.LastFlyCorpse.transform.position.y<corpseStartY-.05f || jouster.LastFlyCorpse.Velocity.y<-.1f,
+                    "dead enemy fly falls toward the ground under gravity");
                 Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,
@@ -90,7 +96,17 @@ namespace FruitFlyJoust
             var opponents=FindObjectsOfType<CombatOpponent>();
             Require(opponents.Length>=2,"opponents present");
             foreach(var armed in opponents)Require(armed.WeaponVisible,"ground opponent visibly carries its combat weapon");
-            foreach(var groundEnemy in opponents)Require(groundEnemy.VisualHeight>0 && groundEnemy.VisualHeight<1.75f && groundEnemy.GroundFootError<1.5f,"ground opponent is rider-scaled and aligned to the walking surface");
+            float playerHeight=rider.RiderVisualHeight;
+            foreach(var groundEnemy in opponents)
+            {
+                float heightRatio=groundEnemy.VisualHeight/Mathf.Max(.001f,playerHeight);
+                var controller=groundEnemy.GetComponent<CharacterController>();
+                Require(groundEnemy.VisualHeight>0 && heightRatio>.9f && heightRatio<1.1f && groundEnemy.GroundFootError<1.5f,
+                    "ground opponent matches the player rider scale and walking surface");
+                Require(controller && Mathf.Abs(controller.height-1.2f)<.001f && Mathf.Abs(controller.radius-.2f)<.001f,
+                    "ground opponent collision dimensions match the player rider");
+                Require(groundEnemy.SightRange>=15,"ground opponent attention radius remains in world units after visual scaling");
+            }
             foreach(var opponent in opponents) opponent.enabled=false;
             foreach(var arrow in FindObjectsOfType<OpponentArrow>()) Destroy(arrow.gameObject);
             rider.ResetHealth();
@@ -105,11 +121,14 @@ namespace FruitFlyJoust
                 opponent.transform.position=new Vector3(20,1,20);controller.enabled=true;
             }
             var enemy=opponents[0];var feet=enemy.GetComponent<CharacterController>();
-            feet.enabled=false;enemy.transform.position=origin+Vector3.forward*4+Vector3.up;
+            feet.enabled=false;enemy.transform.position=origin+Vector3.forward*12+Vector3.up;
             feet.enabled=true;enemy.style=CombatOpponent.Style.Swordsman;enemy.enabled=true;
             Physics.SyncTransforms();Vector3 initial=enemy.transform.position;
             yield return WaitClock(.8f);
             Require(Vector3.Distance(enemy.transform.position,origin)<Vector3.Distance(initial,origin),"swordsman approaches rider");
+            Require(Vector3.Distance(initial,origin)>10 && enemy.RiderVisible,
+                "swordsman reacts from its world-space attention radius rather than visual scale");
+            feet.enabled=false;enemy.transform.position=origin+Vector3.forward*4+Vector3.up;feet.enabled=true;Physics.SyncTransforms();
             deadline=Clock+4;
             while(rider.Health==100&&Clock<deadline)yield return null;
             Require(rider.Health<100,"enemy melee damages rider");

@@ -397,6 +397,7 @@ namespace FruitFlyJoust
             if(float.IsNaN(groundTarget.x)||float.IsNaN(groundTarget.y)||float.IsNaN(groundTarget.z))return false;
             recallTarget=groundTarget;recallActive=true;recallLanding=false;idleClock=0;return true;
         }
+        public void CancelRecall(){recallActive=recallLanding=false;}
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
         public float CalculateHungerPerMinute(bool flying,float flightSpeed,float turnDegreesPerSecond,float climbMetersPerSecond,float rollDegreesPerSecond)
         {

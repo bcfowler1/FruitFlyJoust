@@ -21,17 +21,22 @@ namespace FruitFlyJoust
         public bool Ragdolled { get { return visual && visual.Ragdolled; } }
         public bool WeaponVisible { get { return weaponVisual && weaponVisual.gameObject.activeInHierarchy; } }
         public float VisualHeight { get { return visual ? visual.VisualHeight : 0; } }
+        public float SightRange { get { return sightRange; } }
+        public bool RiderVisible { get; private set; }
         public float GroundFootError { get; private set; }
         void Start()
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();
             rider = FindObjectOfType<RiderCombat>(); spawn = transform.position;
+            // Match the player's on-foot body and collision dimensions. Perception
+            // remains expressed in world metres and is intentionally not scaled.
+            feet.height=1.2f;feet.radius=.2f;feet.center=new Vector3(0,.6f,0);
             // CharacterController provides collision; remove the primitive's duplicate capsule.
             var primitive = GetComponent<CapsuleCollider>(); if (primitive) Destroy(primitive);
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
             visual=GetComponent<RiderAnimationVisual>();
             if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.Create(transform,material);}
-            visual.visualScale=.48f;visual.Pose(transform,false,0);
+            visual.visualScale=rider ? rider.OnFootVisualScale : .6f;visual.Pose(transform,false,0);
             float groundY=transform.TransformPoint(feet.center).y-feet.height*.5f;
             GroundFootError=visual.AlignFeetToWorldY(groundY+.01f);BuildWeapon(material);
         }
@@ -60,9 +65,9 @@ namespace FruitFlyJoust
             }
             Vector3 difference = rider.RiderPosition-transform.position;
             Vector3 horizontal = Vector3.ProjectOnPlane(difference, Vector3.up);
-            bool visible = difference.magnitude <= sightRange &&
-                !Physics.Linecast(transform.position+Vector3.up*.6f, rider.RiderPosition+Vector3.up*.6f,
-                    1, QueryTriggerInteraction.Ignore);
+            bool visible = difference.magnitude <= sightRange && HasLineOfSight(
+                transform.position+Vector3.up*.6f,rider.RiderPosition+Vector3.up*.6f);
+            RiderVisible=visible;
             Vector3 motion = Vector3.zero;
             if (visible && horizontal.sqrMagnitude > .01f)
             {
@@ -98,6 +103,20 @@ namespace FruitFlyJoust
             if (feet.isGrounded) falling = -2;
             falling += Physics.gravity.y*dt;
             feet.Move((motion+Vector3.up*falling)*dt);
+        }
+        bool HasLineOfSight(Vector3 start,Vector3 end)
+        {
+            Vector3 delta=end-start;float distance=delta.magnitude;if(distance<.01f)return true;
+            foreach(var hit in Physics.RaycastAll(start,delta/distance,distance,1,QueryTriggerInteraction.Ignore))
+            {
+                Transform candidate=hit.collider.transform;
+                if(candidate==transform || candidate.IsChildOf(transform))continue;
+                // A collider reached only at the destination belongs to the rider or
+                // their mount and confirms sight rather than blocking it.
+                if(hit.distance>=distance-.5f)continue;
+                return false;
+            }
+            return true;
         }
         void LateUpdate()
         {
