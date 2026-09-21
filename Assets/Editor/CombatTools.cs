@@ -6,6 +6,20 @@ using FruitFlyJoust;
 
 public static class CombatTools
 {
+    public static void RunBatchEnemyFlyLifecycleChecks()
+    {
+        if(!Application.isBatchMode)throw new InvalidOperationException("Use this entry point only for batch verification.");
+        DateTime checkStarted=DateTime.UtcNow;EditorSceneManager.OpenScene("Assets/CombatEncounter.unity");
+        EditorApplication.playModeStateChanged+=state=>{
+            if(state==PlayModeStateChange.EnteredPlayMode)new GameObject("Enemy fly lifecycle checks").AddComponent<EnemyFlyLifecycleCheck>();
+            if(state==PlayModeStateChange.EnteredEditMode)
+            {
+                string report=System.IO.Path.Combine(Application.dataPath,"../Research/enemy-fly-lifecycle-evaluation.json");
+                bool fresh=System.IO.File.Exists(report)&&System.IO.File.GetLastWriteTimeUtc(report)>=checkStarted;
+                EditorApplication.Exit(fresh&&System.IO.File.ReadAllText(report).Contains("\"status\":\"passed\"")?0:1);
+            }};
+        EditorApplication.isPlaying=true;
+    }
     public static void RunBatchEnemyChecks()
     {
         if(!Application.isBatchMode)throw new InvalidOperationException("Use this entry point only for batch verification.");
@@ -66,6 +80,13 @@ public static class CombatTools
         if (!EditorApplication.isPlaying || (!UnityEngine.Object.FindObjectOfType<CombatOpponent>() && (!viewer || !viewer.walkingLab)))
             throw new InvalidOperationException("Enter CombatEncounter Play first.");
         new GameObject("Bounded enemy play checks").AddComponent<EnemyPlayCheck>();
+    }
+    [MenuItem("Fruit Fly/Combat/Run Enemy Fly Lifecycle Checks")]
+    public static void RunEnemyFlyLifecycleChecks()
+    {
+        if(!EditorApplication.isPlaying)throw new InvalidOperationException("Enter a combat scene in Play first.");
+        if(!UnityEngine.Object.FindObjectOfType<RiderCombat>())throw new InvalidOperationException("The active scene needs RiderCombat.");
+        new GameObject("Enemy fly lifecycle checks").AddComponent<EnemyFlyLifecycleCheck>();
     }
     [MenuItem("Fruit Fly/Combat/Create Enemy Encounter Scene")]
     public static void CreateEncounter()

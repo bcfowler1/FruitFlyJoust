@@ -49,6 +49,8 @@ namespace FruitFlyJoust
         public float SwordForwardAlignment { get { return swordVisual && avatar ? Vector3.Dot(swordVisual.forward,(Mounted ? RideRoot : avatar).forward) : 0; } }
         public float SwordTipLateral { get { Transform frame=Mounted ? RideRoot : avatar;return frame ? frame.InverseTransformPoint(Tip()).x : 0; } }
         public float SwordGripError { get { return weaponVisual ? Vector3.Distance(weaponVisual.localPosition,swordHandPose.position) : float.PositiveInfinity; } }
+        public float LanceGripError { get { return weapon==Weapon.Lance && lanceModel && animationVisual && animationVisual.Hand(false) ? LanceGeometry.GripError(lanceModel,animationVisual.Hand(false).position) : float.PositiveInfinity; } }
+        public float LanceReach { get { return weapon==Weapon.Lance && animationVisual && animationVisual.Hand(false) ? Vector3.Distance(animationVisual.Hand(false).position,Tip()) : 0; } }
         private Vector3 lastTip;
         private float padInteractBefore, padWeaponBefore;
         private bool callBefore;
@@ -193,8 +195,7 @@ namespace FruitFlyJoust
             }
             if (weapon == Weapon.Lance && Mounted && weaponVisual && animationVisual.Hand(false))
             {
-                weaponVisual.rotation = RideRoot.rotation;
-                weaponVisual.position = animationVisual.Hand(false).position + RideRoot.forward * 1.05f;
+                LanceGeometry.AlignGrip(lanceModel,weaponVisual,animationVisual.Hand(false).position,RideRoot.rotation);
             }
         }
         void SetWeapon()
@@ -213,10 +214,11 @@ namespace FruitFlyJoust
             {
                 Vector3 size = weaponVisual.localScale;
                 weaponVisual.SetParent(hand, false);
-                weaponVisual.localPosition = weapon == Weapon.Lance ? new Vector3(0, 0, 1.05f) : Vector3.zero;
+                weaponVisual.localPosition = Vector3.zero;
                 weaponVisual.rotation = (Mounted ? saddle : avatar).rotation;
                 Vector3 scale = hand.lossyScale;
                 weaponVisual.localScale = new Vector3(size.x/Mathf.Max(.001f,scale.x),size.y/Mathf.Max(.001f,scale.y),size.z/Mathf.Max(.001f,scale.z));
+                if(weapon==Weapon.Lance)LanceGeometry.AlignGrip(lanceModel,weaponVisual,hand.position,(Mounted ? saddle : avatar).rotation);
                 if(weapon==Weapon.Sword)ApplySwordHandPose();
             }
             UpdateStowedLance();
@@ -573,7 +575,7 @@ namespace FruitFlyJoust
                 var zone=target.GetComponent<MountedHitZone>();
                 if(zone && zone.owner)
                 {
-                    if(zone.fly)message=zone.owner.ReceiveFlyLanceContact(impact) ? (zone.owner.Mounted ? "Lance hit — enemy fly damaged!" : "Enemy fly disabled — opponent unseated!") : "Joust hit.";
+                    if(zone.fly)message=zone.owner.ReceiveFlyLanceContact(impact,weaponVisual.forward) ? (zone.owner.Mounted ? "Lance hit — enemy fly damaged!" : "Enemy fly disabled — opponent unseated!") : "Joust hit.";
                     else message=zone.owner.ReceiveLanceContact(impact) ? "Solid lance hit — opponent unseated!" : "Rider hit!";
                 }
                 else message=mountedOpponent && mountedOpponent.ReceiveLanceContact(impact) ? "Solid lance hit — opponent unseated!" : "Joust hit.";
@@ -745,5 +747,32 @@ namespace FruitFlyJoust
             if (active) CreatePractice();
         }
         void OnDestroy() { if (practice) Destroy(practice);if(standaloneJouster)Destroy(standaloneJouster); if (avatar) Destroy(avatar.gameObject); if (weaponVisual) Destroy(weaponVisual.gameObject); }
+    }
+
+    // Both jousters use the model's authored handle as the grip point. This keeps the
+    // same physical model length ahead of either hand, regardless of skeleton scaling.
+    static class LanceGeometry
+    {
+        static Renderer HandleRenderer(Transform model)
+        {
+            if(!model)return null;
+            foreach(var renderer in model.GetComponentsInChildren<Renderer>())
+            {
+                string part=renderer.name.ToLowerInvariant();
+                if(part.Contains("handle") || part.Contains("grip"))return renderer;
+            }
+            return null;
+        }
+        public static Vector3 GripPoint(Transform model)
+        {
+            var handle=HandleRenderer(model);return handle ? handle.bounds.center : (model ? model.position : Vector3.zero);
+        }
+        public static float GripError(Transform model,Vector3 handPosition){return Vector3.Distance(GripPoint(model),handPosition);}
+        public static void AlignGrip(Transform model,Transform root,Vector3 handPosition,Quaternion rotation)
+        {
+            if(!model || !root)return;
+            root.rotation=rotation;
+            root.position+=handPosition-GripPoint(model);
+        }
     }
 }

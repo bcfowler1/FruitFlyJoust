@@ -77,7 +77,14 @@ namespace FruitFlyJoust
         {
             if(!physicsBody || renderers==null || renderers.Length==0)return;
             Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)if(renderer)bounds.Encapsulate(renderer.bounds);
-            if(!Physics.Raycast(bounds.center+Vector3.up*2,Vector3.down,out var ground,6,1,QueryTriggerInteraction.Ignore) || Vector3.Dot(ground.normal,Vector3.up)<.65f)return;
+            RaycastHit ground=default(RaycastHit);float nearest=float.PositiveInfinity;bool found=false;
+            foreach(var hit in Physics.RaycastAll(bounds.center+Vector3.up*2,Vector3.down,6,1,QueryTriggerInteraction.Ignore))
+            {
+                if(hit.collider && (hit.collider.transform==transform || hit.collider.transform.IsChildOf(transform)))continue;
+                if(Vector3.Dot(hit.normal,Vector3.up)<.65f || hit.distance>=nearest)continue;
+                ground=hit;nearest=hit.distance;found=true;
+            }
+            if(!found)return;
             float penetration=Vector3.Dot(ground.point-bounds.min,ground.normal);
             if(penetration<=.02f)return;
             physicsBody.position+=ground.normal*(penetration+.025f);

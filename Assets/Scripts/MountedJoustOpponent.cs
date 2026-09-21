@@ -23,6 +23,8 @@ namespace FruitFlyJoust
         public float EnemyHunger { get; private set; }=.35f;
         public int ReturnedRemountCount { get; private set; }
         public Rigidbody LastDroppedLance { get; private set; }
+        public float LanceGripError { get { return lance && riderVisual && riderVisual.Hand(false) ? LanceGeometry.GripError(lance,riderVisual.Hand(false).position) : float.PositiveInfinity; } }
+        public float LanceReach { get { return lance && riderVisual && riderVisual.Hand(false) ? Vector3.Distance(riderVisual.Hand(false).position,LanceTip) : 0; } }
         public float GroundClearance
         {
             get
@@ -39,7 +41,7 @@ namespace FruitFlyJoust
         CharacterController feet;
         CombatOpponent groundAI;
         CombatTarget health,mountHealth;
-        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale,flyMountedLocalPosition,flyMountedLocalScale;
+        Vector3 velocity,lastLanceTip,flyDeathImpact,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale,flyMountedLocalPosition,flyMountedLocalScale;
         Quaternion saddleBaseRotation,flyTemplateLocalRotation,flyMountedLocalRotation;
         float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1,replacementMountTimer=-1;
 
@@ -120,9 +122,13 @@ namespace FruitFlyJoust
             var prefab=Resources.Load<GameObject>("Weapons/Fly Lance Source") ?? Resources.Load<GameObject>("Weapons/Fly Lance");
             var weapon=prefab ? Instantiate(prefab) : GameObject.CreatePrimitive(PrimitiveType.Cube);
             foreach(var collider in weapon.GetComponentsInChildren<Collider>())Destroy(collider);
-            weapon.name="Enemy lance";weapon.transform.SetParent(riderAnchor ? riderAnchor : transform,false);weapon.transform.localPosition=new Vector3(.25f,.32f,1.35f);
-            weapon.transform.localScale=prefab ? Vector3.one : new Vector3(.055f,.055f,2.5f);
+            weapon.name="Enemy lance";weapon.transform.SetParent(riderAnchor ? riderAnchor : transform,false);weapon.transform.localPosition=Vector3.zero;
+            Vector3 parentScale=weapon.transform.parent ? weapon.transform.parent.lossyScale : Vector3.one;
+            Vector3 authoredScale=prefab ? Vector3.one : new Vector3(.055f,.055f,2.5f);
+            weapon.transform.localScale=new Vector3(authoredScale.x/Mathf.Max(.001f,parentScale.x),authoredScale.y/Mathf.Max(.001f,parentScale.y),authoredScale.z/Mathf.Max(.001f,parentScale.z));
             var renderer=weapon.GetComponent<Renderer>();if(renderer)renderer.sharedMaterial=weaponMaterial;lance=weapon.transform;
+            Transform hand=riderVisual ? riderVisual.Hand(false) : null;
+            if(hand)LanceGeometry.AlignGrip(lance,lance,hand.position,riderAnchor ? riderAnchor.rotation : transform.rotation);
         }
         void BuildHitZones()
         {
@@ -271,6 +277,8 @@ namespace FruitFlyJoust
         void LateUpdate()
         {
             if(riderVisual)riderVisual.Pose(Mounted && riderAnchor ? riderAnchor : transform,Mounted,Mounted ? 0 : velocity.magnitude,health && health.Health<=0);
+            Transform hand=riderVisual ? riderVisual.Hand(false) : null;
+            if(Mounted && lance && hand)LanceGeometry.AlignGrip(lance,lance,hand.position,riderAnchor ? riderAnchor.rotation : transform.rotation);
         }
         void Fly(float dt)
         {
@@ -333,7 +341,7 @@ namespace FruitFlyJoust
                 if(mountHealth && mountHealth.Health<=0)
                 {
                     if(poseMirror)poseMirror.StopWings();
-                    LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
+                    LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity+flyDeathImpact,true);flyDeathImpact=Vector3.zero;
                     ReplacementMountScheduled=true;replacementMountTimer=6;
                     flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
                 }
@@ -358,9 +366,11 @@ namespace FruitFlyJoust
             var body=lance.gameObject.AddComponent<Rigidbody>();body.mass=.7f;body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;LastDroppedLance=body;
             body.velocity=velocity;body.angularVelocity=transform.right*1.2f;Destroy(lance.gameObject,15);lance=null;
         }
-        public bool ReceiveFlyLanceContact(float impact)
+        public bool ReceiveFlyLanceContact(float impact,Vector3 impactDirection=default(Vector3))
         {
             if(!Mounted || !mountHealth)return false;
+            Vector3 planarImpact=Vector3.ProjectOnPlane(impactDirection,Vector3.up);
+            flyDeathImpact=planarImpact.sqrMagnitude>.001f ? planarImpact.normalized*Mathf.Clamp(impact*.22f,0,2) : Vector3.zero;
             if(mountHealth.Health<=0)return ReceiveLanceContact(Mathf.Max(impact,3));
             contactCooldown=.35f;return true;
         }

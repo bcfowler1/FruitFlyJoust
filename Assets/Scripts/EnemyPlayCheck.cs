@@ -45,6 +45,10 @@ namespace FruitFlyJoust
                 Require(jouster.WingSpeedScale>0,"living opponent wing animation is driven by flight speed");
                 Require(jouster.GroundClearance>=.55f,"live enemy fly remains above the ground collision surface");
                 Require(jouster.RiderForwardAlignment>.9f,"opponent rider faces the lance and travel direction while mounted");
+                Require(rider.LanceGripError<.03f && jouster.LanceGripError<.03f,
+                    "player and opponent lances are held at the authored handle in their right hands");
+                Require(Mathf.Abs(rider.LanceReach-jouster.LanceReach)<.03f,
+                    "player and opponent have equal effective lance reach from the hand");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
                 Require(jouster.RiderHealth.GetComponent<Collider>() && jouster.FlyHealth.GetComponent<Collider>(),"mounted rider and fly have active lance hit volumes");
                 Vector3 saddleLocal=jouster.SaddleLocalPosition,riderLocal=jouster.RiderLocalPosition,previousRoot=jouster.transform.position;
