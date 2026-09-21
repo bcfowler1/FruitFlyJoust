@@ -50,6 +50,7 @@ namespace FruitFlyJoust
         public int FoodEatenCount { get; private set; }
         FlyFood foodTarget;
         FlyFood countedFoodTarget;
+        FloatingNutritionNumber nutritionDisplay;
         public bool Dead { get; private set; }
         public float FlightSpeed { get { return rb ? rb.velocity.magnitude : 0; } }
         public RidePhase Phase { get { return landing.Phase; } }
@@ -169,6 +170,11 @@ namespace FruitFlyJoust
             if(foodTarget && foodDistance<.75f && hunger>.01f)
             {
                 float nutrition=foodTarget.Consume(dt);Feeding=nutrition>0;hunger=Mathf.Max(0,hunger-nutrition);
+                if(Feeding)
+                {
+                    if(!nutritionDisplay)nutritionDisplay=FloatingNutritionNumber.Create(transform);
+                    nutritionDisplay.Add(nutrition);
+                }
                 if(Feeding && countedFoodTarget!=foodTarget){FoodEatenCount++;countedFoodTarget=foodTarget;}
                 if(!foodTarget.Available || hunger<=.01f){foodTarget=null;SeekingFood=false;Feeding=false;}
             }

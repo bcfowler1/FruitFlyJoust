@@ -184,6 +184,8 @@ namespace FruitFlyJoust
             yield return new WaitForSeconds(1.05f);
             Require(combat.fly.FoodEatenCount>meals+1 && idleFood.RemainingFraction<.72f && idleFood.RemainingFraction>.65f && combat.fly.Hunger<.35f,
                 "nearby dismounted fly autonomously feeds for one second and consumes thirty percent of remaining food");
+            var nutritionNumber=FindObjectOfType<FloatingNutritionNumber>();
+            Require(nutritionNumber && nutritionNumber.Amount>1,"feeding shows accumulated positive nutrition above the fly");
             Destroy(idleFoodObject);combat.fly.SetHunger(.15f);
             yield return new WaitForSeconds(.3f);
             Require(combat.FootAvatar.GetComponent<CharacterController>().isGrounded, "foot controller on floor");

@@ -49,6 +49,35 @@ namespace FruitFlyJoust
         }
     }
 
+    public sealed class FloatingNutritionNumber : MonoBehaviour
+    {
+        Transform target;TextMesh text;float amount,age;
+        public float Amount { get { return amount; } }
+        public static FloatingNutritionNumber Create(Transform target)
+        {
+            var go=new GameObject("Fly feeding nutrition");
+            var display=go.AddComponent<FloatingNutritionNumber>();display.target=target;
+            display.text=go.AddComponent<TextMesh>();display.text.anchor=TextAnchor.MiddleCenter;
+            display.text.alignment=TextAlignment.Center;display.text.fontSize=64;
+            display.text.characterSize=.06f;display.text.color=new Color(.25f,1,.25f,1);
+            display.Place();return display;
+        }
+        public void Add(float nutrition)
+        {
+            if(float.IsNaN(nutrition)||float.IsInfinity(nutrition)||nutrition<=0)return;
+            amount+=nutrition*100;age=0;
+            text.text="+"+Mathf.Max(1,Mathf.RoundToInt(amount));text.color=new Color(.25f,1,.25f,1);Place();
+        }
+        void Place(){if(target)transform.position=target.position+Vector3.up*(1.35f+age*.35f);}
+        void LateUpdate()
+        {
+            if(!target){Destroy(gameObject);return;}
+            age+=Time.deltaTime;Place();var camera=Camera.main;if(camera)transform.rotation=camera.transform.rotation;
+            if(text)text.color=new Color(text.color.r,text.color.g,text.color.b,Mathf.Clamp01(1-age/1.2f));
+            if(age>=1.2f)Destroy(gameObject);
+        }
+    }
+
     public sealed class CombatArrow : MonoBehaviour
     {
         public RiderCombat clock;
