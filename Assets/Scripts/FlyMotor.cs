@@ -37,7 +37,13 @@ namespace FruitFlyJoust
         public bool RecallActive { get { return recallActive; } }
         [Range(0,1)] public float hunger=.15f;
         public float hungerPerMinute=.12f;
+        public float flightHungerPerMinute=.08f;
+        public float speedHungerPerMeterPerMinute=.018f;
+        public float turnHungerPerDegreePerMinute=.0012f;
+        public float climbHungerPerMeterPerMinute=.035f;
+        public float rollHungerPerDegreePerMinute=.0008f;
         public float Hunger { get { return hunger; } }
+        public float CurrentHungerPerMinute { get; private set; }
         public bool SeekingFood { get; private set; }
         public float RiderAuthority { get; private set; }=1;
         public int FoodEatenCount { get; private set; }
@@ -146,7 +152,12 @@ namespace FruitFlyJoust
         {
             if(Dead){rb.velocity=Vector3.zero;return;}
             float dt = Time.fixedDeltaTime;
-            hunger=Mathf.Clamp01(hunger+hungerPerMinute/60*dt);
+            bool airborne=Phase==RidePhase.Flying || Phase==RidePhase.Launching || Phase==RidePhase.Landing;
+            float turnDegreesPerSecond=airborne ? Mathf.Abs(intent.turn)*85 : 0;
+            float climbMetersPerSecond=airborne ? Mathf.Abs(intent.climb) : 0;
+            float rollRateDegrees=airborne ? Mathf.Abs(rider.roll)*rollDegreesPerSecond : 0;
+            CurrentHungerPerMinute=CalculateHungerPerMinute(airborne,rb.velocity.magnitude,turnDegreesPerSecond,climbMetersPerSecond,rollRateDegrees);
+            hunger=Mathf.Clamp01(hunger+CurrentHungerPerMinute/60*dt);
             cornerGripGrace=Mathf.Max(0,cornerGripGrace-dt);
             Vector2 controlReins=rider.reins;float controlLift=rider.lift;
             bool recallSpur=false,recallBrake=false;
@@ -341,6 +352,14 @@ namespace FruitFlyJoust
             recallTarget=groundTarget;recallActive=true;recallLanding=false;idleClock=0;return true;
         }
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
+        public float CalculateHungerPerMinute(bool flying,float flightSpeed,float turnDegreesPerSecond,float climbMetersPerSecond,float rollDegreesPerSecond)
+        {
+            float rate=Mathf.Max(0,hungerPerMinute);if(!flying)return rate;
+            return rate+Mathf.Max(0,flightHungerPerMinute)+Mathf.Max(0,flightSpeed)*Mathf.Max(0,speedHungerPerMeterPerMinute)+
+                Mathf.Max(0,turnDegreesPerSecond)*Mathf.Max(0,turnHungerPerDegreePerMinute)+
+                Mathf.Max(0,climbMetersPerSecond)*Mathf.Max(0,climbHungerPerMeterPerMinute)+
+                Mathf.Max(0,rollDegreesPerSecond)*Mathf.Max(0,rollHungerPerDegreePerMinute);
+        }
         public FlyCorpse SpawnCorpse(Vector3 inheritedVelocity)
         {
             if(Dead)return null;Dead=true;
