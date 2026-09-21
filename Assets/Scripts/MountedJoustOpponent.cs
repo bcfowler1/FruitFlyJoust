@@ -15,8 +15,11 @@ namespace FruitFlyJoust
         public float LastFallDamage { get; private set; }
         public int RespawnCount { get; private set; }
         public bool RiderRagdolled { get { return riderVisual && riderVisual.Ragdolled; } }
+        public int RiderRagdollBodyCount { get { return riderVisual ? riderVisual.RagdollBodyCount : 0; } }
         public FlyCorpse LastFlyCorpse { get; private set; }
         public Vector3 CurrentVelocity { get { return velocity; } }
+        public bool FlyEscaping { get; private set; }
+        public bool ReplacementMountScheduled { get; private set; }
         public float GroundClearance
         {
             get
@@ -137,7 +140,7 @@ namespace FruitFlyJoust
         void ResetPose()
         {
             feet.enabled=false;transform.position=spawn;transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
-            Mounted=true;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=-1;
+            Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=-1;
             health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();lastLanceTip=LanceTip;
         }
         public Vector3 LanceTip { get { return lance ? lance.position+lance.forward*lance.lossyScale.z*.5f : transform.position; } }
@@ -203,12 +206,37 @@ namespace FruitFlyJoust
             float dt=player.CombatDeltaTime;if(dt<=0)return;
             if(health.Health<=0)
             {
-                if(respawnTimer<0){respawnTimer=3;if(groundAI)groundAI.enabled=false;if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*.5f);}
+                if(respawnTimer<0)
+                {
+                    FlyEscaping=Mounted && flyVisual && mountHealth && mountHealth.Health>0;
+                    respawnTimer=FlyEscaping ? 6 : 3;Mounted=false;
+                    if(groundAI)groundAI.enabled=false;
+                    var riderCollider=health.GetComponent<Collider>();if(riderCollider)riderCollider.enabled=false;
+                    if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*.5f);
+                    if(lance){lance.gameObject.SetActive(false);Destroy(lance.gameObject);lance=null;}
+                }
+                if(FlyEscaping)EscapeFly(dt);
                 respawnTimer-=dt;if(respawnTimer<=0)RespawnStronger();return;
             }
             if(Mounted && mountHealth && mountHealth.Health<=0){ReceiveLanceContact(3);return;}
             contactCooldown=Mathf.Max(0,contactCooldown-dt);
             if(Mounted)Fly(dt);else if(!groundAI)Fall(dt);
+        }
+        void EscapeFly(float dt)
+        {
+            Vector3 away=Vector3.ProjectOnPlane(transform.position-player.RiderPosition,Vector3.up);
+            if(away.sqrMagnitude<.01f)away=-transform.forward;
+            Vector3 desiredDirection=(away.normalized+Vector3.up*.24f).normalized;
+            transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desiredDirection,Vector3.up),65*dt);
+            Vector3 desiredVelocity=transform.forward*4.5f+Vector3.up*1.1f;
+            velocity=Vector3.Lerp(velocity,desiredVelocity,1-Mathf.Exp(-1.4f*dt));
+            Vector3 movement=velocity*dt;
+            if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))
+            {
+                velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.2f;
+                transform.position=obstacle.point+obstacle.normal*.52f;
+            }
+            else transform.position+=movement;
         }
         void LateUpdate()
         {
@@ -266,7 +294,7 @@ namespace FruitFlyJoust
         public bool ReceiveLanceContact(float impact)
         {
             if(!Mounted || impact<3)return false;
-            Mounted=false;verticalSpeed=2;peakFallSpeed=0;
+            Mounted=false;FlyEscaping=false;verticalSpeed=2;peakFallSpeed=0;
             if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*2);
             if(riderVisual)riderVisual.BeginMountTransition(false);
             if(flyVisual)
@@ -275,6 +303,8 @@ namespace FruitFlyJoust
                 {
                     if(poseMirror)poseMirror.StopWings();
                     LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
+                    ReplacementMountScheduled=true;
+                    if(player)player.ScheduleEnemyMountReplacement(transform.parent,spawn,competencyLevel+1,6);
                 }
                 flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
             }
@@ -387,7 +417,7 @@ namespace FruitFlyJoust
         {
             if(!source || sourceParts==null)return;int count=Mathf.Min(sourceParts.Length,targetParts.Length);
             float speed=owner ? owner.CurrentVelocity.magnitude : 0;
-            bool alive=owner && owner.Mounted && owner.FlyHealth && owner.FlyHealth.Health>0;
+            bool alive=owner && (owner.Mounted || owner.FlyEscaping) && owner.FlyHealth && owner.FlyHealth.Health>0;
             wingSpeedScale=alive ? Mathf.Lerp(.35f,1.35f,Mathf.InverseLerp(.5f,8f,speed)) : 0;
             if(wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*(wingProfile!=null ? wingProfile.display_frequency_hz : 18)*wingSpeedScale,1);
             Vector3 measured=SampleWing(wingClock)*Mathf.Lerp(.45f,1f,Mathf.InverseLerp(.5f,7f,speed));

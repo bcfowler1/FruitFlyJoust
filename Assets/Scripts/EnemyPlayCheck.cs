@@ -65,7 +65,21 @@ namespace FruitFlyJoust
                 float flyBefore=jouster.FlyHealth.Health;
                 Require(rider.TestLanceHit(jouster.FlyHealth,2),"player lance route accepts enemy fly contact");
                 Require(jouster.FlyHealth.Health<flyBefore && jouster.Mounted,"lance independently damages enemy fly");
-                jouster.RiderHealth.Hit(1000);yield return WaitClock(3.2f);
+                Vector3 escapeStart=jouster.transform.position;jouster.RiderHealth.Hit(1000);yield return null;
+                Require(jouster.FlyEscaping && !jouster.Mounted && jouster.RiderRagdolled,
+                    "shooting the mounted rider separates the falling rider from a living escaping fly");
+                float maximumEscapeStep=0,maximumEscapeSpeed=0;Vector3 previousEscape=jouster.transform.position;
+                float escapeSampleDeadline=Clock+1.2f;
+                while(Clock<escapeSampleDeadline)
+                {
+                    yield return null;maximumEscapeStep=Mathf.Max(maximumEscapeStep,Vector3.Distance(previousEscape,jouster.transform.position));
+                    maximumEscapeSpeed=Mathf.Max(maximumEscapeSpeed,jouster.CurrentVelocity.magnitude);previousEscape=jouster.transform.position;
+                }
+                float escapeDistance=Vector3.Distance(escapeStart,jouster.transform.position);
+                Require(escapeDistance>1 && escapeDistance<12 && maximumEscapeStep<.5f && maximumEscapeSpeed<10,
+                    "unridden fly escapes for a visible interval at bounded flight velocity without teleporting");
+                Require(jouster.WingSpeedScale>0,"living fly keeps flapping after its rider is shot off");
+                float respawnDeadline=Clock+5.2f;while(jouster.RespawnCount<1 && Clock<respawnDeadline)yield return null;
                 Require(jouster.Mounted && jouster.RespawnCount==1 && jouster.Competence>initialCompetence,
                     "defeated mounted jouster respawns one competency level stronger");
                 Require(jouster.AnatomicalForwardAlignment>.9f && jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
@@ -86,7 +100,10 @@ namespace FruitFlyJoust
                     "dead enemy fly remains as a corpse for at least fifteen seconds");
                 Require(jouster.LastFlyCorpse.transform.position.y<corpseStartY-.05f || jouster.LastFlyCorpse.Velocity.y<-.1f,
                     "dead enemy fly falls toward the ground under gravity");
-                Require(jouster.RiderRagdolled,"unseated opponent enters ragdoll while falling");
+                Require(jouster.RiderRagdolled && jouster.RiderRagdollBodyCount>=10,
+                    "unseated opponent uses a jointed humanoid bone ragdoll rather than the controller capsule");
+                Require(jouster.ReplacementMountScheduled,
+                    "dead enemy fly schedules a fresh enemy mount after the corpse has visibly fallen");
                 float fallDeadline=Clock+5;while(!jouster.GetComponent<CombatOpponent>() && Clock<fallDeadline)yield return null;
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,
                     "unseated opponent survives bounded fall damage and continues ground combat");

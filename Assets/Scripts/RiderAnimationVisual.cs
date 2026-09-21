@@ -37,6 +37,7 @@ namespace FruitFlyJoust
         private readonly List<Collider> ragdollColliders=new List<Collider>();
         private readonly List<CharacterJoint> ragdollJoints=new List<CharacterJoint>();
         public bool Ragdolled { get; private set; }
+        public int RagdollBodyCount { get { return ragdollBodies.Count; } }
         public Vector3 RagdollCenter { get { var hips=Bone(HumanBodyBones.Hips);return hips ? hips.position : VisualRootPosition; } }
         public float LastWaistAimDegrees { get; private set; }
         public float LeftArmAimAlignment { get; private set; }
@@ -125,7 +126,9 @@ namespace FruitFlyJoust
             {
                 Transform bone=Bone(id);if(!bone || map.ContainsKey(bone))continue;
                 var rigid=bone.gameObject.AddComponent<Rigidbody>();rigid.mass=id==HumanBodyBones.Hips ? 4 : id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? 2 : .65f;
-                rigid.velocity=inheritedVelocity;rigid.angularVelocity=Vector3.Cross(Vector3.up,inheritedVelocity)*.18f;rigid.interpolation=RigidbodyInterpolation.Interpolate;
+                rigid.velocity=inheritedVelocity*(id==HumanBodyBones.Hips ? .85f : .7f);
+                rigid.angularVelocity=Vector3.Cross(Vector3.up,inheritedVelocity)*.08f;rigid.angularDrag=1.5f;rigid.maxAngularVelocity=4;
+                rigid.interpolation=RigidbodyInterpolation.Interpolate;
                 Collider collider;
                 if(id==HumanBodyBones.Head){var sphere=bone.gameObject.AddComponent<SphereCollider>();sphere.radius=.12f;collider=sphere;}
                 else {var capsule=bone.gameObject.AddComponent<CapsuleCollider>();capsule.direction=1;capsule.radius=id==HumanBodyBones.Hips || id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? .1f : .055f;capsule.height=capsule.radius*3.2f;collider=capsule;}

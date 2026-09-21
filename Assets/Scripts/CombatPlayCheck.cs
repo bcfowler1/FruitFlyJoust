@@ -305,7 +305,8 @@ namespace FruitFlyJoust
             Require(target.Health < 100, "moving mounted lance collision damages target");
             Require(target.LastDamage>0,"lance contact records positive target damage");
             Require(combat.ForceUnseat(Vector3.up*1.5f+combat.fly.transform.right*2),"solid enemy lance contact can unseat the mounted player");
-            Require(combat.RiderRagdolled,"unseated player enters ragdoll while falling");
+            Require(combat.RiderRagdolled && combat.RiderRagdollBodyCount>=10,
+                "unseated player uses a jointed humanoid bone ragdoll rather than the controller capsule");
             float fallDeadline=Time.time+6;while(!combat.FootAvatar.GetComponent<CharacterController>().isGrounded && Time.time<fallDeadline)yield return null;
             yield return null;
             Require(!combat.Mounted && !combat.Defeated && combat.LastFallDamage<=30,
