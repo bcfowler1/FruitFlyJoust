@@ -14,6 +14,9 @@ namespace FruitFlyJoust
         private Rigidbody rb;
         private float heading;
         private float rollAngle;
+        private float naturalBankAngle;
+        public float NaturalBankDegrees { get { return naturalBankAngle; } }
+        public float TotalBankDegrees { get { return rollAngle+naturalBankAngle; } }
         public float rollDegreesPerSecond = 110;
         public float rollLevelReturnSeconds = 1.5f;
         public bool autonomousIdle = true;
@@ -247,6 +250,7 @@ namespace FruitFlyJoust
                     rb.MoveRotation(perchSurface.transform.rotation * perchLocalRotation);
                 }
                 grounded = true;
+                naturalBankAngle=0;
                 SurfaceWalkingSpeed=0;
                 if(dismounted && !wasDismounted){idleHome=rb.position;idleClock=0;}
                 wasDismounted=dismounted;IdleWalking=false;
@@ -329,10 +333,11 @@ namespace FruitFlyJoust
             {
                 if(Mathf.Abs(rider.roll)>.01f)rollAngle=Mathf.Repeat(rollAngle+rider.roll*rollDegreesPerSecond*dt+180,360)-180;
                 else rollAngle=Mathf.LerpAngle(rollAngle,0,1-Mathf.Exp(-dt/Mathf.Max(.1f,rollLevelReturnSeconds)));
+                naturalBankAngle=Mathf.Lerp(naturalBankAngle,-intent.turn*35,1-Mathf.Exp(-4*dt));
             }
             Vector3 guidedForward=Quaternion.Euler(0,heading,0)*Vector3.forward;
             Quaternion targetRotation = approaching && supported ? SurfaceGeometry.Pose(guidedForward, surface.normal) :
-                Quaternion.Euler(0, heading, 0)*Quaternion.AngleAxis(rollAngle,Vector3.forward);
+                Quaternion.Euler(0, heading, 0)*Quaternion.AngleAxis(rollAngle+naturalBankAngle,Vector3.forward);
             rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 220 * dt));
             speed = Mathf.Lerp(speed, approaching ? 0 : intent.speed,
                 1 - Mathf.Exp(-(approaching ? 4 : senses.spur ? 10 : senses.brake ? 6 : 2) * dt));
@@ -367,7 +372,7 @@ namespace FruitFlyJoust
             rb.velocity = Vector3.Lerp(rb.velocity, desired, 1 - Mathf.Exp(-5 * dt));
             if (bodyVisual)
                 bodyVisual.localRotation = Quaternion.Slerp(bodyVisual.localRotation,
-                    approaching ? Quaternion.identity : Quaternion.Euler(-vertical * 3, 0, -intent.turn * 35),
+                    approaching ? Quaternion.identity : Quaternion.Euler(-vertical * 3, 0, 0),
                     1 - Mathf.Exp(-6 * dt));
         }
 
@@ -380,6 +385,7 @@ namespace FruitFlyJoust
             speed = 0;
             heading = 0;
             rollAngle = 0;
+            naturalBankAngle = 0;
             idleClock=0;wasDismounted=IdleWalking=false;
             landing.Reset();
             perchSurface = null;

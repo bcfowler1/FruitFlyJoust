@@ -13,6 +13,7 @@ namespace FruitFlyJoust
         private bool requestLanding;
         private bool requestLance;
         private float rollRequest;
+        private float turnRequest;
         private Vector2 walkingRequest;
         private bool climbRequest;
         private int checks;
@@ -30,6 +31,7 @@ namespace FruitFlyJoust
             if (requestLanding && combat) { combat.fly.rider.land = true; combat.fly.rider.reins = Vector2.zero; }
             if (requestLance && combat) combat.fly.rider.primaryAction = 1;
             if(combat && rollRequest!=0)combat.fly.rider.roll=rollRequest;
+            if(combat && turnRequest!=0)combat.fly.rider.reins=new Vector2(turnRequest,0);
             if(combat && walkingRequest!=Vector2.zero)combat.fly.rider.reins=walkingRequest;
             if(combat && climbRequest)combat.fly.rider.reins=new Vector2(0,-1);
             if (deadline > 0 && Time.time > deadline)
@@ -106,6 +108,11 @@ namespace FruitFlyJoust
             float releasedBank=Vector3.Angle(combat.fly.transform.up,Vector3.up);
             yield return new WaitForSeconds(.8f);
             Require(Vector3.Angle(combat.fly.transform.up,Vector3.up)<releasedBank*.8f,"released shoulder roll gently returns toward level");
+            turnRequest=1;float naturalBankDeadline=Time.time+.7f;float automaticTorsoCorrection=0;
+            while(Time.time<naturalBankDeadline){yield return null;automaticTorsoCorrection=Mathf.Max(automaticTorsoCorrection,seat.LastTorsoStabilizationDegrees);}
+            turnRequest=0;
+            Require(Mathf.Abs(combat.fly.NaturalBankDegrees)>10,"ordinary steering banks the complete fly and saddle frame");
+            Require(automaticTorsoCorrection>6,"turn-induced bank applies the same gravity-upright torso correction as shoulder roll");
             Transform leg=Part(meshRoot,"0/LFTibia");Require(leg,"leg mesh present");Quaternion flightLeg=leg.localRotation;
             yield return new WaitForSeconds(.3f);
             Require(Quaternion.Angle(flightLeg,leg.localRotation)<6.1f,"biomodel flight-leg animation remains bounded");
