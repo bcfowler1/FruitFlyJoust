@@ -356,7 +356,7 @@ namespace FruitFlyJoust
             if (MountingPathBlocked(avatar.position + Vector3.up * .6f, RideRoot.position))
             { message = "Mounting path is blocked."; return false; }
             if(animationVisual)animationVisual.BeginMountTransition(true);
-            if(fly)fly.CancelRecall();
+            if(fly)fly.AcceptMountedRider();
             Mounted = true; avatar.gameObject.SetActive(false); RideInput.enabled = true;
             mountedVisual.gameObject.SetActive(true);
             var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(true);

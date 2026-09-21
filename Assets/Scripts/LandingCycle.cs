@@ -34,5 +34,11 @@ namespace FruitFlyJoust
         }
 
         public void Reset() { Phase = RidePhase.Flying; launchTime = 0; waitForLandingRelease = false; }
+        public void ResumeFlight()
+        {
+            if (Phase == RidePhase.Landing) Phase = RidePhase.Flying;
+            launchTime = 0;
+            waitForLandingRelease = false;
+        }
     }
 }

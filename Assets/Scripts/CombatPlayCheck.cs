@@ -14,6 +14,7 @@ namespace FruitFlyJoust
         private bool requestLance;
         private float rollRequest;
         private Vector2 walkingRequest;
+        private bool climbRequest;
         private int checks;
         private float deadline;
         static Transform Part(Transform root,string name)
@@ -30,6 +31,7 @@ namespace FruitFlyJoust
             if (requestLance && combat) combat.fly.rider.primaryAction = 1;
             if(combat && rollRequest!=0)combat.fly.rider.roll=rollRequest;
             if(combat && walkingRequest!=Vector2.zero)combat.fly.rider.reins=walkingRequest;
+            if(combat && climbRequest)combat.fly.rider.reins=new Vector2(0,-1);
             if (deadline > 0 && Time.time > deadline)
             { Debug.LogError("COMBAT_CHECK_TIMEOUT"); WriteReport("failed: timeout"); UnityEditor.EditorApplication.isPlaying = false; }
         }
@@ -266,8 +268,18 @@ namespace FruitFlyJoust
             combat.ReleaseArrow(1);
             yield return new WaitForSeconds(.7f);
             Require(target.Health == 55, "on-foot full-draw arrow deals 45 damage to a reset target");
+            var hoverMountCycle=new LandingCycle();
+            hoverMountCycle.Tick(true,false,true,false,.02f);
+            Require(hoverMountCycle.Phase==RidePhase.Landing,"hover mount regression begins while recall is descending");
+            hoverMountCycle.ResumeFlight();
+            Require(hoverMountCycle.Phase==RidePhase.Flying,"hover mount immediately returns the landing cycle to rider-controlled flight");
             Require(combat.TryMount() && combat.Mounted, "deliberate remount near perched fly");
             Require(!combat.fly.RecallActive,"remount cancels recall landing control before returning authority to the rider");
+            climbRequest=true;
+            yield return new WaitForFixedUpdate();yield return new WaitForFixedUpdate();
+            Require(combat.fly.senses.lift>.9f && combat.fly.intent.climb>3.5f,
+                "remount hands climb control back to the rider instead of retaining recall landing or braking");
+            climbRequest=false;combat.fly.rider.reins=Vector2.zero;
             Require(combat.mountedVisual.gameObject.activeSelf, "mounted rider restored");
             target.ResetTarget(); Require(target.Health == 100, "target reset");
             combat.SelectWeapon(RiderCombat.Weapon.Bow);

@@ -398,6 +398,19 @@ namespace FruitFlyJoust
             recallTarget=groundTarget;recallActive=true;recallLanding=false;idleClock=0;return true;
         }
         public void CancelRecall(){recallActive=recallLanding=false;}
+        public void AcceptMountedRider()
+        {
+            // Recall owns the reins, brake and landing command while the rider is
+            // dismounted.  A hover mount must hand all three back immediately.
+            // Resetting the brain also restores cruise speed after the recall brake
+            // has reduced FlightPace to zero near the rider.
+            recallActive=recallLanding=false;
+            rider.ResetCues();
+            senses.land=false;senses.brake=false;
+            intent.land=false;
+            landing.ResumeFlight();
+            brain.ResetBrain();
+        }
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
         public float CalculateHungerPerMinute(bool flying,float flightSpeed,float turnDegreesPerSecond,float climbMetersPerSecond,float rollDegreesPerSecond)
         {
