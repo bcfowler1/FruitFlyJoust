@@ -98,6 +98,11 @@ namespace FruitFlyJoust
             rollRequest=0;
             Require(maximumWingHingeError<.0001f,"both animated wings keep their native hinge fixed");
             Require(maximumWingMotion>35,"measured wing cycle produces a full multi-axis flight stroke");
+            Require(Mathf.Abs(DetailedFlyVisual.CalculateWingFlapsPerSecond(RidePhase.Flying,0)-12)<.01f &&
+                Mathf.Abs(DetailedFlyVisual.CalculateWingFlapsPerSecond(RidePhase.Flying,8)-38)<.01f,
+                "flight-speed wing mapping uses the tightened twelve-to-thirty-eight flap range");
+            Require(Mathf.Abs(DetailedFlyVisual.CalculateWingFlapsPerSecond(RidePhase.Landing,0)-10.85f)<.01f,
+                "near-stationary landing preserves the previous slow 10.85-flap settling rate");
             Require(maximumWingDifferential>.2f,"banking produces left-right wing amplitude asymmetry");
             Require(Vector3.Dot(combat.fly.transform.up,Vector3.up)<.65f && Mathf.Abs(combat.fly.senses.lift)<.01f,"shoulder cue rolls body without commanding climb");
             Require(seat.LastTorsoStabilizationDegrees>20,"airborne shoulder roll makes rider torso counter gravity");

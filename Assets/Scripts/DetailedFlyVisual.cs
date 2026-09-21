@@ -26,6 +26,14 @@ namespace FruitFlyJoust
         readonly Dictionary<string,Vector3> legPivots=new Dictionary<string,Vector3>();
         readonly Dictionary<string,FlightEntry> flightPose=new Dictionary<string,FlightEntry>();
         Vector3 thoraxPosition,headPivot;Quaternion thoraxRotation;float gaitRate,flightBlend,idleAnimationClock,wingClock,wingDifferential,wingSpeedScale;
+        const float MinimumFlightFlapsPerSecond=12f,MaximumFlightFlapsPerSecond=38f,LandingFlapsPerSecond=10.85f;
+        public float WingFlapsPerSecond { get; private set; }
+        public static float CalculateWingFlapsPerSecond(RidePhase phase,float speed)
+        {
+            if(phase==RidePhase.Perched)return 0;
+            if(phase==RidePhase.Landing)return LandingFlapsPerSecond;
+            return Mathf.Lerp(MinimumFlightFlapsPerSecond,MaximumFlightFlapsPerSecond,Mathf.InverseLerp(.5f,8f,speed));
+        }
         Vector3 flightFrameSourceCenter,flightFrameTargetCenter;Quaternion flightFrameRotation=Quaternion.identity;
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
@@ -102,11 +110,12 @@ namespace FruitFlyJoust
             if(!root)return;
             bool visible=motor && !motor.Dead;
             root.SetActive(detailed && visible);foreach(var r in old)if(r)r.enabled=!detailed && visible;
-            if(!detailed || !visible){wingSpeedScale=0;return;}
+            if(!detailed || !visible){wingSpeedScale=0;WingFlapsPerSecond=0;return;}
             root.transform.localPosition=motor.bodyVisual.localPosition;
             root.transform.localRotation=motor.bodyVisual.localRotation*Quaternion.Euler(0,-90,0);
             bool walking=motor.Phase==RidePhase.Perched && motor.SurfaceWalkingSpeed>.01f;
             bool flying=motor.Phase==RidePhase.Flying || motor.Phase==RidePhase.Launching;
+            bool airborneWings=flying || motor.Phase==RidePhase.Landing;
             bool idle=motor.Phase==RidePhase.Perched && !walking;
             idleAnimationClock=idle ? idleAnimationClock+Time.deltaTime : 0;
             float idleCycle=Mathf.Repeat(idleAnimationClock,6);
@@ -120,8 +129,9 @@ namespace FruitFlyJoust
                 Quaternion.AngleAxis(Mathf.Sin(idleAnimationClock*1.15f+.7f)*1.5f,Vector3.right);
             flightBlend=Mathf.MoveTowards(flightBlend,flying ? 1 : 0,Time.deltaTime*3.5f);
             float flightSpeed=motor ? motor.FlightSpeed : 0;
-            wingSpeedScale=motor && motor.Dead ? 0 : Mathf.Lerp(.35f,1.35f,Mathf.InverseLerp(.5f,8f,flightSpeed));
-            if(flying && wingProfile!=null && wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*wingProfile.display_frequency_hz*wingSpeedScale,1);
+            WingFlapsPerSecond=motor && motor.Dead ? 0 : CalculateWingFlapsPerSecond(motor.Phase,flightSpeed);
+            wingSpeedScale=wingProfile!=null ? WingFlapsPerSecond/Mathf.Max(.01f,wingProfile.display_frequency_hz) : 0;
+            if(airborneWings && wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*WingFlapsPerSecond,1);
             gaitRate=Mathf.MoveTowards(gaitRate,walking ? Mathf.Min(.85f,motor.SurfaceWalkingSpeed/.8f)*motor.SurfaceWalkingDirection : 0,Time.deltaTime*2);
             if(walking)clock+=Time.deltaTime*gaitRate;
             float sample=Mathf.Repeat(clock/data.frame_seconds,data.poses.Length);int a=(int)sample,b=(a+1)%data.poses.Length;float blend=sample-a;

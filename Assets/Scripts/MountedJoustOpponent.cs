@@ -538,8 +538,10 @@ namespace FruitFlyJoust
             if(!source || sourceParts==null)return;int count=Mathf.Min(sourceParts.Length,targetParts.Length);
             float speed=owner ? owner.CurrentVelocity.magnitude : 0;
             bool alive=owner && (owner.Mounted || owner.FlyEscaping) && owner.FlyHealth && owner.FlyHealth.Health>0;
-            wingSpeedScale=alive ? Mathf.Lerp(.35f,1.35f,Mathf.InverseLerp(.5f,8f,speed)) : 0;
-            if(wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*(wingProfile!=null ? wingProfile.display_frequency_hz : 18)*wingSpeedScale,1);
+            float profileRate=wingProfile!=null ? wingProfile.display_frequency_hz : 18;
+            float flapRate=alive ? Mathf.Lerp(12,38,Mathf.InverseLerp(.5f,8f,speed)) : 0;
+            wingSpeedScale=flapRate/Mathf.Max(.01f,profileRate);
+            if(wingSpeedScale>0)wingClock=Mathf.Repeat(wingClock+Time.deltaTime*flapRate,1);
             Vector3 measured=SampleWing(wingClock)*Mathf.Lerp(.45f,1f,Mathf.InverseLerp(.5f,7f,speed));
             for(int i=0;i<count;i++)
             {
