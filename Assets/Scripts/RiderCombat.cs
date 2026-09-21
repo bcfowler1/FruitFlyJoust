@@ -291,8 +291,11 @@ namespace FruitFlyJoust
         public bool TryMount()
         {
             if(fly && fly.Dead){message="The fly is dead and cannot be mounted.";return false;}
-            if (!Perched || Vector3.Distance(avatar.position, RideRoot.position) > 2.8f)
-            { message = "Approach the perched fly to mount."; return false; }
+            float mountDistance=Vector3.Distance(avatar.position,RideRoot.position);
+            bool slowHover=!research && fly && fly.Phase!=RidePhase.Perched &&
+                (fly.RecallActive || fly.Phase==RidePhase.Landing) && fly.FlightSpeed<2.5f;
+            if ((!Perched && !slowHover) || mountDistance > 2.8f)
+            { message = "Approach the perched or slowly hovering fly to mount."; return false; }
             if (MountingPathBlocked(avatar.position + Vector3.up * .6f, RideRoot.position))
             { message = "Mounting path is blocked."; return false; }
             if(animationVisual)animationVisual.BeginMountTransition(true);
@@ -301,7 +304,7 @@ namespace FruitFlyJoust
             var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(true);
             view.fly = RideRoot; view.rider = RideInput; view.followAnchorRotation=true; weapon = Weapon.Lance;
             view.SetOrientationSource(animationVisual ? animationVisual.Head : null,RideRoot);
-            SetWeapon(); message = "Mounted; grip retained at every orientation."; return true;
+            SetWeapon(); message = slowHover ? "Mounted from hover; grip secured." : "Mounted; grip retained at every orientation."; return true;
         }
         bool MountingPathBlocked(Vector3 start,Vector3 end)
         {

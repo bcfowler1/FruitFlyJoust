@@ -310,8 +310,9 @@ namespace FruitFlyJoust
             perchSurface = null;
             SurfaceWalkingSpeed=0;surfaceDrive=0;IdleWalking=false;
             Vector3 recallPlanar=Vector3.ProjectOnPlane(recallTarget-rb.position,Vector3.up);
-            bool recallCruise=recallActive && !recallLanding && Phase!=RidePhase.Launching;
-            if(recallCruise && recallPlanar.sqrMagnitude>.01f)
+            bool recallGuidance=recallActive && Phase!=RidePhase.Launching;
+            bool recallCruise=recallGuidance && !recallLanding;
+            if(recallGuidance && recallPlanar.sqrMagnitude>.01f)
             {
                 float wanted=Mathf.Atan2(recallPlanar.x,recallPlanar.z)*Mathf.Rad2Deg;
                 heading=Mathf.MoveTowardsAngle(heading,wanted,140*dt);
@@ -323,7 +324,8 @@ namespace FruitFlyJoust
                 if(Mathf.Abs(rider.roll)>.01f)rollAngle=Mathf.Repeat(rollAngle+rider.roll*rollDegreesPerSecond*dt+180,360)-180;
                 else rollAngle=Mathf.LerpAngle(rollAngle,0,1-Mathf.Exp(-dt/Mathf.Max(.1f,rollLevelReturnSeconds)));
             }
-            Quaternion targetRotation = approaching && supported ? SurfaceGeometry.Pose(transform.forward, surface.normal) :
+            Vector3 guidedForward=Quaternion.Euler(0,heading,0)*Vector3.forward;
+            Quaternion targetRotation = approaching && supported ? SurfaceGeometry.Pose(guidedForward, surface.normal) :
                 Quaternion.Euler(0, heading, 0)*Quaternion.AngleAxis(rollAngle,Vector3.forward);
             rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 220 * dt));
             speed = Mathf.Lerp(speed, approaching ? 0 : intent.speed,
@@ -341,9 +343,19 @@ namespace FruitFlyJoust
                 desired=recallPlanar.normalized*Mathf.Clamp(distance*1.4f,1,4)+Vector3.up*recallVertical;
             }
             if (approaching && supported)
-                desired = Vector3.ProjectOnPlane(Quaternion.Euler(0, heading, 0) * Vector3.forward * speed,
-                    surface.normal) * Mathf.Clamp01(gap / 2) -
-                    surface.normal * Mathf.Min(2, Mathf.Max(.12f, gap * 2));
+            {
+                Vector3 landingTangent=Vector3.ProjectOnPlane(guidedForward*speed,surface.normal)*Mathf.Clamp01(gap/2);
+                if(recallActive)
+                {
+                    // Continue guiding to the requested footprint during descent.
+                    // Previously recall steering stopped on entering Landing, so the
+                    // fly could descend beside the rider and never become settled.
+                    Vector3 targetTangent=Vector3.ProjectOnPlane(recallTarget-rb.position,surface.normal);
+                    landingTangent=targetTangent.sqrMagnitude>.0004f ?
+                        targetTangent.normalized*Mathf.Min(1.6f,targetTangent.magnitude*2.2f) : Vector3.zero;
+                }
+                desired=landingTangent-surface.normal*Mathf.Min(2,Mathf.Max(.12f,gap*2));
+            }
             if (Phase == RidePhase.Launching)
                 desired = launchNormal * 3.5f + Vector3.ProjectOnPlane(desired, launchNormal) * .35f;
             rb.velocity = Vector3.Lerp(rb.velocity, desired, 1 - Mathf.Exp(-5 * dt));
