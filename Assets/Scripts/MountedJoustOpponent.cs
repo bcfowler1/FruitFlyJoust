@@ -23,6 +23,7 @@ namespace FruitFlyJoust
         public float EnemyHunger { get; private set; }=.35f;
         public int ReturnedRemountCount { get; private set; }
         public Rigidbody LastDroppedLance { get; private set; }
+        public Vector3 LastRespawnPosition { get; private set; }
         public float LanceGripError { get { return lance && riderVisual && riderVisual.Hand(false) ? LanceGeometry.GripError(lance,riderVisual.Hand(false).position) : float.PositiveInfinity; } }
         public float LanceReach { get { return lance && riderVisual && riderVisual.Hand(false) ? Vector3.Distance(riderVisual.Hand(false).position,LanceTip) : 0; } }
         public Vector3 RenderedRiderPosition { get { return riderVisual ? riderVisual.RagdollCenter : transform.position; } }
@@ -439,6 +440,7 @@ namespace FruitFlyJoust
         void RespawnStronger()
         {
             competencyLevel++;RespawnCount++;clock=0;
+            if(player)spawn=player.FindHiddenEnemyRespawn(spawn);LastRespawnPosition=spawn;
             if(riderVisual)riderVisual.ExitRagdoll();
             if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
             if(flyVisual){flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);}if(lance){lance.gameObject.SetActive(false);Destroy(lance.gameObject);}

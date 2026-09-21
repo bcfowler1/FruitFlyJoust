@@ -72,6 +72,7 @@ namespace FruitFlyJoust
         private Vector3 combatSpawnCenter;
         public int PlayerRespawnCount { get; private set; }
         public Vector3 LastPlayerRespawnPosition { get; private set; }
+        public Vector3 LastEnemyRespawnPosition { get; private set; }
         public bool RiderRagdolled { get { return animationVisual && animationVisual.Ragdolled; } }
         public int RiderRagdollBodyCount { get { return animationVisual ? animationVisual.RagdollBodyCount : 0; } }
         public bool RiderTransitioning { get { return animationVisual && animationVisual.Transitioning; } }
@@ -746,11 +747,64 @@ namespace FruitFlyJoust
             jouster.Initialize(this,biological ? biological.gameObject : null,saddle,RideRoot,riderMaterial,weaponMaterial,position);
             return mounted;
         }
+        public bool PlayerCameraCanSee(Vector3 worldPosition,float radius=1f)
+        {
+            Camera camera=view ? view.GetComponent<Camera>() : null;
+            if(!camera || !camera.isActiveAndEnabled)return false;
+            if(!GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(camera),new Bounds(worldPosition,Vector3.one*radius*2)))return false;
+            Vector3 origin=camera.transform.position,delta=worldPosition-origin;float distance=delta.magnitude;
+            if(distance<.01f)return true;
+            foreach(var hit in Physics.RaycastAll(origin,delta/distance,distance,1,QueryTriggerInteraction.Ignore))
+            {
+                Transform candidate=hit.collider.transform;
+                if(candidate==transform || candidate.IsChildOf(transform) || candidate==RideRoot || candidate.IsChildOf(RideRoot) ||
+                   candidate==avatar || candidate.IsChildOf(avatar))continue;
+                if(hit.distance<distance-radius)return false;
+            }
+            return true;
+        }
+        public Vector3 FindHiddenEnemyRespawn(Vector3 preferred)
+        {
+            Vector3 playerPosition=RiderPosition;
+            bool Valid(Vector3 candidate)
+            {
+                if(Vector3.Distance(candidate,playerPosition)<8 || PlayerCameraCanSee(candidate,1.25f))return false;
+                foreach(var collider in Physics.OverlapSphere(candidate,.7f,1,QueryTriggerInteraction.Ignore))
+                {
+                    Transform obstacle=collider.transform;
+                    if(obstacle==RideRoot || obstacle.IsChildOf(RideRoot) || obstacle==avatar || obstacle.IsChildOf(avatar))continue;
+                    if(collider.GetComponentInParent<CombatTarget>() || collider.GetComponentInParent<CharacterController>())continue;
+                    return false;
+                }
+                return true;
+            }
+            if(Valid(preferred)){LastEnemyRespawnPosition=preferred;return preferred;}
+            Camera camera=view ? view.GetComponent<Camera>() : null;
+            Vector3 cameraForward=camera ? Vector3.ProjectOnPlane(camera.transform.forward,Vector3.up).normalized : Vector3.forward;
+            if(cameraForward.sqrMagnitude<.01f)cameraForward=Vector3.forward;
+            float altitude=Mathf.Max(preferred.y,playerPosition.y+3);
+            Vector3 best=preferred;float bestScore=float.NegativeInfinity;
+            for(int ring=0;ring<3;ring++)for(int step=0;step<32;step++)
+            {
+                float angle=step*Mathf.PI*2/32;float range=12+ring*4;
+                Vector3 direction=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                Vector3 candidate=playerPosition+direction*range;candidate.y=altitude;
+                if(!Valid(candidate))continue;
+                // Prefer behind the camera, then preserve proximity to the intended arena spawn.
+                float score=-Vector3.Dot(direction,cameraForward)*12-Vector3.Distance(candidate,preferred)*.08f;
+                if(score>bestScore){best=candidate;bestScore=score;}
+            }
+            // If every sampled point is occupied, keep the fallback behind and above
+            // the camera rather than ever permitting an on-screen pop-in.
+            Vector3 hiddenFallback=playerPosition-cameraForward*20+Vector3.up*(altitude-playerPosition.y+5);
+            LastEnemyRespawnPosition=bestScore>float.NegativeInfinity ? best : hiddenFallback;
+            return LastEnemyRespawnPosition;
+        }
         public void EnsureEnemyMountReplacement(Transform parent,Vector3 position,int competency)
         {
             foreach(var opponent in FindObjectsOfType<MountedJoustOpponent>())
                 if(opponent && (opponent.Mounted || opponent.FlyEscaping))return;
-            CreateMountedJousterAt(parent,position,competency);
+            CreateMountedJousterAt(parent,FindHiddenEnemyRespawn(position),competency);
         }
         public void SetPractice(bool active,bool enemies)
         {

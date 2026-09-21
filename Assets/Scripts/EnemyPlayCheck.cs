@@ -86,6 +86,8 @@ namespace FruitFlyJoust
                 float respawnDeadline=Clock+5.2f;while(jouster.RespawnCount<1 && Clock<respawnDeadline)yield return null;
                 Require(jouster.Mounted && jouster.RespawnCount==1 && jouster.Competence>initialCompetence,
                     "defeated mounted jouster respawns one competency level stronger");
+                Require(!rider.PlayerCameraCanSee(jouster.LastRespawnPosition,1.25f),
+                    "defeated enemy jouster respawns outside the player camera view");
                 Require(jouster.AnatomicalForwardAlignment>.9f && jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
                     "respawned opponent fly and rider remain aligned and centered on the thorax");
                 var enemyFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);enemyFoodObject.name="Enemy return feeding check";
