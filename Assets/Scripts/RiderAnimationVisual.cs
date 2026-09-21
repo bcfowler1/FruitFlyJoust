@@ -28,6 +28,7 @@ namespace FruitFlyJoust
         public bool legGrip = true;
         public bool mountTransitions;
         private float transitionRemaining,transitionDuration;
+        private float unmountedVerticalOffset;
         private Vector3 transitionPosition;
         private Quaternion transitionRotation;
         private string transitionState;
@@ -38,6 +39,7 @@ namespace FruitFlyJoust
         public bool Ragdolled { get; private set; }
         public Vector3 RagdollCenter { get { var hips=Bone(HumanBodyBones.Hips);return hips ? hips.position : VisualRootPosition; } }
         public float LastWaistAimDegrees { get; private set; }
+        public float LeftArmAimAlignment { get; private set; }
         public float LastTorsoStabilizationDegrees { get; private set; }
         public Quaternion StableCameraRotation { get; private set; }=Quaternion.identity;
         public float mountedSeatHeight = .2f;
@@ -85,10 +87,10 @@ namespace FruitFlyJoust
             if (!body) return;
             if(Ragdolled)return;
             bool useAuthored=mounted && transitionRemaining<=0 && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
-            bool hasAuthoredScale=authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
+            bool hasAuthoredScale=mounted && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
             body.localScale=hasAuthoredScale ? authoredPose.riderLocalScale : Vector3.one*visualScale;
             if (body.parent != anchor) body.SetParent(anchor, false);
-            body.localPosition = useAuthored ? authoredPose.riderLocalPosition : mounted ? new Vector3(0, mountedSeatHeight, mountedSeatForward) : Vector3.zero;
+            body.localPosition = useAuthored ? authoredPose.riderLocalPosition : mounted ? new Vector3(0, mountedSeatHeight, mountedSeatForward) : Vector3.up*unmountedVerticalOffset;
             body.localRotation = useAuthored ? authoredPose.riderLocalRotation : Quaternion.identity; body.gameObject.SetActive(true);
             if(transitionRemaining>0)
             {
@@ -113,7 +115,7 @@ namespace FruitFlyJoust
         {
             if(Ragdolled || !body || !animator || !animator.isHuman)return;
             Ragdolled=true;transitionRemaining=0;body.gameObject.SetActive(true);body.SetParent(null,true);
-            if(grip)grip.enabled=false;animator.enabled=false;
+            if(grip)grip.enabled=false;
             HumanBodyBones[] bones={HumanBodyBones.Hips,HumanBodyBones.Spine,HumanBodyBones.Chest,HumanBodyBones.Head,
                 HumanBodyBones.LeftUpperArm,HumanBodyBones.LeftLowerArm,HumanBodyBones.RightUpperArm,HumanBodyBones.RightLowerArm,
                 HumanBodyBones.LeftUpperLeg,HumanBodyBones.LeftLowerLeg,HumanBodyBones.RightUpperLeg,HumanBodyBones.RightLowerLeg};
@@ -128,6 +130,9 @@ namespace FruitFlyJoust
                 else {var capsule=bone.gameObject.AddComponent<CapsuleCollider>();capsule.direction=1;capsule.radius=id==HumanBodyBones.Hips || id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? .1f : .055f;capsule.height=capsule.radius*3.2f;collider=capsule;}
                 map.Add(bone,rigid);ragdollBodies.Add(rigid);ragdollColliders.Add(collider);
             }
+            // GetBoneTransform requires the humanoid animator to remain live while
+            // the ragdoll map is assembled. Disable animation only after caching it.
+            animator.enabled=false;
             foreach(var pair in map)
             {
                 Transform parent=pair.Key.parent;Rigidbody connected=null;
@@ -157,6 +162,37 @@ namespace FruitFlyJoust
             Twist(HumanBodyBones.Spine,frame.up,yaw*.22f*weight);
             Twist(HumanBodyBones.Chest,frame.up,yaw*.33f*weight);
             Twist(HumanBodyBones.UpperChest,frame.up,yaw*.45f*weight);
+        }
+        public void PoseBowAim(Transform frame,Vector3 worldDirection,float weight)
+        {
+            LeftArmAimAlignment=0;
+            if(!animator || !animator.isHuman || !frame || weight<=0)return;
+            Vector3 aim=worldDirection.normalized;
+            var upper=Bone(HumanBodyBones.LeftUpperArm);var lower=Bone(HumanBodyBones.LeftLowerArm);var hand=Bone(HumanBodyBones.LeftHand);
+            if(!upper || !lower || !hand)return;
+            Vector3 current=hand.position-upper.position;
+            if(current.sqrMagnitude>.0001f)
+                upper.rotation=Quaternion.Slerp(upper.rotation,Quaternion.FromToRotation(current.normalized,aim)*upper.rotation,weight);
+            Vector3 target=upper.position+aim*(Vector3.Distance(upper.position,lower.position)+Vector3.Distance(lower.position,hand.position));
+            Vector3 fore=hand.position-lower.position,wanted=target-lower.position;
+            if(fore.sqrMagnitude>.0001f && wanted.sqrMagnitude>.0001f)
+                lower.rotation=Quaternion.Slerp(lower.rotation,Quaternion.FromToRotation(fore.normalized,wanted.normalized)*lower.rotation,weight);
+            Vector3 reach=hand.position-upper.position;if(reach.sqrMagnitude>.0001f)LeftArmAimAlignment=Vector3.Dot(reach.normalized,aim);
+        }
+        public float VisualHeight
+        {
+            get
+            {
+                if(!body)return 0;var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return 0;
+                Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);return bounds.size.y;
+            }
+        }
+        public float AlignFeetToWorldY(float worldY)
+        {
+            if(!body)return float.PositiveInfinity;var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return float.PositiveInfinity;
+            Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            float correction=worldY-bounds.min.y;unmountedVerticalOffset+=correction;body.position+=Vector3.up*correction;
+            return Mathf.Abs((bounds.min.y+correction)-worldY);
         }
         public void StabilizeTorsoAgainstGravity(Transform frame,float amount=.6f,float maximumDegrees=55)
         {

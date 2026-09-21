@@ -131,7 +131,15 @@ namespace FruitFlyJoust
             if(weapon==Weapon.Bow && view)
             {
                 float aimWeight=charge>0 || bowBefore || cooldown>0 ? 1 : .35f;
-                animationVisual.AimUpperBody(Mounted ? RideRoot : avatar,view.transform.forward,aimWeight);
+                Transform frame=Mounted ? RideRoot : avatar;Vector3 aimDirection=view.transform.forward;
+                animationVisual.AimUpperBody(frame,aimDirection,aimWeight);
+                animationVisual.PoseBowAim(frame,aimDirection,aimWeight);
+                Transform leftHand=animationVisual.Hand(true);
+                if(weaponVisual && leftHand)
+                {
+                    weaponVisual.position=leftHand.position+aimDirection.normalized*.08f;
+                    weaponVisual.rotation=Quaternion.LookRotation(aimDirection,frame.up);
+                }
             }
             SwordThrustExtension=0;
             if(weapon==Weapon.Sword)
@@ -427,9 +435,9 @@ namespace FruitFlyJoust
         void FireArrow()
         {
             if (animationVisual) animationVisual.Attack("Bow");
-            Vector3 origin = animationVisual && animationVisual.Hand(true) ? weaponVisual.position : (Mounted ? saddle.position + saddle.up * .9f : avatar.position + Vector3.up * .9f);
             var camera = view.GetComponent<Camera>(); Ray aim = camera.ViewportPointToRay(new Vector3(.5f, .5f, 0));
-            Vector3 point = Physics.Raycast(aim, out var hit, 100, 1, QueryTriggerInteraction.Ignore) ? hit.point : aim.GetPoint(100);
+            Vector3 origin = animationVisual && animationVisual.Hand(true) ? animationVisual.Hand(true).position+aim.direction*.38f : (Mounted ? saddle.position + saddle.up * .9f : avatar.position + Vector3.up * .9f);
+            Vector3 point = Physics.Raycast(origin,aim.direction,out var hit,100,1,QueryTriggerInteraction.Ignore) ? hit.point : origin+aim.direction*100;
             Vector3 direction = (point-origin).normalized;
             var obj = GameObject.CreatePrimitive(PrimitiveType.Cube); obj.name = "Arrow";
             Destroy(obj.GetComponent<Collider>()); obj.transform.position = origin;

@@ -20,6 +20,8 @@ namespace FruitFlyJoust
         public bool Defeated { get { return !target || target.Health<=0; } }
         public bool Ragdolled { get { return visual && visual.Ragdolled; } }
         public bool WeaponVisible { get { return weaponVisual && weaponVisual.gameObject.activeInHierarchy; } }
+        public float VisualHeight { get { return visual ? visual.VisualHeight : 0; } }
+        public float GroundFootError { get; private set; }
         void Start()
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();
@@ -28,8 +30,10 @@ namespace FruitFlyJoust
             var primitive = GetComponent<CapsuleCollider>(); if (primitive) Destroy(primitive);
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
             visual=GetComponent<RiderAnimationVisual>();
-            if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.visualScale=.6f;visual.Create(transform,material);}
-            visual.Pose(transform,false,0);BuildWeapon(material);
+            if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.Create(transform,material);}
+            visual.visualScale=.48f;visual.Pose(transform,false,0);
+            float groundY=transform.TransformPoint(feet.center).y-feet.height*.5f;
+            GroundFootError=visual.AlignFeetToWorldY(groundY+.01f);BuildWeapon(material);
         }
         void BuildWeapon(Material material)
         {

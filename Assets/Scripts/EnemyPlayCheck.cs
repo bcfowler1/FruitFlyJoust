@@ -78,6 +78,7 @@ namespace FruitFlyJoust
             var opponents=FindObjectsOfType<CombatOpponent>();
             Require(opponents.Length>=2,"opponents present");
             foreach(var armed in opponents)Require(armed.WeaponVisible,"ground opponent visibly carries its combat weapon");
+            foreach(var groundEnemy in opponents)Require(groundEnemy.VisualHeight>0 && groundEnemy.VisualHeight<1.75f && groundEnemy.GroundFootError<1.5f,"ground opponent is rider-scaled and aligned to the walking surface");
             foreach(var opponent in opponents) opponent.enabled=false;
             foreach(var arrow in FindObjectsOfType<OpponentArrow>()) Destroy(arrow.gameObject);
             rider.ResetHealth();

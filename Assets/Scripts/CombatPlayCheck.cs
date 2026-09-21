@@ -256,6 +256,8 @@ namespace FruitFlyJoust
                 (-combat.fly.transform.forward+combat.fly.transform.right*.25f).normalized,combat.fly.transform.up);
             combat.fly.rider.secondaryAction=1;yield return null;yield return null;
             Require(Mathf.Abs(seat.LastWaistAimDegrees)>90,"bow aiming behind twists the rider at the waist toward aim direction");
+            Require(seat.LeftArmAimAlignment>.75f && Vector3.Dot(combat.BowVisual.forward,combat.view.transform.forward)>.95f,
+                "bow aim extends the left arm and places the bow in the firing direction");
             combat.fly.rider.secondaryAction=0;
             combat.view.transform.position = combat.fly.transform.position + Vector3.up * .9f - Vector3.forward * 4;
             combat.view.transform.rotation = Quaternion.identity;

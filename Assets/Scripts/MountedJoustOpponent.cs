@@ -78,16 +78,14 @@ namespace FruitFlyJoust
                 flyVisual.localRotation=flyTemplateLocalRotation;
                 flyVisual.localScale=flyTemplateLocalScale;
                 Quaternion originalRotation=flyVisual.localRotation;
-                Transform head=flyVisual.Find("0/Head"),thorax=flyVisual.Find("0/Thorax");
-                if(head && thorax)
+                Transform head=FindPart(flyVisual,"0/Head"),a5=FindPart(flyVisual,"0/A5"),a6=FindPart(flyVisual,"0/A6");
+                Renderer headRenderer=head ? head.GetComponent<Renderer>() : null,a5Renderer=a5 ? a5.GetComponent<Renderer>() : null,a6Renderer=a6 ? a6.GetComponent<Renderer>() : null;
+                if(headRenderer && (a5Renderer || a6Renderer))
                 {
-                    Vector3 anatomical=Vector3.ProjectOnPlane(flyVisual.localRotation*(head.localPosition-thorax.localPosition),Vector3.up).normalized;
+                    Vector3 tail=a5Renderer && a6Renderer ? (a5Renderer.bounds.center+a6Renderer.bounds.center)*.5f : (a5Renderer ? a5Renderer.bounds.center : a6Renderer.bounds.center);
+                    Vector3 anatomical=Vector3.ProjectOnPlane(transform.InverseTransformDirection(headRenderer.bounds.center-tail),Vector3.up).normalized;
                     if(anatomical.sqrMagnitude>.5f)flyVisual.localRotation=Quaternion.FromToRotation(anatomical,Vector3.forward)*flyVisual.localRotation;
                 }
-                // The mesh's visible longitudinal axis is 90 degrees clockwise from the
-                // part-origin head/thorax axis above. The top render therefore needs this
-                // explicit opponent-frame correction so head, velocity, and lance agree.
-                flyVisual.localRotation=Quaternion.AngleAxis(-90,Vector3.up)*flyVisual.localRotation;
                 // The saddle was copied from the same player ride-root frame. Rotate its
                 // complete frame with the fly so the rider stays planted over the thorax
                 // through yaw changes instead of orbiting beside the corrected model.
@@ -161,11 +159,15 @@ namespace FruitFlyJoust
         Vector3 VisibleLongitudinalDirection()
         {
             if(!flyVisual)return Vector3.zero;
-            Transform head=flyVisual.Find("0/Head"),a5=flyVisual.Find("0/A5"),a6=flyVisual.Find("0/A6");
+            Transform head=FindPart(flyVisual,"0/Head"),a5=FindPart(flyVisual,"0/A5"),a6=FindPart(flyVisual,"0/A6");
             Renderer headRenderer=head ? head.GetComponent<Renderer>() : null,a5Renderer=a5 ? a5.GetComponent<Renderer>() : null,a6Renderer=a6 ? a6.GetComponent<Renderer>() : null;
             if(!headRenderer || (!a5Renderer && !a6Renderer))return Vector3.zero;
             Vector3 tail=a5Renderer && a6Renderer ? (a5Renderer.bounds.center+a6Renderer.bounds.center)*.5f : (a5Renderer ? a5Renderer.bounds.center : a6Renderer.bounds.center);
             return (headRenderer.bounds.center-tail).normalized;
+        }
+        static Transform FindPart(Transform root,string exactName)
+        {
+            if(!root)return null;foreach(Transform child in root)if(child.name==exactName)return child;return null;
         }
         public float WingMotionDegrees { get { return poseMirror ? poseMirror.MaximumWingMotion : 0; } }
         public float WingSpeedScale { get { return poseMirror ? poseMirror.WingSpeedScale : 0; } }
@@ -174,7 +176,7 @@ namespace FruitFlyJoust
             get
             {
                 if(!flyVisual || !riderAnchor || !riderVisual)return float.PositiveInfinity;
-                Transform thorax=flyVisual.Find("0/Thorax");Renderer renderer=thorax ? thorax.GetComponent<Renderer>() : null;
+                Transform thorax=FindPart(flyVisual,"0/Thorax");Renderer renderer=thorax ? thorax.GetComponent<Renderer>() : null;
                 return renderer ? Vector3.ProjectOnPlane(riderVisual.VisualRootPosition-renderer.bounds.center,transform.up).magnitude : float.PositiveInfinity;
             }
         }
@@ -299,7 +301,7 @@ namespace FruitFlyJoust
             string diagnostic="rootForward="+transform.forward.ToString("F4")+" lanceForward="+(lance ? lance.forward.ToString("F4") : "missing")+"\n";
             foreach(string partName in new[]{"0/Head","0/Thorax","0/A1A2","0/A3","0/A4","0/A5","0/A6"})
             {
-                Transform part=flyVisual ? flyVisual.Find(partName) : null;Renderer partRenderer=part ? part.GetComponent<Renderer>() : null;
+                Transform part=flyVisual ? FindPart(flyVisual,partName) : null;Renderer partRenderer=part ? part.GetComponent<Renderer>() : null;
                 diagnostic+=partName+"="+(partRenderer ? transform.InverseTransformPoint(partRenderer.bounds.center).ToString("F4") : "missing")+"\n";
             }
             File.WriteAllText(Path.Combine(directory,"opponent-mounted-alignment.txt"),diagnostic);
