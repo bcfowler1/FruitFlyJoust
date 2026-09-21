@@ -87,7 +87,13 @@ namespace FruitFlyJoust
         public RiderCombat clock;
         public Vector3 velocity;
         public float damage = 35;
+        public bool scentedBait;
         private float age;
+        void DeployBait(Vector3 point,Vector3 normal)
+        {
+            var bait=new GameObject("Scented arrow bait");bait.transform.position=point+normal*.05f;
+            bait.AddComponent<ScentedBait>();
+        }
         void Update()
         {
             float dt = clock ? clock.CombatDeltaTime : Time.deltaTime;
@@ -97,12 +103,55 @@ namespace FruitFlyJoust
                 1, QueryTriggerInteraction.Ignore))
             {
                 var target = hit.collider.GetComponentInParent<CombatTarget>();
-                if (target) target.Hit(damage,velocity.normalized);
+                if(scentedBait)DeployBait(hit.point,hit.normal);
+                else if (target) target.Hit(damage,velocity.normalized);
                 Destroy(gameObject); return;
             }
             transform.position += movement; velocity += Physics.gravity * dt;
             if (velocity.sqrMagnitude > .001f) transform.rotation = Quaternion.LookRotation(velocity);
-            age += dt; if (age > 8) Destroy(gameObject);
+            age += dt;if(age>8){if(scentedBait)DeployBait(transform.position,Vector3.up);Destroy(gameObject);}
         }
+    }
+
+    // Each haltere has its own small health pool. Damage is relayed to the flight
+    // controller as sensory loss rather than being counted as body damage twice.
+    public sealed class HaltereHitZone : MonoBehaviour
+    {
+        public FlyMotor playerFly;public MountedJoustOpponent enemyFly;
+        CombatTarget health;float previous;
+        void Awake(){health=GetComponent<CombatTarget>();previous=health ? health.Health : 0;}
+        void Update()
+        {
+            if(!health)return;float damage=Mathf.Max(0,previous-health.Health);previous=health.Health;
+            if(damage<=0)return;if(playerFly)playerFly.DamageHaltere(damage);if(enemyFly)enemyFly.DamageHaltere(damage);
+        }
+    }
+
+    // A wind-borne cone, not a global attractor. Enemy flies only acquire the bait
+    // after entering this plume, then retain its last known source while searching.
+    public sealed class ScentedBait : MonoBehaviour
+    {
+        public float lifetime=24,plumeLength=14,plumeWidth=3.5f;
+        float age;Transform[] smokePuffs;
+        public Vector3 WindDirection { get { return Vector3.right; } }
+        public bool Contains(Vector3 point)
+        {
+            Vector3 offset=point-transform.position;float downwind=Vector3.Dot(offset,WindDirection);
+            float width=Mathf.Lerp(.45f,plumeWidth,Mathf.Clamp01(downwind/plumeLength));
+            return downwind>=0 && downwind<=plumeLength && Vector3.ProjectOnPlane(offset,WindDirection).magnitude<=width;
+        }
+        void Awake()
+        {
+            smokePuffs=new Transform[18];var shader=Shader.Find("Standard");var material=shader ? new Material(shader) : null;
+            if(material){material.color=new Color(.72f,.92f,.18f,.22f);material.SetFloat("_Mode",3);material.SetInt("_SrcBlend",(int)UnityEngine.Rendering.BlendMode.SrcAlpha);material.SetInt("_DstBlend",(int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);material.SetInt("_ZWrite",0);material.EnableKeyword("_ALPHABLEND_ON");material.renderQueue=3000;}
+            for(int i=0;i<smokePuffs.Length;i++){var puff=GameObject.CreatePrimitive(PrimitiveType.Sphere);puff.name="Scent plume";Destroy(puff.GetComponent<Collider>());puff.transform.SetParent(transform,false);puff.GetComponent<Renderer>().sharedMaterial=material;smokePuffs[i]=puff.transform;}
+        }
+        void Update()
+        {
+            age+=Time.deltaTime;
+            for(int i=0;i<smokePuffs.Length;i++){float phase=Mathf.Repeat(age*.18f+i/(float)smokePuffs.Length,1);float distance=phase*plumeLength,width=Mathf.Lerp(.12f,plumeWidth,phase);Vector3 side=Vector3.up*Mathf.Sin(i*2.13f+age*.7f)*width*.34f+Vector3.forward*Mathf.Cos(i*1.71f+age*.5f)*width*.34f;smokePuffs[i].localPosition=WindDirection*distance+side;smokePuffs[i].localScale=Vector3.one*Mathf.Lerp(.12f,.72f,phase);}
+            if(age>=lifetime)Destroy(gameObject);
+        }
+        void OnDrawGizmos(){Gizmos.color=new Color(.6f,1,.25f,.22f);Gizmos.DrawLine(transform.position,transform.position+WindDirection*plumeLength);}
     }
 }

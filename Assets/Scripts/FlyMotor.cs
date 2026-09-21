@@ -53,6 +53,11 @@ namespace FruitFlyJoust
         public bool SeekingFood { get; private set; }
         public bool Feeding { get; private set; }
         public float RiderAuthority { get; private set; }=1;
+        public float HaltereIntegrity { get; private set; }=1;
+        public float StabilityAuthority { get { return Mathf.Lerp(.55f,1f,HaltereIntegrity); } }
+        public float OpticFlowExpansion { get; private set; }
+        public float LandingLegExtension { get; private set; }
+        public bool OpticFlowLandingAbort { get; private set; }
         public int FoodEatenCount { get; private set; }
         FlyFood foodTarget;
         FlyFood countedFoodTarget;
@@ -239,6 +244,11 @@ namespace FruitFlyJoust
             bool supported = FindSurface(out var surface);
             float clearance = supported ? SurfaceGeometry.Clearance(capsule, surface.normal) : .525f;
             float gap = supported ? Vector3.Dot(rb.position - surface.point, surface.normal) - clearance : float.PositiveInfinity;
+            float closing=supported ? Mathf.Max(0,-Vector3.Dot(rb.velocity,surface.normal)) : 0;
+            OpticFlowExpansion=supported ? closing/Mathf.Max(.08f,gap) : 0;
+            LandingLegExtension=Mathf.SmoothStep(0,1,Mathf.InverseLerp(.35f,2.2f,OpticFlowExpansion));
+            OpticFlowLandingAbort=Phase==RidePhase.Landing && supported && gap<.8f && Vector3.ProjectOnPlane(rb.velocity,surface.normal).magnitude>5.5f;
+            if(OpticFlowLandingAbort && !recallActive){landing.ResumeFlight();intent.land=false;}
             grounded = supported && gap < .15f;
             bool settled = grounded && gap > -.1f && rb.velocity.magnitude < 1.2f &&
                 Quaternion.Angle(rb.rotation, SurfaceGeometry.Pose(transform.forward, surface.normal)) < 12;
@@ -350,7 +360,9 @@ namespace FruitFlyJoust
             Vector3 guidedForward=Quaternion.Euler(0,heading,0)*Vector3.forward;
             Quaternion targetRotation = approaching && supported ? SurfaceGeometry.Pose(guidedForward, surface.normal) :
                 Quaternion.Euler(0, heading, 0)*Quaternion.AngleAxis(rollAngle+naturalBankAngle,Vector3.forward);
-            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 220 * dt));
+            float damageWobble=(1-HaltereIntegrity)*Mathf.Sin(Time.time*8)*12;
+            targetRotation=Quaternion.AngleAxis(damageWobble,targetRotation*Vector3.forward)*targetRotation;
+            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 220 * StabilityAuthority * dt));
             float requestedSpeed=approaching ? 0 : Mathf.Min(intent.speed,HungerAdjustedTopSpeed);
             speed = Mathf.Lerp(speed, requestedSpeed,
                 1 - Mathf.Exp(-(approaching ? 4 : senses.spur ? 10 : senses.brake ? 6 : 2) * dt));
@@ -368,7 +380,8 @@ namespace FruitFlyJoust
             }
             if (approaching && supported)
             {
-                Vector3 landingTangent=Vector3.ProjectOnPlane(guidedForward*speed,surface.normal)*Mathf.Clamp01(gap/2);
+                float opticBrake=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.35f,2.5f,OpticFlowExpansion));
+                Vector3 landingTangent=Vector3.ProjectOnPlane(guidedForward*speed,surface.normal)*Mathf.Clamp01(gap/2)*opticBrake;
                 if(recallActive)
                 {
                     // Continue guiding to the requested footprint during descent.
@@ -406,7 +419,7 @@ namespace FruitFlyJoust
             launchNormal = Vector3.up;
             cornerGripGrace=0;
             recallActive=recallLanding=false;
-            hunger=.15f;SeekingFood=Feeding=false;RiderAuthority=1;foodTarget=countedFoodTarget=null;
+            hunger=.15f;SeekingFood=Feeding=false;RiderAuthority=1;HaltereIntegrity=1;foodTarget=countedFoodTarget=null;
             brain.ResetBrain();
             rider.ResetCues();
         }
@@ -431,6 +444,7 @@ namespace FruitFlyJoust
             brain.ResetBrain();
         }
         public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
+        public void DamageHaltere(float damage){HaltereIntegrity=Mathf.Clamp01(HaltereIntegrity-Mathf.Max(0,damage)/60f);}
         public static float SpeedMultiplierForHunger(float value){return Mathf.Lerp(1f,.9f,Mathf.Clamp01(value));}
         public static float TopSpeedForHunger(float value){return UnhinderedTopSpeed*SpeedMultiplierForHunger(value);}
         public float CalculateHungerPerMinute(bool flying,float flightSpeed,float turnDegreesPerSecond,float climbMetersPerSecond,float rollDegreesPerSecond)

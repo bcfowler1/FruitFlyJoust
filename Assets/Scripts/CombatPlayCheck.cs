@@ -113,8 +113,13 @@ namespace FruitFlyJoust
             Require(seat.LastTorsoStabilizationDegrees>20,"airborne shoulder roll makes rider torso counter gravity");
             Require(combat.view.TrackingRiderHead,"mounted camera tracks the final gravity-corrected rider orientation");
             Require(combat.view.TrackingStableRiderFrame,"flight camera uses the stable gravity-corrected rider frame without animation jitter");
-            Require(maximumHeadMotion<.05f,"head geometry remains in its authored connected pose");
+            Require(maximumHeadMotion>5 && detail.HeadStabilizationDegrees<-5,
+                "airborne head counter-rotates against body bank using haltere-guided stabilization");
             Require(maximumHeadAttachmentError<.001f,"eyes and antenna remain rigidly attached");
+            float intactAuthority=combat.fly.StabilityAuthority;var playerHaltere=GameObject.Find("Player left haltere hitbox").GetComponent<CombatTarget>();
+            playerHaltere.Hit(15);yield return null;
+            Require(combat.fly.HaltereIntegrity<1 && combat.fly.StabilityAuthority<intactAuthority,
+                "player haltere is independently damageable and reduces flight stability authority");
             float releasedBank=Vector3.Angle(combat.fly.transform.up,Vector3.up);
             yield return new WaitForSeconds(.8f);
             Require(Vector3.Angle(combat.fly.transform.up,Vector3.up)<releasedBank*.8f,"released shoulder roll gently returns toward level");
@@ -131,6 +136,9 @@ namespace FruitFlyJoust
             combat.course.ResetCourse();yield return new WaitForSeconds(.2f);
             Require(!combat.TryDismount() && combat.Mounted, "airborne dismount refused");
             requestLanding = true;
+            yield return new WaitForFixedUpdate();
+            Require(combat.fly.OpticFlowExpansion>=0 && combat.fly.LandingLegExtension>=0,
+                "landing controller exposes optical expansion and pre-contact leg extension cues");
             while (combat.fly.Phase != RidePhase.Perched) yield return null;
             requestLanding = false;
             bool autonomousIdleBeforeCameraCheck=combat.fly.autonomousIdle;

@@ -21,6 +21,10 @@ namespace FruitFlyJoust
         public bool FlyEscaping { get; private set; }
         public bool ReplacementMountScheduled { get; private set; }
         public float EnemyHunger { get; private set; }=.35f;
+        public float HaltereIntegrity { get; private set; }=1;
+        Vector3 scentSearchPoint;float scentMemory;
+        public bool LoomingDodging { get; private set; }
+        public bool ScentSearching { get { return scentMemory>0; } }
         public float EnemyTopSpeed { get { return Mathf.Lerp(3.5f,8f,Competence)*FlyMotor.SpeedMultiplierForHunger(EnemyHunger); } }
         public int ReturnedRemountCount { get; private set; }
         public Rigidbody LastDroppedLance { get; private set; }
@@ -158,12 +162,19 @@ namespace FruitFlyJoust
             }
             mountHealth=flyZone.AddComponent<CombatTarget>();mountHealth.maximumHealth=120;mountHealth.ResetTarget();
             var flyHit=flyZone.AddComponent<MountedHitZone>();flyHit.owner=this;flyHit.fly=true;
+            for(int side=-1;side<=1;side+=2)
+            {
+                var zone=new GameObject(side<0 ? "Left haltere hitbox" : "Right haltere hitbox");zone.transform.SetParent(flyVisual ? flyVisual : transform,false);
+                zone.transform.localPosition=new Vector3(side*.24f,.02f,-.28f);var sphere=zone.AddComponent<SphereCollider>();sphere.radius=.1f;
+                var sensor=zone.AddComponent<CombatTarget>();sensor.maximumHealth=30;sensor.ResetTarget();var relay=zone.AddComponent<HaltereHitZone>();relay.enemyFly=this;
+                var hit=zone.AddComponent<MountedHitZone>();hit.owner=this;hit.fly=true;hit.haltere=true;
+            }
         }
         void ResetPose()
         {
             feet.enabled=false;transform.position=spawn;transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
             Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=replacementMountTimer=-1;
-            health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();lastLanceTip=LanceTip;
+            health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();HaltereIntegrity=1;scentMemory=0;LoomingDodging=false;lastLanceTip=LanceTip;
         }
         public Vector3 LanceTip
         {
@@ -294,14 +305,24 @@ namespace FruitFlyJoust
         {
             clock+=dt;float skill=Competence;
             Vector3 target=player.RiderPosition+Vector3.up*(player.Mounted ? .2f : 1.1f);
+            scentMemory=Mathf.Max(0,scentMemory-dt);
+            foreach(var bait in FindObjectsOfType<ScentedBait>())if(bait.Contains(transform.position)){scentSearchPoint=bait.transform.position;scentMemory=8;}
+            if(scentMemory>0)target=scentSearchPoint+Vector3.up*.6f;
             float miss=(1-skill)*3.4f;
             Vector3 aim=target+transform.right*Mathf.Sin(clock*.73f+1.1f)*miss+Vector3.up*Mathf.Sin(clock*.41f)*miss*.3f;
             Vector3 desired=(aim-transform.position).normalized;
+            Vector3 playerApproach=player.RiderPosition-transform.position;
+            Vector3 relativeVelocity=player.RideWorldVelocity-velocity;
+            float closing=-Vector3.Dot(relativeVelocity,playerApproach.normalized);
+            float angularExpansion=closing/Mathf.Max(.25f,playerApproach.magnitude);
+            LoomingDodging=playerApproach.magnitude<7 && angularExpansion>.35f;
+            if(LoomingDodging)
+                desired=(desired+transform.right*(Mathf.Sign(Vector3.Dot(playerApproach,transform.right))>=0 ? -1 : 1)*Mathf.Lerp(.35f,1.1f,Competence)*HaltereIntegrity).normalized;
             // Begin steering away while the couched lance still has clearance;
             // body-only collision detection reacts several metres too late.
             if(StaticEnvironmentAhead(transform.position+Vector3.up*.15f,transform.forward,Mathf.Clamp(LanceReach,1,4),out var lanceObstacle))
                 desired=(desired+lanceObstacle.normal*1.35f+Vector3.up*.3f).normalized;
-            transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
+            transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*Mathf.Lerp(.55f,1,HaltereIntegrity)*dt);
             velocity=Vector3.Lerp(velocity,transform.forward*(Mathf.Lerp(3.5f,8f,skill)*FlyMotor.SpeedMultiplierForHunger(EnemyHunger)),1-Mathf.Exp(-2.5f*dt));
             EnemyHunger=Mathf.Clamp01(EnemyHunger+dt*(.002f+velocity.magnitude*.0008f));
             Vector3 movement=velocity*dt;
@@ -411,6 +432,7 @@ namespace FruitFlyJoust
         public void FinishDetachedFlyEscape(){FlyEscaping=false;flyVisual=null;poseMirror=null;}
         public bool RiderReadyForFlyReturn { get { return health && health.Health>0 && groundAI; } }
         public void SetEnemyHunger(float value){EnemyHunger=Mathf.Clamp01(value);}
+        public void DamageHaltere(float damage){HaltereIntegrity=Mathf.Clamp01(HaltereIntegrity-Mathf.Max(0,damage)/60f);}
         public void FeedEnemyFly(float nutrition){EnemyHunger=Mathf.Max(0,EnemyHunger-Mathf.Max(0,nutrition));}
         public bool RemountReturnedFly(Transform returnedFly)
         {
@@ -498,11 +520,13 @@ namespace FruitFlyJoust
     {
         public MountedJoustOpponent owner;
         public bool fly;
+        public bool haltere;
     }
 
     public sealed class DetachedEnemyFly : MonoBehaviour
     {
         MountedJoustOpponent owner;Vector3 velocity,direction,circleCenter;float age,circleAngle,feedTime;FlyFood food;
+        Vector3 scentSearchPoint;float scentMemory;
         public void Initialize(MountedJoustOpponent source,Vector3 threat,Vector3 inheritedVelocity)
         {
             owner=source;direction=Vector3.ProjectOnPlane(transform.position-threat,Vector3.up).normalized;
@@ -520,8 +544,11 @@ namespace FruitFlyJoust
         void Update()
         {
             float dt=Time.deltaTime;age+=dt;
+            scentMemory=Mathf.Max(0,scentMemory-dt);
+            foreach(var bait in FindObjectsOfType<ScentedBait>())if(bait.Contains(transform.position)){scentSearchPoint=bait.transform.position;scentMemory=8;}
             Vector3 target;
-            if(age<2.5f || (owner && !owner.RiderReadyForFlyReturn && age<12))
+            if(scentMemory>0)target=scentSearchPoint+Vector3.up*.35f;
+            else if(age<2.5f || (owner && !owner.RiderReadyForFlyReturn && age<12))
             {
                 circleAngle+=dt*1.35f;target=circleCenter+new Vector3(Mathf.Cos(circleAngle)*2.5f,.35f*Mathf.Sin(circleAngle*.5f),Mathf.Sin(circleAngle)*2.5f);
             }

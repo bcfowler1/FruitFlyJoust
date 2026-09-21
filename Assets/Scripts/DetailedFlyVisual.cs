@@ -40,6 +40,7 @@ namespace FruitFlyJoust
         public bool UsesSpectralEyeMaterial { get { return spectralEyeMaterials==2; } }
         public bool UsesDepthBodyMaterial { get { return depthBodyMaterials>20; } }
         public bool UsesMeasuredWingVeins { get { return measuredWingVeinMeshes==2; } }
+        public float HeadStabilizationDegrees { get; private set; }
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
         {
@@ -134,6 +135,8 @@ namespace FruitFlyJoust
             float cleaning=Mathf.SmoothStep(0,1,Mathf.Clamp01((idleCycle-1.2f)/.35f))*
                 (1-Mathf.SmoothStep(0,1,Mathf.Clamp01((idleCycle-3.4f)/.35f)));
             float cleaningSide=Mathf.Sin(idleAnimationClock*5.5f);
+            HeadStabilizationDegrees=flying ? -motor.TotalBankDegrees*.62f*motor.HaltereIntegrity : 0;
+            Quaternion headStabilization=Quaternion.AngleAxis(HeadStabilizationDegrees,Vector3.forward);
             // During grooming the head inclines toward alternating foreleg wipes as one rigid assembly.
             // Eyes, mouthparts, and every antenna segment receive this same transform below.
             float headRoll=Mathf.Sin(idleAnimationClock*.8f)*3.5f+cleaning*cleaningSide*5.5f;
@@ -168,11 +171,20 @@ namespace FruitFlyJoust
                     position=Vector3.Lerp(position,targetPosition,transition);
                     rotation=Quaternion.Slerp(rotation,targetRotation,transition);
                 }
+                if(isLeg && motor.Phase==RidePhase.Landing && motor.LandingLegExtension>0)
+                {
+                    float extension=motor.LandingLegExtension;
+                    float reach=leg[1]=='F' ? -20 : leg[1]=='M' ? -12 : 16;
+                    Quaternion preparation=Quaternion.AngleAxis(reach*extension,Vector3.right);
+                    Vector3 pivot=legPivots[leg];position=pivot+preparation*(position-pivot)+Vector3.down*(.08f*extension);rotation=preparation*rotation;
+                }
                 string shortName=data.geoms[i].name.Substring(2);
                 if(idle && headParts.Contains(shortName))
                 {
                     position=headPivot+headIdle*(position-headPivot);rotation=headIdle*rotation;
                 }
+                if(flying && headParts.Contains(shortName))
+                {position=headPivot+headStabilization*(position-headPivot);rotation=headStabilization*rotation;}
                 if(idle && cleaning>0 && (leg=="LF" || leg=="RF"))
                 {
                     float side=leg[0]=='L' ? 1 : -1;
@@ -211,7 +223,7 @@ namespace FruitFlyJoust
                 }
                 float smoothing=1-Mathf.Exp(-18*Time.deltaTime);
                 // Apply the sampled skeleton together: segment-specific lag breaks leg/head alignment.
-                bool sampled=walking && isLeg || isLeg && flightBlend>0 || idle && (headParts.Contains(shortName) || cleaning>0 && (leg=="LF" || leg=="RF"));
+                bool sampled=walking && isLeg || isLeg && flightBlend>0 || isLeg && motor.Phase==RidePhase.Landing || idle && (headParts.Contains(shortName) || cleaning>0 && (leg=="LF" || leg=="RF"));
                 parts[i].localPosition=Vector3.Lerp(parts[i].localPosition,position,wing || sampled ? 1 : smoothing);
                 parts[i].localRotation=Quaternion.Slerp(parts[i].localRotation,rotation,wing || sampled ? 1 : smoothing);
             }

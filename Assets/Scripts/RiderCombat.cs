@@ -30,6 +30,7 @@ namespace FruitFlyJoust
         public float Health { get; private set; } = 100;
         public bool Defeated { get { return Health <= 0; } }
         public Vector3 RiderPosition { get { return Mounted ? saddle.position : avatar.position; } }
+        public Vector3 RideWorldVelocity { get { return RideVelocity; } }
         public Transform BowVisual { get { return bowVisual; } }
         public string message = "Practice combat targets; research brain is separate.";
         private RiderInput footInput;
@@ -81,6 +82,8 @@ namespace FruitFlyJoust
         private bool standaloneJousterSpawned;
         private GameObject standaloneJouster;
         private CombatTarget playerFlyHealth;
+        public bool ScentedArrowSelected { get; private set; }
+        public void SelectScentedArrow(bool selected){ScentedArrowSelected=selected;}
         public float defeatRespawnDelay = 3;
         private float defeatRespawnTimer = -1;
         private Vector3 combatSpawnCenter;
@@ -144,6 +147,14 @@ namespace FruitFlyJoust
             var zone=new GameObject("Player fly hitbox");zone.transform.SetParent(RideRoot,false);zone.transform.localPosition=new Vector3(0,-.05f,0);
             var collider=zone.AddComponent<BoxCollider>();collider.size=new Vector3(1.15f,.8f,1.65f)*FlyAssemblyScale;collider.isTrigger=true;
             playerFlyHealth=zone.AddComponent<CombatTarget>();playerFlyHealth.maximumHealth=120;playerFlyHealth.ResetTarget();
+            for(int side=-1;side<=1;side+=2)
+            {
+                var haltere=new GameObject(side<0 ? "Player left haltere hitbox" : "Player right haltere hitbox");haltere.transform.SetParent(RideRoot,false);
+                haltere.transform.localPosition=new Vector3(side*.24f,.02f,-.28f)*FlyAssemblyScale;
+                var sphere=haltere.AddComponent<SphereCollider>();sphere.radius=.1f*FlyAssemblyScale;
+                var health=haltere.AddComponent<CombatTarget>();health.maximumHealth=30;health.ResetTarget();
+                haltere.AddComponent<HaltereHitZone>().playerFly=fly;
+            }
         }
         public bool TakeFlyDamage(float damage)
         {
@@ -450,6 +461,7 @@ namespace FruitFlyJoust
             bool swordB=pad && sample.Held(WindowsGamepad.B);
             bool call=pad && sample.Held(WindowsGamepad.DPadDown);
             if(!Mounted && (Input.GetKeyDown(KeyCode.H) || call && !callBefore))CallFlyNear();
+            if(weapon==Weapon.Bow && Input.GetKeyDown(KeyCode.Q)){ScentedArrowSelected=!ScentedArrowSelected;message=ScentedArrowSelected ? "Scented bait arrow selected." : "Standard arrows selected.";}
             callBefore=call;
             if (Input.GetKeyDown(KeyCode.C) || (!swordContext && interact > padInteractBefore))
             { if (Mounted) TryDismount(); else TryMount(); input = Mounted ? RideInput : footInput; }
@@ -551,7 +563,8 @@ namespace FruitFlyJoust
             obj.transform.rotation = Quaternion.LookRotation(direction); obj.transform.localScale = new Vector3(.04f, .04f, .5f);
             obj.GetComponent<Renderer>().sharedMaterial = weaponMaterial;
             var arrow = obj.AddComponent<CombatArrow>(); arrow.velocity = direction * Mathf.Lerp(12, 30, charge);
-            arrow.clock = this; arrow.damage = Mathf.Lerp(15, 45, charge); cooldown = .35f; message = "Arrow released.";
+            arrow.clock = this;arrow.scentedBait=ScentedArrowSelected;arrow.damage=ScentedArrowSelected ? 0 : Mathf.Lerp(15,45,charge);
+            cooldown=.35f;message=ScentedArrowSelected ? "Scented bait arrow released." : "Arrow released.";
         }
         public void SwordStrike() { SwordStrike(SwordAttack.Thrust); }
         static float CutSweep(float phase,float direction)
@@ -607,7 +620,8 @@ namespace FruitFlyJoust
                 var zone=target.GetComponent<MountedHitZone>();
                 if(zone && zone.owner)
                 {
-                    if(zone.fly)message=zone.owner.ReceiveFlyLanceContact(impact,weaponVisual.forward) ? (zone.owner.Mounted ? "Lance hit — enemy fly damaged!" : "Enemy fly disabled — opponent unseated!") : "Joust hit.";
+                    if(zone.haltere)message="Haltere hit — enemy stability reduced!";
+                    else if(zone.fly)message=zone.owner.ReceiveFlyLanceContact(impact,weaponVisual.forward) ? (zone.owner.Mounted ? "Lance hit — enemy fly damaged!" : "Enemy fly disabled — opponent unseated!") : "Joust hit.";
                     else message=zone.owner.ReceiveLanceContact(impact) ? "Solid lance hit — opponent unseated!" : "Rider hit!";
                 }
                 else message=mountedOpponent && mountedOpponent.ReceiveLanceContact(impact) ? "Solid lance hit — opponent unseated!" : "Joust hit.";
@@ -716,7 +730,7 @@ namespace FruitFlyJoust
             string flyStatus=fly && fly.Dead ? "DEAD" : fly ? fly.Phase.ToString() : "Unavailable";
             GUI.Label(new Rect(30, Screen.height-122, 720, 24), (research ? "SCIENTIFIC BODY / GAMEPLAY COMBAT — " : "COMBAT PROTOTYPE — ") + (Mounted ? "Mounted" : "On foot") + "   Weapon: " + weapon + "   Rider HP: " + Mathf.CeilToInt(Health)+(playerFlyHealth ? "   Fly HP: "+Mathf.CeilToInt(playerFlyHealth.Health)+" ("+flyStatus+")" : ""));
             GUI.Label(new Rect(30, Screen.height-97, 720, 24), "C / X: mount   F / Y: weapon   Sword: X cut L-R, B cut R-L, RT thrust");
-            GUI.Label(new Rect(30, Screen.height-72, 720, 24), "Bow: hold LT to draw/release   D-pad Down / H: call fly   Draw: " + Mathf.RoundToInt(charge*100) + "%");
+            GUI.Label(new Rect(30, Screen.height-72, 720, 24), "Bow: hold LT to draw/release   Q: "+(ScentedArrowSelected ? "BAIT arrow" : "standard arrow")+"   D-pad Down / H: call fly   Draw: " + Mathf.RoundToInt(charge*100) + "%");
             GUI.Label(new Rect(30, Screen.height-47, 720, 24), message);
             if (research)
             {

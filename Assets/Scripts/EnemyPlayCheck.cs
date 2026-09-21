@@ -50,6 +50,12 @@ namespace FruitFlyJoust
                 Require(Mathf.Abs(rider.LanceReach-jouster.LanceReach)<.03f,
                     "player and opponent have equal effective lance reach from the hand");
                 Require(jouster.RiderHealth && jouster.FlyHealth,"mounted opponent exposes separate rider and fly hit points");
+                CombatTarget enemyHaltere=null;foreach(var target in jouster.GetComponentsInChildren<CombatTarget>())if(target.name.Contains("haltere")){enemyHaltere=target;break;}
+                float intactHaltere=jouster.HaltereIntegrity;Require(enemyHaltere && rider.TestLanceHit(enemyHaltere,2),"enemy haltere has a lance-addressable hit volume");yield return null;
+                Require(jouster.HaltereIntegrity<intactHaltere,"enemy haltere damage reduces flight stability without counting as an unseat");
+                var scentObject=new GameObject("Scent acquisition check");scentObject.transform.position=jouster.transform.position-Vector3.right*2;var scent=scentObject.AddComponent<ScentedBait>();yield return null;
+                Require(scent.Contains(jouster.transform.position) && jouster.ScentSearching,
+                    "enemy fly only acquires scented bait after entering its downwind plume and retains a search memory");Destroy(scentObject);
                 jouster.SetEnemyHunger(0);float enemyFedTop=jouster.EnemyTopSpeed;
                 jouster.SetEnemyHunger(1);float enemyHungryTop=jouster.EnemyTopSpeed;jouster.SetEnemyHunger(.35f);
                 Require(Mathf.Abs(enemyHungryTop/enemyFedTop-.9f)<.001f,
