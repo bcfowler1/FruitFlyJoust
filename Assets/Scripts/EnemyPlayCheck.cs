@@ -84,13 +84,18 @@ namespace FruitFlyJoust
                     "defeated mounted jouster respawns one competency level stronger");
                 Require(jouster.AnatomicalForwardAlignment>.9f && jouster.RiderForwardAlignment>.9f && jouster.RiderThoraxDistance<.65f,
                     "respawned opponent fly and rider remain aligned and centered on the thorax");
+                var enemyFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);enemyFoodObject.name="Enemy return feeding check";
+                enemyFoodObject.transform.position=jouster.transform.position+jouster.transform.right*3+Vector3.up*.4f;
+                var enemyFood=enemyFoodObject.AddComponent<FlyFood>();enemyFood.nutrition=.7f;jouster.SetEnemyHunger(.8f);
                 float livingFlyHealth=jouster.FlyHealth.Health;
                 Require(jouster.ReceiveLanceContact(5) && jouster.FlyEscaping && jouster.FlyHealth.Health==livingFlyHealth &&
-                    FindObjectOfType<DetachedEnemyFly>(),
+                    FindObjectOfType<DetachedEnemyFly>() && jouster.LastDroppedLance && jouster.LastDroppedLance.useGravity,
                     "unseating a rider from a living fly leaves a visible mount that flies away instead of vanishing");
-                jouster.gameObject.SetActive(false);
-                rider.SetPractice(true,true);yield return null;
-                jouster=FindObjectOfType<MountedJoustOpponent>();Require(jouster && jouster.Mounted,"replacement mounted opponent available for fly-death checks");
+                float returnDeadline=Clock+16;while(!jouster.Mounted && Clock<returnDeadline)yield return null;
+                Require(jouster.Mounted && jouster.ReturnedRemountCount==1 && !FindObjectOfType<DetachedEnemyFly>() &&
+                    enemyFood.RemainingFraction<1 && jouster.EnemyHunger<.8f,
+                    "hungry living fly circles, feeds, returns after rider recovery, and is remounted by the same rider");
+                Destroy(enemyFoodObject);
                 float respawnFlyHealth=jouster.FlyHealth.Health;
                 Require(rider.TestLanceHit(jouster.FlyHealth,2) && jouster.FlyHealth.Health<respawnFlyHealth,
                     "respawned enemy fly independently takes lance damage");

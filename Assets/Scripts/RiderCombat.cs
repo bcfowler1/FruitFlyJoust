@@ -29,7 +29,9 @@ namespace FruitFlyJoust
         public string message = "Practice combat targets; research brain is separate.";
         private RiderInput footInput;
         private CharacterController feet;
-        private Transform avatar, weaponVisual, bowVisual, swordVisual;
+        private Transform avatar, weaponVisual, bowVisual, swordVisual,lanceModel,stowedLance;
+        public Rigidbody LastDroppedLance { get; private set; }
+        public bool StowedLanceVisible { get { return stowedLance && stowedLance.gameObject.activeInHierarchy; } }
         [System.Serializable] public sealed class SwordHandPose { public Vector3 position=new Vector3(0,.02f,.03f);public Vector3 euler;public float scale=1; }
         public SwordHandPose swordHandPose=new SwordHandPose();
         public Transform SwordVisual { get { return swordVisual; } }
@@ -94,6 +96,7 @@ namespace FruitFlyJoust
             Destroy(pole.GetComponent<Collider>());
             pole.GetComponent<Renderer>().sharedMaterial = weaponMaterial;
             weaponVisual = pole.transform;
+            BuildLanceVisual();
             BuildBowVisual();
             BuildSwordVisual();
             var swordPoseAsset=Resources.Load<TextAsset>("SwordHandPose");
@@ -197,14 +200,14 @@ namespace FruitFlyJoust
         void SetWeapon()
         {
             var placeholder=weaponVisual.GetComponent<Renderer>();
-            if(placeholder)placeholder.enabled=weapon==Weapon.Lance;
+            if(placeholder)placeholder.enabled=false;
+            if(lanceModel)lanceModel.gameObject.SetActive(weapon==Weapon.Lance);
             if(bowVisual)bowVisual.gameObject.SetActive(weapon==Weapon.Bow);
             if(swordVisual)swordVisual.gameObject.SetActive(weapon==Weapon.Sword);
             weaponVisual.SetParent(Mounted ? saddle : avatar, false);
             weaponVisual.localPosition = Mounted ? new Vector3(.35f, .9f, 1.2f) : new Vector3(.3f, .8f, .6f);
             weaponVisual.localRotation = Quaternion.identity;
-            weaponVisual.localScale = weapon == Weapon.Lance ? new Vector3(.055f, .055f, 2.5f) :
-                weapon == Weapon.Sword ? Vector3.one : Vector3.one;
+            weaponVisual.localScale = Vector3.one;
             var hand = animationVisual ? animationVisual.Hand(weapon == Weapon.Bow) : null;
             if (hand)
             {
@@ -216,7 +219,46 @@ namespace FruitFlyJoust
                 weaponVisual.localScale = new Vector3(size.x/Mathf.Max(.001f,scale.x),size.y/Mathf.Max(.001f,scale.y),size.z/Mathf.Max(.001f,scale.z));
                 if(weapon==Weapon.Sword)ApplySwordHandPose();
             }
+            UpdateStowedLance();
             lastTip = Tip();
+        }
+        void UpdateStowedLance()
+        {
+            bool shouldStow=Mounted && weapon!=Weapon.Lance;
+            if(shouldStow && !stowedLance)
+            {
+                stowedLance=CreateLanceObject("Stowed rider lance");
+                stowedLance.SetParent(saddle,false);stowedLance.localPosition=new Vector3(-.2f,-.12f,-.28f);
+                stowedLance.localRotation=Quaternion.identity;stowedLance.localScale=Vector3.one;
+            }
+            if(stowedLance)stowedLance.gameObject.SetActive(shouldStow);
+        }
+        void DropLance(Vector3 inheritedVelocity)
+        {
+            if(!stowedLance)
+            {
+                stowedLance=CreateLanceObject("Dropped rider lance");
+                stowedLance.position=saddle.position;stowedLance.rotation=RideRoot.rotation;stowedLance.localScale=Vector3.one;
+            }
+            else
+            {
+                stowedLance.gameObject.SetActive(true);stowedLance.SetParent(null,true);
+                if(!stowedLance.GetComponent<Collider>())stowedLance.gameObject.AddComponent<BoxCollider>();
+            }
+            var body=stowedLance.gameObject.AddComponent<Rigidbody>();body.mass=.7f;body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;LastDroppedLance=body;
+            body.velocity=inheritedVelocity;body.angularVelocity=RideRoot.right*1.2f;Destroy(stowedLance.gameObject,15);stowedLance=null;
+        }
+        Transform CreateLanceObject(string objectName)
+        {
+            var prefab=Resources.Load<GameObject>("Weapons/Fly Lance Source") ?? Resources.Load<GameObject>("Weapons/Fly Lance");
+            GameObject lance=prefab ? Instantiate(prefab) : GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            lance.name=objectName;if(!prefab){lance.transform.localScale=new Vector3(.05f,1.15f,.05f);lance.transform.localRotation=Quaternion.Euler(90,0,0);lance.GetComponent<Renderer>().sharedMaterial=weaponMaterial;}
+            foreach(var collider in lance.GetComponentsInChildren<Collider>())Destroy(collider);return lance.transform;
+        }
+        void BuildLanceVisual()
+        {
+            lanceModel=CreateLanceObject("Held lance model");lanceModel.SetParent(weaponVisual,false);
+            lanceModel.localPosition=Vector3.zero;lanceModel.localRotation=Quaternion.identity;lanceModel.localScale=Vector3.one;
         }
         void BuildBowVisual()
         {
@@ -266,7 +308,17 @@ namespace FruitFlyJoust
             weaponVisual.localScale=new Vector3(s/Mathf.Max(.001f,handScale.x),s/Mathf.Max(.001f,handScale.y),s/Mathf.Max(.001f,handScale.z));
         }
         public void SelectWeapon(Weapon selected) { weapon = selected; if (weaponVisual) SetWeapon(); }
-        Vector3 Tip() { return weaponVisual.position + weaponVisual.forward * (weaponVisual.lossyScale.z / 2); }
+        Vector3 Tip()
+        {
+            if(weapon==Weapon.Lance && lanceModel)
+            {
+                float farthest=0;Vector3 forward=weaponVisual.forward;
+                foreach(var renderer in lanceModel.GetComponentsInChildren<Renderer>())
+                {Bounds b=renderer.bounds;float projection=Vector3.Dot(b.center-weaponVisual.position,forward)+Vector3.Dot(b.extents,new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));farthest=Mathf.Max(farthest,projection);}
+                return weaponVisual.position+forward*farthest;
+            }
+            return weaponVisual.position + weaponVisual.forward * (weaponVisual.lossyScale.z / 2);
+        }
         public bool TryDismount()
         {
             if (!Perched) { message = "Perch before dismounting."; return false; }
@@ -279,7 +331,7 @@ namespace FruitFlyJoust
                 Vector3 position = hit.point + Vector3.up * .06f;
                 if (Physics.CheckCapsule(position + Vector3.up * .21f, position + Vector3.up * .99f, .2f,
                     1, QueryTriggerInteraction.Ignore)) continue;
-                Mounted = false; RideInput.enabled = false; mountedVisual.gameObject.SetActive(false);
+                DropLance(RideVelocity);Mounted = false; RideInput.enabled = false; mountedVisual.gameObject.SetActive(false);
                 var head = saddle.Find("Rider head"); if (head) head.gameObject.SetActive(false);
                 avatar.position = position; avatar.rotation = Quaternion.Euler(0, view.transform.eulerAngles.y, 0);
                 avatar.gameObject.SetActive(true); falling = 0; RideInput.ResetCues();
@@ -326,7 +378,7 @@ namespace FruitFlyJoust
         public bool ForceUnseat(Vector3 impulse)
         {
             if(!Mounted || Defeated || !avatar || !feet)return false;
-            Mounted=false;RideInput.enabled=false;RideInput.ResetCues();mountedVisual.gameObject.SetActive(false);
+            DropLance(RideVelocity);Mounted=false;RideInput.enabled=false;RideInput.ResetCues();mountedVisual.gameObject.SetActive(false);
             var head=saddle.Find("Rider head");if(head)head.gameObject.SetActive(false);
             avatar.gameObject.SetActive(true);feet.enabled=false;avatar.position=saddle.position+Vector3.up*.15f;
             Vector3 heading=Vector3.ProjectOnPlane(RideRoot.forward,Vector3.up);

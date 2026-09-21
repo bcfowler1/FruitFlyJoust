@@ -20,6 +20,9 @@ namespace FruitFlyJoust
         public Vector3 CurrentVelocity { get { return velocity; } }
         public bool FlyEscaping { get; private set; }
         public bool ReplacementMountScheduled { get; private set; }
+        public float EnemyHunger { get; private set; }=.35f;
+        public int ReturnedRemountCount { get; private set; }
+        public Rigidbody LastDroppedLance { get; private set; }
         public float GroundClearance
         {
             get
@@ -36,8 +39,8 @@ namespace FruitFlyJoust
         CharacterController feet;
         CombatOpponent groundAI;
         CombatTarget health,mountHealth;
-        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale;
-        Quaternion saddleBaseRotation,flyTemplateLocalRotation;
+        Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale,flyMountedLocalPosition,flyMountedLocalScale;
+        Quaternion saddleBaseRotation,flyTemplateLocalRotation,flyMountedLocalRotation;
         float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1,replacementMountTimer=-1;
 
         public void Initialize(RiderCombat rider,GameObject biologicalVisual,Transform saddleTemplate,Transform rideRoot,Material sharedRiderMaterial,Material sharedWeaponMaterial,Vector3 position)
@@ -101,16 +104,25 @@ namespace FruitFlyJoust
                     // here turns the rider 90 degrees sideways while standing still.
                 }
                 poseMirror=flyVisual.gameObject.AddComponent<BiologicalPoseMirror>();poseMirror.Initialize(biologicalTemplate.transform);
+                flyMountedLocalPosition=flyVisual.localPosition;flyMountedLocalRotation=flyVisual.localRotation;flyMountedLocalScale=flyVisual.localScale;
             }
             else
             {
                 var fly=GameObject.CreatePrimitive(PrimitiveType.Sphere);Destroy(fly.GetComponent<Collider>());
                 fly.name="Enemy fly";fly.transform.SetParent(transform,false);fly.transform.localPosition=new Vector3(0,-.25f,0);
                 fly.transform.localScale=new Vector3(.8f,.35f,1.25f);fly.GetComponent<Renderer>().sharedMaterial=weaponMaterial;flyVisual=fly.transform;
+                flyMountedLocalPosition=flyVisual.localPosition;flyMountedLocalRotation=flyVisual.localRotation;flyMountedLocalScale=flyVisual.localScale;
             }
-            var weapon=GameObject.CreatePrimitive(PrimitiveType.Cube);Destroy(weapon.GetComponent<Collider>());
+            BuildLance();
+        }
+        void BuildLance()
+        {
+            var prefab=Resources.Load<GameObject>("Weapons/Fly Lance Source") ?? Resources.Load<GameObject>("Weapons/Fly Lance");
+            var weapon=prefab ? Instantiate(prefab) : GameObject.CreatePrimitive(PrimitiveType.Cube);
+            foreach(var collider in weapon.GetComponentsInChildren<Collider>())Destroy(collider);
             weapon.name="Enemy lance";weapon.transform.SetParent(riderAnchor ? riderAnchor : transform,false);weapon.transform.localPosition=new Vector3(.25f,.32f,1.35f);
-            weapon.transform.localScale=new Vector3(.055f,.055f,2.5f);weapon.GetComponent<Renderer>().sharedMaterial=weaponMaterial;lance=weapon.transform;
+            weapon.transform.localScale=prefab ? Vector3.one : new Vector3(.055f,.055f,2.5f);
+            var renderer=weapon.GetComponent<Renderer>();if(renderer)renderer.sharedMaterial=weaponMaterial;lance=weapon.transform;
         }
         void BuildHitZones()
         {
@@ -143,7 +155,16 @@ namespace FruitFlyJoust
             Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=replacementMountTimer=-1;
             health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();lastLanceTip=LanceTip;
         }
-        public Vector3 LanceTip { get { return lance ? lance.position+lance.forward*lance.lossyScale.z*.5f : transform.position; } }
+        public Vector3 LanceTip
+        {
+            get
+            {
+                if(!lance)return transform.position;float farthest=0;Vector3 forward=lance.forward;
+                foreach(var renderer in lance.GetComponentsInChildren<Renderer>())
+                {Bounds b=renderer.bounds;float projection=Vector3.Dot(b.center-lance.position,forward)+Vector3.Dot(b.extents,new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));farthest=Mathf.Max(farthest,projection);}
+                return lance.position+forward*farthest;
+            }
+        }
         public float AnatomicalForwardAlignment
         {
             get
@@ -260,6 +281,7 @@ namespace FruitFlyJoust
             Vector3 desired=(aim-transform.position).normalized;
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(desired,Vector3.up),Mathf.Lerp(35,125,skill)*dt);
             velocity=Vector3.Lerp(velocity,transform.forward*Mathf.Lerp(3.5f,8f,skill),1-Mathf.Exp(-2.5f*dt));
+            EnemyHunger=Mathf.Clamp01(EnemyHunger+dt*(.002f+velocity.magnitude*.0008f));
             Vector3 movement=velocity*dt;
             if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
@@ -326,8 +348,15 @@ namespace FruitFlyJoust
                     escape.Initialize(this,player ? player.RiderPosition : transform.position-transform.forward,velocity);
                 }
             }
-            if(lance){lance.SetParent(null,true);Destroy(lance.gameObject,2);lance=null;}
+            DropEnemyLance();
             feet.enabled=true;return true;
+        }
+        void DropEnemyLance()
+        {
+            if(!lance)return;lance.SetParent(null,true);
+            if(!lance.GetComponent<Collider>())lance.gameObject.AddComponent<BoxCollider>();
+            var body=lance.gameObject.AddComponent<Rigidbody>();body.mass=.7f;body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;LastDroppedLance=body;
+            body.velocity=velocity;body.angularVelocity=transform.right*1.2f;Destroy(lance.gameObject,15);lance=null;
         }
         public bool ReceiveFlyLanceContact(float impact)
         {
@@ -336,6 +365,22 @@ namespace FruitFlyJoust
             contactCooldown=.35f;return true;
         }
         public void FinishDetachedFlyEscape(){FlyEscaping=false;flyVisual=null;poseMirror=null;}
+        public bool RiderReadyForFlyReturn { get { return health && health.Health>0 && groundAI; } }
+        public void SetEnemyHunger(float value){EnemyHunger=Mathf.Clamp01(value);}
+        public void FeedEnemyFly(float nutrition){EnemyHunger=Mathf.Max(0,EnemyHunger-Mathf.Max(0,nutrition));}
+        public bool RemountReturnedFly(Transform returnedFly)
+        {
+            if(!returnedFly || !RiderReadyForFlyReturn)return false;
+            if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
+            transform.position=returnedFly.position;Vector3 forward=Vector3.ProjectOnPlane(returnedFly.forward,Vector3.up);
+            if(forward.sqrMagnitude>.01f)transform.rotation=Quaternion.LookRotation(forward,Vector3.up);
+            returnedFly.SetParent(transform,false);returnedFly.localPosition=flyMountedLocalPosition;
+            returnedFly.localRotation=flyMountedLocalRotation;returnedFly.localScale=flyMountedLocalScale;flyVisual=returnedFly;
+            foreach(var collider in returnedFly.GetComponentsInChildren<Collider>())collider.enabled=true;
+            FlyEscaping=false;Mounted=true;feet.enabled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;
+            BuildLance();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
+            lastLanceTip=LanceTip;ReturnedRemountCount++;return true;
+        }
         void Fall(float dt)
         {
             if(feet.isGrounded && verticalSpeed<=0)
@@ -411,24 +456,44 @@ namespace FruitFlyJoust
 
     public sealed class DetachedEnemyFly : MonoBehaviour
     {
-        MountedJoustOpponent owner;Vector3 velocity,direction;float age;
+        MountedJoustOpponent owner;Vector3 velocity,direction,circleCenter;float age,circleAngle,feedTime;FlyFood food;
         public void Initialize(MountedJoustOpponent source,Vector3 threat,Vector3 inheritedVelocity)
         {
             owner=source;direction=Vector3.ProjectOnPlane(transform.position-threat,Vector3.up).normalized;
             if(direction.sqrMagnitude<.1f)direction=Vector3.ProjectOnPlane(transform.forward,Vector3.up).normalized;
             Vector3 planar=Vector3.ProjectOnPlane(inheritedVelocity,Vector3.up);
             velocity=(planar.sqrMagnitude>.01f ? planar.normalized : direction)*Mathf.Min(3.5f,Mathf.Max(1.5f,planar.magnitude));
+            circleCenter=transform.position+Vector3.up*1.25f;
+            if(owner && owner.EnemyHunger>=.6f)
+            {
+                float nearest=12;foreach(var candidate in FindObjectsOfType<FlyFood>())if(candidate.Available)
+                {float distance=Vector3.Distance(transform.position,candidate.transform.position);if(distance<nearest){nearest=distance;food=candidate;}}
+            }
             foreach(var collider in GetComponentsInChildren<Collider>())collider.enabled=false;
         }
         void Update()
         {
             float dt=Time.deltaTime;age+=dt;
-            Vector3 desired=(direction+Vector3.up*.18f).normalized*3.5f;
-            velocity=Vector3.Lerp(velocity,desired,1-Mathf.Exp(-1.2f*dt));
+            Vector3 target;
+            if(age<2.5f || (owner && !owner.RiderReadyForFlyReturn && age<12))
+            {
+                circleAngle+=dt*1.35f;target=circleCenter+new Vector3(Mathf.Cos(circleAngle)*2.5f,.35f*Mathf.Sin(circleAngle*.5f),Mathf.Sin(circleAngle)*2.5f);
+            }
+            else if(food && food.Available && owner && owner.EnemyHunger>.25f && feedTime<4)
+            {
+                target=food.transform.position+Vector3.up*.35f;
+                if(Vector3.Distance(transform.position,target)<.65f){owner.FeedEnemyFly(food.Consume(dt));feedTime+=dt;velocity*=.7f;}
+            }
+            else if(owner)target=owner.transform.position+Vector3.up*.55f;
+            else target=transform.position+direction*3;
+            Vector3 toTarget=target-transform.position;Vector3 desired=toTarget.sqrMagnitude>.01f ? toTarget.normalized*3.2f : Vector3.zero;
+            velocity=Vector3.Lerp(velocity,desired,1-Mathf.Exp(-1.8f*dt));
             if(velocity.sqrMagnitude>.01f)transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(velocity.normalized,Vector3.up),55*dt);
             transform.position+=velocity*dt;
-            if(age<8)return;
-            if(owner)owner.FinishDetachedFlyEscape();Destroy(gameObject);
+            bool finishedFeeding=!food || !food.Available || !owner || owner.EnemyHunger<=.25f || feedTime>=4;
+            if(age>=2.5f && finishedFeeding && owner && owner.RiderReadyForFlyReturn && Vector3.Distance(transform.position,target)<.7f)
+            {if(owner.RemountReturnedFly(transform)){Destroy(this);return;}}
+            if(age<20)return;if(owner)owner.FinishDetachedFlyEscape();Destroy(gameObject);
         }
     }
 

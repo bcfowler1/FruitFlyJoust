@@ -178,6 +178,8 @@ namespace FruitFlyJoust
             yield return new WaitForSeconds(.2f);
             Require(Vector3.Distance(stopped,combat.fly.transform.position)<.01f,"grounded stick release stops walking");
             Require(combat.TryDismount() && !combat.Mounted, "safe dismount from actual perch");
+            Require(combat.LastDroppedLance && combat.LastDroppedLance.useGravity,
+                "dismount drops the full lance as a physical object instead of making it vanish");
             var idleFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);idleFoodObject.name="Dismounted autonomous feeding check";
             idleFoodObject.transform.position=combat.fly.transform.position+combat.fly.transform.forward*.45f;idleFoodObject.transform.localScale=Vector3.one*.24f;
             var idleFood=idleFoodObject.AddComponent<FlyFood>();idleFood.nutrition=.6f;combat.fly.SetHunger(.5f);
@@ -269,6 +271,8 @@ namespace FruitFlyJoust
             Require(combat.mountedVisual.gameObject.activeSelf, "mounted rider restored");
             target.ResetTarget(); Require(target.Health == 100, "target reset");
             combat.SelectWeapon(RiderCombat.Weapon.Bow);
+            Require(combat.StowedLanceVisible,
+                "switching weapons while mounted keeps the lance visibly secured between saddle and armour");
             combat.view.transform.rotation=Quaternion.LookRotation(combat.fly.transform.forward,combat.fly.transform.up);
             combat.fly.rider.secondaryAction=1;yield return new WaitForSeconds(.45f);
             Require(seat.LastWaistAimDegrees>80 && seat.LastWaistAimDegrees<100,
