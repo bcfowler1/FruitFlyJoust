@@ -133,7 +133,7 @@ namespace FruitFlyJoust
                 float aimWeight=charge>0 || bowBefore || cooldown>0 ? 1 : .35f;
                 Transform frame=Mounted ? RideRoot : avatar;Vector3 aimDirection=view.transform.forward;
                 animationVisual.AimUpperBody(frame,aimDirection,aimWeight);
-                animationVisual.PoseBowAim(frame,aimDirection,aimWeight);
+                animationVisual.PoseBowAim(frame,aimDirection,aimWeight,charge);
                 Transform leftHand=animationVisual.Hand(true);
                 if(weaponVisual && leftHand)
                 {

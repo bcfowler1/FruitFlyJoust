@@ -40,6 +40,7 @@ namespace FruitFlyJoust
         public Vector3 RagdollCenter { get { var hips=Bone(HumanBodyBones.Hips);return hips ? hips.position : VisualRootPosition; } }
         public float LastWaistAimDegrees { get; private set; }
         public float LeftArmAimAlignment { get; private set; }
+        public float BowDrawHandDistance { get; private set; }
         public float LastTorsoStabilizationDegrees { get; private set; }
         public Quaternion StableCameraRotation { get; private set; }=Quaternion.identity;
         public float mountedSeatHeight = .2f;
@@ -170,15 +171,19 @@ namespace FruitFlyJoust
             if(!animator || !animator.isHuman || !frame || weight<=0)return;
             Vector3 planar=Vector3.ProjectOnPlane(worldDirection,frame.up);
             if(planar.sqrMagnitude<.001f)return;
-            float yaw=Mathf.Clamp(Vector3.SignedAngle(frame.forward,planar.normalized,frame.up),-105,105);
-            LastWaistAimDegrees=yaw;
+            float aimYaw=Vector3.SignedAngle(frame.forward,planar.normalized,frame.up);
+            // Stand side-on to the shot with the torso turned to the right of the
+            // firing line. Arm IK below still reaches along worldDirection, so the
+            // bow and projectile remain aimed forward rather than following the chest.
+            float yaw=Mathf.Clamp(Mathf.DeltaAngle(0,aimYaw+90),-105,105);
+            LastWaistAimDegrees=yaw*weight;
             Twist(HumanBodyBones.Spine,frame.up,yaw*.22f*weight);
             Twist(HumanBodyBones.Chest,frame.up,yaw*.33f*weight);
             Twist(HumanBodyBones.UpperChest,frame.up,yaw*.45f*weight);
         }
-        public void PoseBowAim(Transform frame,Vector3 worldDirection,float weight)
+        public void PoseBowAim(Transform frame,Vector3 worldDirection,float weight,float draw)
         {
-            LeftArmAimAlignment=0;
+            LeftArmAimAlignment=BowDrawHandDistance=0;
             if(!animator || !animator.isHuman || !frame || weight<=0)return;
             Vector3 aim=worldDirection.normalized;
             var upper=Bone(HumanBodyBones.LeftUpperArm);var lower=Bone(HumanBodyBones.LeftLowerArm);var hand=Bone(HumanBodyBones.LeftHand);
@@ -191,6 +196,16 @@ namespace FruitFlyJoust
             if(fore.sqrMagnitude>.0001f && wanted.sqrMagnitude>.0001f)
                 lower.rotation=Quaternion.Slerp(lower.rotation,Quaternion.FromToRotation(fore.normalized,wanted.normalized)*lower.rotation,weight);
             Vector3 reach=hand.position-upper.position;if(reach.sqrMagnitude>.0001f)LeftArmAimAlignment=Vector3.Dot(reach.normalized,aim);
+            var rightUpper=Bone(HumanBodyBones.RightUpperArm);var rightLower=Bone(HumanBodyBones.RightLowerArm);var rightHand=Bone(HumanBodyBones.RightHand);
+            if(!rightUpper || !rightLower || !rightHand)return;
+            Vector3 drawTarget=hand.position-aim*Mathf.Lerp(.34f,.74f,Mathf.Clamp01(draw))+frame.up*.035f;
+            Vector3 rightReach=rightHand.position-rightUpper.position,wantedReach=drawTarget-rightUpper.position;
+            if(rightReach.sqrMagnitude>.0001f && wantedReach.sqrMagnitude>.0001f)
+                rightUpper.rotation=Quaternion.Slerp(rightUpper.rotation,Quaternion.FromToRotation(rightReach.normalized,wantedReach.normalized)*rightUpper.rotation,weight);
+            Vector3 rightFore=rightHand.position-rightLower.position,wantedFore=drawTarget-rightLower.position;
+            if(rightFore.sqrMagnitude>.0001f && wantedFore.sqrMagnitude>.0001f)
+                rightLower.rotation=Quaternion.Slerp(rightLower.rotation,Quaternion.FromToRotation(rightFore.normalized,wantedFore.normalized)*rightLower.rotation,weight);
+            BowDrawHandDistance=Mathf.Max(0,Vector3.Dot(hand.position-rightHand.position,aim));
         }
         public float VisualHeight
         {

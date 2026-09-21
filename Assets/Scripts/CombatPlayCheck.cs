@@ -268,9 +268,17 @@ namespace FruitFlyJoust
             Require(combat.mountedVisual.gameObject.activeSelf, "mounted rider restored");
             target.ResetTarget(); Require(target.Health == 100, "target reset");
             combat.SelectWeapon(RiderCombat.Weapon.Bow);
+            combat.view.transform.rotation=Quaternion.LookRotation(combat.fly.transform.forward,combat.fly.transform.up);
+            combat.fly.rider.secondaryAction=1;yield return new WaitForSeconds(.45f);
+            Require(seat.LastWaistAimDegrees>80 && seat.LastWaistAimDegrees<100,
+                "forward archery stance turns the rider ninety degrees right at the waist");
+            Require(seat.LeftArmAimAlignment>.75f && Vector3.Dot(combat.BowVisual.forward,combat.fly.transform.forward)>.95f,
+                "side-on archery stance keeps the left arm and bow aimed in the forward firing direction");
+            Require(seat.BowDrawHandDistance>.42f,
+                "holding the left trigger keeps the right hand pulling the arrow behind the bow");
             combat.view.transform.rotation=Quaternion.LookRotation(
                 (-combat.fly.transform.forward+combat.fly.transform.right*.25f).normalized,combat.fly.transform.up);
-            combat.fly.rider.secondaryAction=1;yield return null;yield return null;
+            yield return null;yield return null;
             Require(Mathf.Abs(seat.LastWaistAimDegrees)>90,"bow aiming behind twists the rider at the waist toward aim direction");
             Require(seat.LeftArmAimAlignment>.75f && Vector3.Dot(combat.BowVisual.forward,combat.view.transform.forward)>.95f,
                 "bow aim extends the left arm and places the bow in the firing direction");
