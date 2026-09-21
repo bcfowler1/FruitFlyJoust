@@ -9,6 +9,7 @@ namespace FruitFlyJoust
         Rigidbody physicsBody;
         Renderer[] renderers;
         public Vector3 Velocity { get { return physicsBody ? physicsBody.velocity : Vector3.zero; } }
+        public bool HasGroundContact { get; private set; }
         public static FlyCorpse Create(Transform source,Vector3 inheritedVelocity,bool clone)
         {
             if(!source)return null;
@@ -33,9 +34,20 @@ namespace FruitFlyJoust
             var collider=gameObject.AddComponent<BoxCollider>();
             Vector3 scale=transform.lossyScale;collider.center=transform.InverseTransformPoint(bounds.center);
             collider.size=new Vector3(bounds.size.x/Mathf.Max(.001f,Mathf.Abs(scale.x)),bounds.size.y/Mathf.Max(.001f,Mathf.Abs(scale.y)),bounds.size.z/Mathf.Max(.001f,Mathf.Abs(scale.z)))*.72f;
+            collider.material=new PhysicMaterial("Dead fly") { dynamicFriction=.6f,staticFriction=.75f,bounciness=.03f,frictionCombine=PhysicMaterialCombine.Maximum,bounceCombine=PhysicMaterialCombine.Minimum };
             physicsBody=gameObject.AddComponent<Rigidbody>();physicsBody.mass=1.2f;physicsBody.interpolation=RigidbodyInterpolation.Interpolate;
-            physicsBody.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;physicsBody.velocity=inheritedVelocity;
-            physicsBody.angularVelocity=Vector3.Cross(transform.up,inheritedVelocity.normalized)*2.2f+transform.forward*.7f;
+            physicsBody.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;physicsBody.drag=.08f;physicsBody.angularDrag=1.2f;
+            // A flying mount can have a strong climb component at the instant it dies.
+            // Keep its planar momentum, but death removes lift immediately so the corpse
+            // starts descending instead of continuing upward like a powered aircraft.
+            Vector3 planar=Vector3.ProjectOnPlane(inheritedVelocity,Vector3.up);
+            if(planar.magnitude>7)planar=planar.normalized*7;
+            physicsBody.velocity=planar+Vector3.down*1.5f;
+            physicsBody.angularVelocity=planar.sqrMagnitude>.01f ? Vector3.Cross(transform.up,planar.normalized)*1.2f+transform.forward*.35f : transform.forward*.35f;
+        }
+        void OnCollisionStay(Collision collision)
+        {
+            foreach(var contact in collision.contacts)if(Vector3.Dot(contact.normal,Vector3.up)>.55f){HasGroundContact=true;break;}
         }
         bool VisibleToMainCamera()
         {

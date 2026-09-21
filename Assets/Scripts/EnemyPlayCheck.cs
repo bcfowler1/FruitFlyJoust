@@ -88,8 +88,11 @@ namespace FruitFlyJoust
                 Require(rider.TestLanceHit(jouster.FlyHealth,2) && jouster.FlyHealth.Health<respawnFlyHealth,
                     "respawned enemy fly independently takes lance damage");
                 yield return WaitClock(.3f);Vector3 flyVelocity=jouster.CurrentVelocity;
+                int mountedEnemyCountBeforeFlyDeath=FindObjectsOfType<MountedJoustOpponent>().Length;
                 jouster.FlyHealth.Hit(1000);
                 Require(jouster.ReceiveFlyLanceContact(5),"destroying the enemy fly unseats its rider");
+                Require(jouster.LastFlyCorpse && jouster.LastFlyCorpse.Velocity.y<0,
+                    "dead fly loses lift immediately and begins with downward velocity");
                 Require(jouster.LastFlyCorpse && (flyVelocity.sqrMagnitude<.01f || Vector3.Dot(jouster.LastFlyCorpse.Velocity,flyVelocity.normalized)>.1f),
                     "dead moving fly becomes a ragdoll corpse retaining forward velocity");
                 bool corpseAnimation=false;foreach(var behaviour in jouster.LastFlyCorpse.GetComponentsInChildren<MonoBehaviour>())if(behaviour!=jouster.LastFlyCorpse && behaviour.enabled)corpseAnimation=true;
@@ -100,6 +103,9 @@ namespace FruitFlyJoust
                     "dead enemy fly remains as a corpse for at least fifteen seconds");
                 Require(jouster.LastFlyCorpse.transform.position.y<corpseStartY-.05f || jouster.LastFlyCorpse.Velocity.y<-.1f,
                     "dead enemy fly falls toward the ground under gravity");
+                float corpseGroundDeadline=Clock+5;while(jouster.LastFlyCorpse && !jouster.LastFlyCorpse.HasGroundContact && Clock<corpseGroundDeadline)yield return null;
+                Require(jouster.LastFlyCorpse && jouster.LastFlyCorpse.HasGroundContact,
+                    "dead enemy fly reaches and remains on a ground surface");
                 Require(jouster.RiderRagdolled && jouster.RiderRagdollBodyCount>=10,
                     "unseated opponent uses a jointed humanoid bone ragdoll rather than the controller capsule");
                 Require(jouster.ReplacementMountScheduled,
@@ -108,6 +114,9 @@ namespace FruitFlyJoust
                 Require(jouster.GetComponent<CombatOpponent>() && jouster.LastFallDamage<=30 && jouster.RiderHealth.Health>0,
                     "unseated opponent survives bounded fall damage and continues ground combat");
                 Require(!jouster.RiderRagdolled,"surviving opponent recovers from ragdoll after landing");
+                float replacementDeadline=Clock+7;while(jouster.ReplacementMountScheduled && Clock<replacementDeadline)yield return null;
+                Require(!jouster.ReplacementMountScheduled && jouster.Mounted && FindObjectsOfType<MountedJoustOpponent>().Length==mountedEnemyCountBeforeFlyDeath,
+                    "replacement fly remounts the existing enemy without multiplying enemy riders");
                 jouster.gameObject.SetActive(false);
             }
             var opponents=FindObjectsOfType<CombatOpponent>();

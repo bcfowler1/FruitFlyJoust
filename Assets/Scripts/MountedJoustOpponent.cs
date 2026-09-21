@@ -38,7 +38,7 @@ namespace FruitFlyJoust
         CombatTarget health,mountHealth;
         Vector3 velocity,lastLanceTip,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale;
         Quaternion saddleBaseRotation,flyTemplateLocalRotation;
-        float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1;
+        float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1,replacementMountTimer=-1;
 
         public void Initialize(RiderCombat rider,GameObject biologicalVisual,Transform saddleTemplate,Transform rideRoot,Material sharedRiderMaterial,Material sharedWeaponMaterial,Vector3 position)
         {
@@ -140,7 +140,7 @@ namespace FruitFlyJoust
         void ResetPose()
         {
             feet.enabled=false;transform.position=spawn;transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
-            Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=-1;
+            Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=replacementMountTimer=-1;
             health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();lastLanceTip=LanceTip;
         }
         public Vector3 LanceTip { get { return lance ? lance.position+lance.forward*lance.lossyScale.z*.5f : transform.position; } }
@@ -219,6 +219,11 @@ namespace FruitFlyJoust
                 respawnTimer-=dt;if(respawnTimer<=0)RespawnStronger();return;
             }
             if(Mounted && mountHealth && mountHealth.Health<=0){ReceiveLanceContact(3);return;}
+            if(ReplacementMountScheduled)
+            {
+                replacementMountTimer-=dt;
+                if(replacementMountTimer<=0){ReplaceDestroyedMount();return;}
+            }
             contactCooldown=Mathf.Max(0,contactCooldown-dt);
             if(Mounted)Fly(dt);else if(!groundAI)Fall(dt);
         }
@@ -303,8 +308,7 @@ namespace FruitFlyJoust
                 {
                     if(poseMirror)poseMirror.StopWings();
                     LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity,true);
-                    ReplacementMountScheduled=true;
-                    if(player)player.ScheduleEnemyMountReplacement(transform.parent,spawn,competencyLevel+1,6);
+                    ReplacementMountScheduled=true;replacementMountTimer=6;
                 }
                 flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
             }
@@ -339,6 +343,24 @@ namespace FruitFlyJoust
             foreach(var zone in GetComponentsInChildren<MountedHitZone>())
             {var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;zone.gameObject.SetActive(false);Destroy(zone.gameObject);}
             BuildMount();BuildHitZones();ResetPose();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
+        }
+        void ReplaceDestroyedMount()
+        {
+            float survivingRiderHealth=health ? health.Health : 100;
+            ReplacementMountScheduled=false;replacementMountTimer=-1;FlyEscaping=false;
+            if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
+            foreach(var zone in GetComponentsInChildren<MountedHitZone>())
+            {
+                var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;
+                var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;
+                zone.gameObject.SetActive(false);Destroy(zone.gameObject);
+            }
+            BuildMount();BuildHitZones();if(health && survivingRiderHealth<health.maximumHealth)health.Hit(health.maximumHealth-survivingRiderHealth);
+            feet.enabled=false;transform.position=spawn;
+            transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
+            Mounted=true;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;
+            if(riderVisual){riderVisual.ExitRagdoll();riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
+            lastLanceTip=LanceTip;
         }
 #if UNITY_EDITOR
         IEnumerator CaptureRenderedOpponent()
