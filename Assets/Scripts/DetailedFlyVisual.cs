@@ -35,9 +35,10 @@ namespace FruitFlyJoust
             return Mathf.Lerp(MinimumFlightFlapsPerSecond,MaximumFlightFlapsPerSecond,Mathf.InverseLerp(.5f,8f,speed));
         }
         Vector3 flightFrameSourceCenter,flightFrameTargetCenter;Quaternion flightFrameRotation=Quaternion.identity;
-        int spectralWingMaterials,spectralEyeMaterials;
+        int spectralWingMaterials,spectralEyeMaterials,depthBodyMaterials;
         public bool UsesSpectralWingMaterial { get { return spectralWingMaterials==2; } }
         public bool UsesSpectralEyeMaterial { get { return spectralEyeMaterials==2; } }
+        public bool UsesDepthBodyMaterial { get { return depthBodyMaterials>20; } }
         readonly HashSet<string> headParts=new HashSet<string>{"Head","LEye","REye","Rostrum","Haustellum","LPedicel","LFuniculus","LArista","RPedicel","RFuniculus","RArista"};
         void Start()
         {
@@ -70,10 +71,11 @@ namespace FruitFlyJoust
             {
                 var source=data.geoms[i];var part=new GameObject(source.name);part.transform.SetParent(root.transform,false);
                 part.AddComponent<MeshFilter>().sharedMesh=lookup[source.mesh];bool wing=source.name.Contains("Wing");bool eye=source.name.EndsWith("Eye");
-                var material=wing ? CreateWingMaterial(source) : eye ? CreateEyeMaterial() : ResearchViewer.CreateBodyMaterial(source);
-                part.AddComponent<MeshRenderer>().sharedMaterial=material;materials.Add(material);parts[i]=part.transform;
+                var material=wing ? CreateWingMaterial(source) : eye ? CreateEyeMaterial() : CreateBodyDepthMaterial(source);
+                var meshRenderer=part.AddComponent<MeshRenderer>();meshRenderer.sharedMaterial=material;meshRenderer.shadowCastingMode=ShadowCastingMode.On;meshRenderer.receiveShadows=true;materials.Add(material);parts[i]=part.transform;
                 if(wing && material.shader && material.shader.name=="FruitFlyJoust/SpectralWing")spectralWingMaterials++;
                 if(eye && material.shader && material.shader.name=="FruitFlyJoust/SpectralEye")spectralEyeMaterials++;
+                if(!wing && !eye && material.shader && material.shader.name=="FruitFlyJoust/FlyBodyDepth")depthBodyMaterials++;
                 if(source.name.EndsWith("Coxa"))
                 {
                     legPivots[source.name.Substring(2,2)]=ResearchViewer.Position(data.poses[0].positions[i*3],data.poses[0].positions[i*3+1],data.poses[0].positions[i*3+2])*500;
@@ -240,6 +242,14 @@ namespace FruitFlyJoust
             if(shader.name=="FruitFlyJoust/SpectralEye")
             {material.SetColor("_BaseColor",new Color(.48f,.018f,.012f,1));material.SetColor("_SheenColor",new Color(1,.25f,.01f,1));material.SetFloat("_SheenStrength",.74f);}
             else {material.color=new Color(.66f,.055f,.018f,1);material.SetFloat("_Glossiness",.86f);}
+            return material;
+        }
+        static Material CreateBodyDepthMaterial(ResearchViewer.GeomData source)
+        {
+            Shader shader=Shader.Find("FruitFlyJoust/FlyBodyDepth");if(!shader)return ResearchViewer.CreateBodyMaterial(source);
+            var material=new Material(shader){name="Depth-textured biomodel body"};
+            material.SetColor("_BaseColor",new Color(source.rgba[0],source.rgba[1],source.rgba[2],1));
+            material.SetFloat("_OcclusionStrength",.56f);material.SetFloat("_TextureStrength",.105f);material.SetFloat("_Smoothness",.3f);
             return material;
         }
         Vector3 SampleWingCycle(float phase)
