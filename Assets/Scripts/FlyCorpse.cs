@@ -10,10 +10,27 @@ namespace FruitFlyJoust
         Renderer[] renderers;
         public Vector3 Velocity { get { return physicsBody ? physicsBody.velocity : Vector3.zero; } }
         public bool HasGroundContact { get; private set; }
+        public int VisibleRendererCount
+        {
+            get { int count=0;if(renderers!=null)foreach(var renderer in renderers)if(renderer && renderer.enabled && renderer.gameObject.activeInHierarchy)count++;return count; }
+        }
+        public float VisualBoundsSize
+        {
+            get { if(renderers==null || renderers.Length==0)return 0;Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)if(renderer)bounds.Encapsulate(renderer.bounds);return bounds.size.magnitude; }
+        }
         public static FlyCorpse Create(Transform source,Vector3 inheritedVelocity,bool clone)
         {
             if(!source)return null;
-            Transform corpse=clone ? Instantiate(source.gameObject,source.position,source.rotation).transform : source;
+            // Instantiate in the authored parent frame first. The position/rotation overload
+            // treats the source's local scale as world scale, which can make a mounted
+            // biological fly corpse microscopic or otherwise invisible after detaching it.
+            Transform corpse;
+            if(clone)
+            {
+                corpse=Instantiate(source.gameObject,source.parent).transform;
+                corpse.localPosition=source.localPosition;corpse.localRotation=source.localRotation;corpse.localScale=source.localScale;
+            }
+            else corpse=source;
             corpse.name="Dead fly corpse";corpse.SetParent(null,true);corpse.gameObject.SetActive(true);
             foreach(var behaviour in corpse.GetComponentsInChildren<MonoBehaviour>())if(!(behaviour is FlyCorpse))behaviour.enabled=false;
             // A cloned fly can contain an active rider ragdoll. Joints must be
@@ -41,9 +58,9 @@ namespace FruitFlyJoust
             // Keep its planar momentum, but death removes lift immediately so the corpse
             // starts descending instead of continuing upward like a powered aircraft.
             Vector3 planar=Vector3.ProjectOnPlane(inheritedVelocity,Vector3.up);
-            if(planar.magnitude>7)planar=planar.normalized*7;
+            if(planar.magnitude>3.5f)planar=planar.normalized*3.5f;
             physicsBody.velocity=planar+Vector3.down*1.5f;
-            physicsBody.angularVelocity=planar.sqrMagnitude>.01f ? Vector3.Cross(transform.up,planar.normalized)*1.2f+transform.forward*.35f : transform.forward*.35f;
+            physicsBody.angularVelocity=planar.sqrMagnitude>.01f ? Vector3.Cross(transform.up,planar.normalized)*.8f+transform.forward*.25f : transform.forward*.25f;
         }
         void OnCollisionStay(Collision collision)
         {

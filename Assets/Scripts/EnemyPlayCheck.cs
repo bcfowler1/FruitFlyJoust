@@ -91,8 +91,12 @@ namespace FruitFlyJoust
                 int mountedEnemyCountBeforeFlyDeath=FindObjectsOfType<MountedJoustOpponent>().Length;
                 jouster.FlyHealth.Hit(1000);
                 Require(jouster.ReceiveFlyLanceContact(5),"destroying the enemy fly unseats its rider");
+                Require(jouster.LastFlyCorpse && jouster.LastFlyCorpse.VisibleRendererCount>0 && jouster.LastFlyCorpse.VisualBoundsSize>.2f,
+                    "killed enemy fly leaves a visible, correctly scaled biological corpse at the death location");
                 Require(jouster.LastFlyCorpse && jouster.LastFlyCorpse.Velocity.y<0,
                     "dead fly loses lift immediately and begins with downward velocity");
+                Require(jouster.LastFlyCorpse.Velocity.magnitude<4,
+                    "dead fly launch velocity remains slow enough to watch it reach the ground");
                 Require(jouster.LastFlyCorpse && (flyVelocity.sqrMagnitude<.01f || Vector3.Dot(jouster.LastFlyCorpse.Velocity,flyVelocity.normalized)>.1f),
                     "dead moving fly becomes a ragdoll corpse retaining forward velocity");
                 bool corpseAnimation=false;foreach(var behaviour in jouster.LastFlyCorpse.GetComponentsInChildren<MonoBehaviour>())if(behaviour!=jouster.LastFlyCorpse && behaviour.enabled)corpseAnimation=true;
