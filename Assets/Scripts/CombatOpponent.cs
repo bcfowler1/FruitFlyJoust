@@ -212,6 +212,7 @@ namespace FruitFlyJoust
             if(!visual || visual.Ragdolled)return;
             float speed=feet && feet.enabled && SupportedByWalkableGround ? Vector3.ProjectOnPlane(feet.velocity,Vector3.up).magnitude : 0;
             visual.Pose(transform,false,speed,target && target.Health<=0);
+            if(rider && !rider.Mounted)visual.MatchRenderedWorldHeight(rider.RiderVisualHeight);
             if(style==Style.Swordsman && attackGesture>0)visual.PoseSwordAttack(alternateCut ? RiderCombat.SwordAttack.LeftToRight : RiderCombat.SwordAttack.RightToLeft,attackGesture/.55f);
         }
         void OnDestroy(){if(weaponVisual)Destroy(weaponVisual.gameObject);if(spyglassVisual)Destroy(spyglassVisual.gameObject);if(ownsVisual && visual)Destroy(visual);}

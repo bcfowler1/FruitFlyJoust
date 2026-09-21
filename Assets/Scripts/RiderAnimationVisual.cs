@@ -239,6 +239,19 @@ namespace FruitFlyJoust
                 Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);return bounds.size.y;
             }
         }
+        public void MatchRenderedWorldHeight(float targetHeight)
+        {
+            if(!body || Ragdolled || targetHeight<=.01f)return;
+            var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return;
+            Bounds before=renderers[0].bounds;foreach(var renderer in renderers)before.Encapsulate(renderer.bounds);
+            if(before.size.y<=.01f)return;
+            float ratio=Mathf.Clamp(targetHeight/before.size.y,.75f,1.35f);
+            if(Mathf.Abs(ratio-1)<.005f)return;
+            float footY=before.min.y;body.localScale*=ratio;
+            Bounds after=renderers[0].bounds;foreach(var renderer in renderers)after.Encapsulate(renderer.bounds);
+            // Scale around the visual root, then restore the planted foot height.
+            body.position+=Vector3.up*(footY-after.min.y);
+        }
         public float AlignFeetToWorldY(float worldY)
         {
             if(!body)return float.PositiveInfinity;var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return float.PositiveInfinity;

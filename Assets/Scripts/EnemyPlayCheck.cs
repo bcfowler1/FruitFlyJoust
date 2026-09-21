@@ -191,6 +191,10 @@ namespace FruitFlyJoust
                 controller.enabled=true;unit.enabled=true;
             }
             Physics.SyncTransforms();yield return WaitClock(.2f);
+            playerHeight=rider.RiderVisualHeight;
+            foreach(var unit in opponents)
+                Require(Mathf.Abs(unit.VisualHeight-playerHeight)<=Mathf.Max(.03f,playerHeight*.035f),
+                    "ground opponent rendered body height matches the dismounted player after animation posing");
             int spyglassCount=0;CombatOpponent scout=null;
             foreach(var unit in opponents)if(unit.HasSpyglass){spyglassCount++;scout=unit;}
             Require(spyglassCount==1 && scout && scout.SpyglassVisible && scout.RiderVisible,
