@@ -37,6 +37,13 @@ namespace FruitFlyJoust
         [Range(0, 1.3f)] public float leafDroop = .42f;
         [Range(-.4f, .45f)] public float leafCup = .1f;
         [Range(.045f, .18f)] public float leafThickness = .09f;
+        [Range(.3f, 1f)] public float tipLeafScale = .58f;
+
+        [Header("Flowering and fruiting")]
+        [Range(.5f, 2f)] public float flowerStalkLength = 1.15f;
+        [Range(4, 8)] public int petalCount = 5;
+        [Range(.3f, 1f)] public float flowerRadius = .63f;
+        [Range(.2f, .7f)] public float fruitRadius = .40f;
 
         [Header("Placement")]
         public bool includePot = true;
@@ -53,9 +60,15 @@ namespace FruitFlyJoust
         public Material potMaterial;
         public Material potRimMaterial;
         public Material soilMaterial;
+        public Material budMaterial;
+        public Material petalMaterial;
+        public Material flowerCenterMaterial;
+        public Material youngFruitMaterial;
+        public Material ripeFruitMaterial;
 
         public int GeneratedStemCount { get; private set; }
         public int GeneratedLeafCount { get; private set; }
+        public int GeneratedFlowerStalkCount { get; private set; }
         public float BaseHeight { get { return includePot ? potHeight - .12f : 0; } }
 
         void OnEnable()
@@ -68,6 +81,7 @@ namespace FruitFlyJoust
             stemFaces = Mathf.Clamp(stemFaces, 4, 7);
             internodes = Mathf.Clamp(internodes, 3, 11);
             potFaces = Mathf.Clamp(potFaces, 10, 18);
+            petalCount = Mathf.Clamp(petalCount, 4, 8);
         }
 
         public void Rebuild()
@@ -80,7 +94,7 @@ namespace FruitFlyJoust
             }
             var generated = new GameObject("Generated plant").transform;
             generated.SetParent(transform, false);
-            GeneratedStemCount = GeneratedLeafCount = 0;
+            GeneratedStemCount = GeneratedLeafCount = GeneratedFlowerStalkCount = 0;
             if (includePot) BuildPot(generated);
             var growth = new GameObject("Growth").transform;
             growth.SetParent(generated, false);
@@ -111,10 +125,22 @@ namespace FruitFlyJoust
                     leafPattern == LeafPattern.Opposite ? (node - 1) * 90f : (node - 1) * 37f;
                 int leavesAtNode = leafPattern == LeafPattern.Spiral ? 1 :
                     leafPattern == LeafPattern.Opposite ? 2 : 3;
+                float tipProgress = Mathf.Clamp01((node / (float)nodeCount - .55f) / .45f);
+                float leafSize = Mathf.Lerp(1f, tipLeafScale,
+                    tipProgress * tipProgress * (3f - 2f * tipProgress));
                 for (int leaf = 0; leaf < leavesAtNode; leaf++)
                 {
                     float angle = yaw + leaf * 360f / leavesAtNode;
-                    BuildLeaf(stem, height, angle, Vary(random), depth);
+                    BuildLeaf(stem, height, angle, Vary(random) * leafSize, depth);
+                }
+                if (depth == 0)
+                {
+                    FlowerStage stage = node == 2 ? FlowerStage.RipeFruit :
+                        node == 3 ? FlowerStage.YoungFruit :
+                        node == nodeCount - 1 ? FlowerStage.OpenFlower :
+                        node == nodeCount ? FlowerStage.Bud : FlowerStage.None;
+                    if (stage != FlowerStage.None)
+                        BuildFlowerStalk(stem, height, yaw + 155f, stage);
                 }
                 if (depth == 0 && node > 1 && node < nodeCount - 1 && random.NextDouble() < branchChance)
                 {
@@ -128,6 +154,107 @@ namespace FruitFlyJoust
                         radius * .6f, depth + 1, random);
                 }
             }
+        }
+
+        enum FlowerStage { None, Bud, OpenFlower, YoungFruit, RipeFruit }
+
+        void BuildFlowerStalk(Transform stem, float height, float azimuth, FlowerStage stage)
+        {
+            string stageName = stage == FlowerStage.OpenFlower ? "Open flower" :
+                stage == FlowerStage.YoungFruit ? "Young fruit" :
+                stage == FlowerStage.RipeFruit ? "Ripe fruit" : "Bud";
+            var stalk = new GameObject(stageName + " stalk").transform;
+            stalk.SetParent(stem, false);
+            stalk.localPosition = Vector3.up * height;
+            stalk.localRotation = Quaternion.AngleAxis(azimuth, Vector3.up) *
+                Quaternion.AngleAxis(62, Vector3.forward);
+            float length = flowerStalkLength * (stage == FlowerStage.Bud ? .8f : 1f);
+            AddMesh(stalk.gameObject, StemMesh(5, 3, length, .075f, .55f, .04f, 0, 0),
+                new[] { stemMaterial }, false);
+            var head = new GameObject(stageName).transform;
+            head.SetParent(stalk, false);
+            head.localPosition = Vector3.up * length;
+            if (stage == FlowerStage.Bud)
+                AddMesh(head.gameObject, BulbMesh(9, 7, flowerRadius * .42f, flowerRadius * .85f),
+                    new[] { budMaterial }, false);
+            else if (stage == FlowerStage.OpenFlower)
+            {
+                AddMesh(head.gameObject, BlossomMesh(petalCount, flowerRadius),
+                    new[] { petalMaterial }, false);
+                var center = new GameObject("Pollen center");
+                center.transform.SetParent(head, false);
+                center.transform.localPosition = Vector3.up * .04f;
+                AddMesh(center, BulbMesh(9, 5, flowerRadius * .21f, flowerRadius * .38f),
+                    new[] { flowerCenterMaterial }, false);
+            }
+            else
+            {
+                bool ripe = stage == FlowerStage.RipeFruit;
+                float size = fruitRadius * (ripe ? 1f : .68f);
+                AddMesh(head.gameObject, BulbMesh(10, 8, size, size * 1.42f),
+                    new[] { ripe ? ripeFruitMaterial : youngFruitMaterial }, false);
+                var calyx = new GameObject("Persistent calyx");
+                calyx.transform.SetParent(head, false);
+                AddMesh(calyx, BlossomMesh(5, size * .62f), new[] { budMaterial }, false);
+            }
+            GeneratedFlowerStalkCount++;
+        }
+
+        static Mesh BlossomMesh(int petals, float radius)
+        {
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            for (int p = 0; p < petals; p++)
+            {
+                float angle = p * Mathf.PI * 2f / petals;
+                Vector3 radial = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+                Vector3 across = new Vector3(-radial.z, 0, radial.x);
+                int first = vertices.Count;
+                vertices.Add(radial * radius * .09f + Vector3.up * .08f);
+                vertices.Add(radial * radius * .53f - across * radius * .36f + Vector3.up * .18f);
+                vertices.Add(radial * radius + Vector3.up * .03f);
+                vertices.Add(radial * radius * .53f + across * radius * .36f + Vector3.up * .18f);
+                int[] front = { 0, 1, 2, 0, 2, 3 };
+                for (int i = 0; i < front.Length; i += 3)
+                {
+                    triangles.Add(first + front[i]);
+                    triangles.Add(first + front[i + 1]);
+                    triangles.Add(first + front[i + 2]);
+                    triangles.Add(first + front[i + 2]);
+                    triangles.Add(first + front[i + 1]);
+                    triangles.Add(first + front[i]);
+                }
+            }
+            var mesh = new Mesh();
+            mesh.SetVertices(vertices); mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        static Mesh BulbMesh(int sides, int rings, float radius, float height)
+        {
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            for (int ring = 0; ring <= rings; ring++)
+            {
+                float t = ring / (float)rings;
+                float width = radius * Mathf.Sin(Mathf.PI * t) * (1.16f - .32f * t);
+                for (int side = 0; side < sides; side++)
+                {
+                    float angle = side * Mathf.PI * 2f / sides;
+                    vertices.Add(new Vector3(Mathf.Cos(angle) * width, t * height,
+                        Mathf.Sin(angle) * width));
+                    if (ring == rings) continue;
+                    int a = ring * sides + side, b = ring * sides + (side + 1) % sides;
+                    int c = (ring + 1) * sides + side, d = (ring + 1) * sides + (side + 1) % sides;
+                    triangles.Add(a); triangles.Add(c); triangles.Add(b);
+                    triangles.Add(b); triangles.Add(c); triangles.Add(d);
+                }
+            }
+            var mesh = new Mesh();
+            mesh.SetVertices(vertices); mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            return mesh;
         }
 
         void BuildLeaf(Transform stem, float height, float azimuth, float scale, int depth)
@@ -431,8 +558,4 @@ namespace FruitFlyJoust
         }
     }
 
-    public sealed class FlyGripSurface : MonoBehaviour
-    {
-        public bool allowFacetWrap;
-    }
 }

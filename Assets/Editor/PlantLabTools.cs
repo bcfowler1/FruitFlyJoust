@@ -34,36 +34,36 @@ public static class PlantLabTools
         if (EditorApplication.isPlaying) throw new InvalidOperationException("Stop Play before building PlantLab.");
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
         EnsureFolder();
-        if (!AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) &&
-            !AssetDatabase.CopyAsset("Assets/Practice.unity", ScenePath))
-            throw new IOException("Could not copy the practice room to PlantLab.");
-        var scene = EditorSceneManager.OpenScene(ScenePath);
-        foreach (var oldPlant in UnityEngine.Object.FindObjectsOfType<ProceduralPlant>())
-            UnityEngine.Object.DestroyImmediate(oldPlant.gameObject);
-
-        var group = GameObject.Find("Generated indoor plants");
-        if (group) UnityEngine.Object.DestroyImmediate(group);
-        group = new GameObject("Generated indoor plants");
-        CreatePreset(group.transform, "Amber spiral", new Vector3(-10, 0, -7), 17,
+        // Start with the current combat encounter so the detailed rider, fly,
+        // and opponents remain exactly as they are in the playable scene.
+        var scene = EditorSceneManager.OpenScene("Assets/CombatEncounter.unity");
+        var group = new GameObject("Generated indoor plants");
+        CreatePreset(group.transform, "Amber spiral", FindClearPosition(4.8f,
+                new Vector3(-17, 0, -10), new Vector3(-20, 0, -18), new Vector3(-23, 0, 4)), 17,
             5, ProceduralPlant.LeafPattern.Spiral, 6, 1.05f, 4.8f, 3.6f,
-            .35f, .26f, new Color(.18f, .39f, .26f), new Color(.31f, .52f, .30f));
-        CreatePreset(group.transform, "Silver opposite", new Vector3(9, 0, -6), 39,
+            .35f, .26f, new Color(.18f, .39f, .26f), new Color(.31f, .52f, .30f),
+            new Color(.95f, .77f, .52f), new Color(.78f, .18f, .20f));
+        CreatePreset(group.transform, "Silver opposite", FindClearPosition(4.3f,
+                new Vector3(18, 0, -11), new Vector3(22, 0, -18), new Vector3(23, 0, 4)), 39,
             6, ProceduralPlant.LeafPattern.Opposite, 5, 1.12f, 4.3f, 3.9f,
-            .53f, .12f, new Color(.22f, .40f, .38f), new Color(.39f, .57f, .49f));
-        CreatePreset(group.transform, "Copper whorl", new Vector3(10, 0, 12), 83,
+            .53f, .12f, new Color(.22f, .40f, .38f), new Color(.39f, .57f, .49f),
+            new Color(.73f, .66f, .91f), new Color(.31f, .27f, .66f));
+        CreatePreset(group.transform, "Copper whorl", FindClearPosition(3.8f,
+                new Vector3(22, 0, 21), new Vector3(-21, 0, 21), new Vector3(24, 0, 3)), 83,
             7, ProceduralPlant.LeafPattern.Whorled, 5, .96f, 3.8f, 3.2f,
-            .41f, .07f, new Color(.37f, .34f, .23f), new Color(.57f, .47f, .30f));
+            .41f, .07f, new Color(.37f, .34f, .23f), new Color(.57f, .47f, .30f),
+            new Color(.94f, .50f, .38f), new Color(.87f, .38f, .12f));
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene, ScenePath);
         AssetDatabase.SaveAssets();
-        Debug.Log("PLANT_LAB_READY: three editable plant prefabs, broad closed leaves, faceted stems, removable indoor pots");
+        Debug.Log("PLANT_LAB_READY: combat models preserved; three flowering plants placed clear of room obstacles");
         ValidateLab();
     }
 
     static void CreatePreset(Transform parent, string name, Vector3 position, int seed,
         int faces, ProceduralPlant.LeafPattern pattern, int nodes, float nodeLength,
         float leafLength, float leafWidth, float widest, float branchChance,
-        Color upper, Color lower)
+        Color upper, Color lower, Color petalColor, Color fruitColor)
     {
         var root = new GameObject(name);
         root.transform.SetParent(parent, false);
@@ -85,8 +85,40 @@ public static class PlantLabTools
         plant.potMaterial = Material("Faceted pot", new Color(.28f, .36f, .44f));
         plant.potRimMaterial = Material("Pot rim", new Color(.58f, .49f, .40f));
         plant.soilMaterial = Material("Soil", new Color(.20f, .16f, .13f));
+        plant.budMaterial = Material("Flower buds and calyx", new Color(.32f, .53f, .22f));
+        plant.petalMaterial = Material(name + " petals", petalColor);
+        plant.flowerCenterMaterial = Material("Flower pollen", new Color(.98f, .72f, .19f));
+        plant.youngFruitMaterial = Material("Young fruit", new Color(.48f, .68f, .27f));
+        plant.ripeFruitMaterial = Material(name + " ripe fruit", fruitColor);
         Regenerate(plant);
         SavePreset(plant);
+    }
+
+    static Vector3 FindClearPosition(float leafLength, params Vector3[] candidates)
+    {
+        float radius = leafLength + 2f;
+        foreach (var candidate in candidates)
+            if (ClearOfSceneObjects(candidate, radius)) return candidate;
+        throw new InvalidOperationException("No collision-free position for a plant of radius " + radius);
+    }
+
+    static bool ClearOfSceneObjects(Vector3 center, float radius, Transform ignore = null)
+    {
+        if (Mathf.Abs(center.x) + radius > 33 || Mathf.Abs(center.z) + radius > 33)
+            return false;
+        foreach (var collider in UnityEngine.Object.FindObjectsOfType<Collider>())
+        {
+            if (!collider.enabled || collider.isTrigger ||
+                (ignore && collider.transform.IsChildOf(ignore))) continue;
+            if (collider.GetComponentInParent<ProceduralPlant>() && ignore) continue;
+            string name = collider.gameObject.name;
+            if (name == "Floor" || name == "Ceiling" || name.EndsWith(" wall")) continue;
+            Bounds bounds = collider.bounds;
+            float dx = Mathf.Max(bounds.min.x - center.x, 0, center.x - bounds.max.x);
+            float dz = Mathf.Max(bounds.min.z - center.z, 0, center.z - bounds.max.z);
+            if (dx * dx + dz * dz < (radius + .5f) * (radius + .5f)) return false;
+        }
+        return true;
     }
 
     public static void SavePreset(ProceduralPlant plant)
@@ -167,8 +199,11 @@ public static class PlantLabTools
         var fly = UnityEngine.Object.FindObjectOfType<FlyMotor>();
         var footprint = typeof(FlyMotor).GetMethod("HasFootprint", BindingFlags.Instance | BindingFlags.NonPublic,
             null, new[] { typeof(RaycastHit), typeof(Vector3) }, null);
-        bool passed = plants.Length == 3 && fly && footprint != null;
-        string detail = "plants=" + plants.Length;
+        int opponents = UnityEngine.Object.FindObjectsOfType<CombatOpponent>().Length;
+        bool combatPreserved = UnityEngine.Object.FindObjectOfType<RiderCombat>() && opponents >= 2;
+        bool passed = plants.Length == 3 && fly && footprint != null && combatPreserved;
+        string detail = "plants=" + plants.Length + ", combatPreserved=" + combatPreserved +
+            ", opponents=" + opponents;
         Physics.SyncTransforms();
         foreach (var plant in plants)
         {
@@ -186,6 +221,31 @@ public static class PlantLabTools
                 plant.leafWidth > 1.5f * RiderCombat.FlyAssemblyScale &&
                 stem && leaf && leafCount >= plant.internodes;
             bool pot = plant.transform.Find("Generated plant/Removable rotated-facet pot") != null;
+            var mainStem = plant.transform.Find("Generated plant/Growth/Main faceted stem");
+            bool floralStages = mainStem && mainStem.Find("Bud stalk") &&
+                mainStem.Find("Open flower stalk") && mainStem.Find("Young fruit stalk") &&
+                mainStem.Find("Ripe fruit stalk");
+            float largestLeaf = 0, smallestLeaf = float.PositiveInfinity;
+            if (mainStem)
+                foreach (Transform child in mainStem)
+                {
+                    var blade = child.Find("Closed leaf blade");
+                    if (!blade) continue;
+                    float length = blade.GetComponent<MeshFilter>().sharedMesh.bounds.size.z;
+                    largestLeaf = Mathf.Max(largestLeaf, length);
+                    smallestLeaf = Mathf.Min(smallestLeaf, length);
+                }
+            bool smallerTips = largestLeaf > 0 && smallestLeaf < largestLeaf * .8f;
+            bool placementClear = ClearOfSceneObjects(plant.transform.position,
+                plant.leafLength + 2f, plant.transform);
+            foreach (var other in plants)
+            {
+                if (other == plant) continue;
+                float separation = Vector2.Distance(
+                    new Vector2(plant.transform.position.x, plant.transform.position.z),
+                    new Vector2(other.transform.position.x, other.transform.position.z));
+                placementClear &= separation >= plant.leafLength + other.leafLength + 4f;
+            }
             bool leafContact = ContactFromBothFaces(leaf);
             bool stemContact = StemSideContact(stem);
             bool topGrip = false, underGrip = false, stemGrip = false;
@@ -209,13 +269,15 @@ public static class PlantLabTools
             }
             bool savedMeshes = leaf && AssetDatabase.Contains(leaf.sharedMesh) &&
                 stem && AssetDatabase.Contains(stem.sharedMesh);
-            passed &= geometry && pot && leafContact && stemContact && savedMeshes &&
-                topGrip && underGrip && stemGrip;
+            passed &= geometry && pot && floralStages && smallerTips && placementClear &&
+                leafContact && stemContact && savedMeshes && topGrip && underGrip && stemGrip;
             detail += " | " + plant.name + ": leaves=" + leafCount + ", width=" +
                 plant.leafWidth.ToString("F2") + ", faces=" + plant.stemFaces +
                 ", bothLeafFaces=" + leafContact + ", stemSide=" + stemContact +
                 ", flyGrip=" + topGrip + "/" + underGrip + "/" + stemGrip +
-                ", pot=" + pot + ", savedMeshes=" + savedMeshes;
+                ", flowers=" + floralStages + ", smallTips=" + smallerTips +
+                ", placementClear=" + placementClear + ", pot=" + pot +
+                ", savedMeshes=" + savedMeshes;
         }
         var ground = new GameObject("Temporary ground-grown plant").AddComponent<ProceduralPlant>();
         ground.includePot = false;
