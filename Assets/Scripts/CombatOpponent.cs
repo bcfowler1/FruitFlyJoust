@@ -41,6 +41,10 @@ namespace FruitFlyJoust
         {
             target = GetComponent<CombatTarget>(); feet = GetComponent<CharacterController>();
             rider = FindObjectOfType<RiderCombat>(); spawn = transform.position;
+            // Gameplay actors use a world-scale-one root. This also normalizes a
+            // fallen mounted rider if its arena parent carries an inherited scale.
+            Vector3 parentScale=transform.parent ? transform.parent.lossyScale : Vector3.one;
+            transform.localScale=new Vector3(1/Mathf.Max(.0001f,parentScale.x),1/Mathf.Max(.0001f,parentScale.y),1/Mathf.Max(.0001f,parentScale.z));
             // Match the player's on-foot body and collision dimensions. Perception
             // remains expressed in world metres and is intentionally not scaled.
             feet.height=1.2f*RiderCombat.RiderBodyScale;feet.radius=.2f*RiderCombat.RiderBodyScale;feet.center=new Vector3(0,.6f*RiderCombat.RiderBodyScale,0);
@@ -49,7 +53,7 @@ namespace FruitFlyJoust
             var renderer=GetComponent<Renderer>();Material material=renderer ? renderer.sharedMaterial : null;if(renderer)renderer.enabled=false;
             visual=GetComponent<RiderAnimationVisual>();
             if(!visual){visual=gameObject.AddComponent<RiderAnimationVisual>();ownsVisual=true;visual.Create(transform,material);}
-            visual.visualScale=rider ? rider.OnFootVisualScale : RiderCombat.CanonicalRiderVisualScale;visual.Pose(transform,false,0);
+            visual.visualScale=RiderCombat.CanonicalRiderVisualScale;visual.Pose(transform,false,0);
             float groundY=transform.TransformPoint(feet.center).y-feet.height*.5f;
             GroundFootError=visual.AlignFeetToWorldY(groundY+.01f);BuildWeapon(material);BuildSpyglass(material);
             RefreshGroundSupport();
@@ -72,11 +76,18 @@ namespace FruitFlyJoust
         }
         public void ResetOpponent()
         { if(visual)visual.ExitRagdoll();feet.enabled = false; transform.position = spawn; feet.enabled = true; falling = 0; cooldown = attackGesture = spyglassObservation = sharedAwarenessTime = evadeTime = 0;strikePending=false;target.ResetTarget(); }
+        public void ClearTransientCombatState()
+        {
+            cooldown=attackGesture=strikeDelay=spyglassObservation=sharedAwarenessTime=evadeTime=0;
+            strikePending=false;sharedTarget=Vector3.zero;evadeDirection=Vector3.zero;
+        }
         void Update()
         {
             if(target && target.Health<=0){HasSpyglass=false;if(spyglassVisual)spyglassVisual.gameObject.SetActive(false);if(feet.enabled)feet.enabled=false;if(visual&&!visual.Ragdolled)visual.EnterRagdoll(Vector3.up*.5f+transform.forward);return;}
-            if (!rider || rider.Defeated || rider.CombatPaused) return;
-            float dt = rider.CombatDeltaTime;
+            if (!rider || rider.Defeated) return;
+            bool deliberatePause=rider.research && rider.research.Connected && rider.CombatPaused;
+            if(deliberatePause)return;
+            float dt=rider.research && rider.research.Connected && !rider.CombatPaused ? rider.CombatDeltaTime : Time.deltaTime;
             if (dt <= 0) return;
             supportCheckTimer-=dt;
             if(supportCheckTimer<=0){RefreshGroundSupport();supportCheckTimer=.08f;}

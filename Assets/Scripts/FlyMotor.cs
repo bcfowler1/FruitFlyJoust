@@ -24,6 +24,7 @@ namespace FruitFlyJoust
         public float SurfaceWalkingSpeed { get; private set; }
         public float SurfaceWalkingDirection { get { return IdleWalking ? 1 : Mathf.Sign(surfaceDrive); } }
         private float surfaceDrive;
+        public float SurfaceDrive { get { return surfaceDrive; } }
         private float idleClock;
         private Vector3 idleHome;
         private bool wasDismounted;
@@ -59,7 +60,7 @@ namespace FruitFlyJoust
         public float LandingLegExtension { get; private set; }
         public bool OpticFlowLandingAbort { get; private set; }
         public int FoodEatenCount { get; private set; }
-        FlyFood foodTarget;
+        FlyFood foodTarget,feedingTarget;
         FlyFood countedFoodTarget;
         FloatingNutritionNumber nutritionDisplay;
         public bool Dead { get; private set; }
@@ -67,6 +68,13 @@ namespace FruitFlyJoust
         public RidePhase Phase { get { return landing.Phase; } }
         public string SurfaceName { get { return perchSurface ? perchSurface.name : ""; } }
         [Min(.5f)] public float surfaceProbeDistance = 5;
+        static Collider arenaCeiling;
+        public static bool TryArenaCeiling(out float innerY)
+        {
+            if(!arenaCeiling){var ceiling=GameObject.Find("Ceiling");arenaCeiling=ceiling ? ceiling.GetComponent<Collider>() : null;}
+            innerY=arenaCeiling ? arenaCeiling.bounds.min.y-.08f : float.PositiveInfinity;
+            return arenaCeiling;
+        }
 
         bool FindSurface(out RaycastHit surface)
         {
@@ -156,6 +164,15 @@ namespace FruitFlyJoust
             return nearest;
         }
 
+        float FoodApproachDistance(FlyFood food)
+        {
+            if(!food)return float.PositiveInfinity;
+            // A planar-only distance reports food directly below a wall- or
+            // underside-perched fly as already reached. Keep the vertical separation
+            // so it launches, lands on the food's surface, and actually feeds.
+            return Vector3.Distance(food.ClosestPoint(rb.position),rb.position);
+        }
+
         float Obstacle(Vector3 direction)
         {
             // Tack, hit volumes, rider gear, and the held lance all live under this
@@ -175,6 +192,16 @@ namespace FruitFlyJoust
         {
             if(Dead){rb.velocity=Vector3.zero;return;}
             float dt = Time.fixedDeltaTime;
+            bool ceilingRecovery=TryArenaCeiling(out var innerCeiling) && rb.position.y>innerCeiling;
+            if(ceilingRecovery)
+            {
+                // Continuous flight can occasionally cross the thin ceiling during a
+                // hitch. Return to its interior side and cancel any top-surface perch;
+                // otherwise Landing interprets the roof as a floor and holds the fly up.
+                rb.position=new Vector3(rb.position.x,innerCeiling,rb.position.z);
+                rb.velocity=new Vector3(rb.velocity.x,Mathf.Min(-2,rb.velocity.y),rb.velocity.z);
+                perchSurface=null;grounded=false;landing.ForceFlight();
+            }
             bool airborne=Phase==RidePhase.Flying || Phase==RidePhase.Launching || Phase==RidePhase.Landing;
             float turnDegreesPerSecond=airborne ? Mathf.Abs(intent.turn)*85 : 0;
             float climbMetersPerSecond=airborne ? Mathf.Abs(intent.climb) : 0;
@@ -185,18 +212,28 @@ namespace FruitFlyJoust
             Vector2 controlReins=rider.reins;float controlLift=rider.lift;
             bool recallSpur=false,recallBrake=false;
             if(!foodTarget || !foodTarget.Available)foodTarget=NearestFood();
-            float foodDistance=foodTarget ? Vector3.Distance(rb.position,foodTarget.transform.position) : float.PositiveInfinity;
+            float foodDistance=FoodApproachDistance(foodTarget);
             Feeding=false;
-            if(foodTarget && foodDistance<.75f && hunger>.01f)
+            // A perched fly's body center remains well above a food collider. Use
+            // reachable surface distance so arriving beside a blob actually feeds.
+            // Keep a stable proboscis/foreleg reach as the gelatin blob shrinks.
+            // Tying this too tightly to the shrinking trigger allowed one bite and
+            // then put the remaining food just outside feeding range.
+            const float feedingReach=.82f;
+            if(!feedingTarget || !feedingTarget.Available || feedingTarget!=foodTarget ||
+                Vector3.Distance(feedingTarget.transform.position,rb.position)>1.5f)
+                feedingTarget=null;
+            if(foodTarget && Phase==RidePhase.Perched && foodDistance<feedingReach)feedingTarget=foodTarget;
+            if(feedingTarget && Phase==RidePhase.Perched && hunger>.01f)
             {
-                float nutrition=foodTarget.Consume(dt);Feeding=nutrition>0;hunger=Mathf.Max(0,hunger-nutrition);
+                float nutrition=feedingTarget.Consume(dt);Feeding=nutrition>0;hunger=Mathf.Max(0,hunger-nutrition);
                 if(Feeding)
                 {
                     if(!nutritionDisplay)nutritionDisplay=FloatingNutritionNumber.Create(transform);
                     nutritionDisplay.Add(nutrition);
                 }
-                if(Feeding && countedFoodTarget!=foodTarget){FoodEatenCount++;countedFoodTarget=foodTarget;}
-                if(!foodTarget.Available || hunger<=.01f){foodTarget=null;SeekingFood=false;Feeding=false;}
+                if(Feeding && countedFoodTarget!=feedingTarget){FoodEatenCount++;countedFoodTarget=feedingTarget;}
+                if(!feedingTarget.Available || hunger<=.01f){feedingTarget=null;foodTarget=null;SeekingFood=false;Feeding=false;}
             }
             RiderAuthority=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,.9f,hunger));
             var riderCombat=GetComponent<RiderCombat>();bool dismounted=riderCombat && !riderCombat.Mounted;
@@ -209,7 +246,8 @@ namespace FruitFlyJoust
                 Vector2 forage=new Vector2(Mathf.Clamp(turn/40,-1,1),planar.magnitude>1 ? .65f : 0);
                 float forageLift=Mathf.Clamp((foodTarget.transform.position.y+(planar.magnitude>2 ? 1.5f : .35f)-rb.position.y)*.8f,-1,1);
                 controlReins=Vector2.Lerp(forage,controlReins,RiderAuthority);controlLift=Mathf.Lerp(forageLift,controlLift,RiderAuthority);
-                recallSpur=Phase==RidePhase.Perched && foodDistance>1;recallBrake=foodDistance<2;
+                // Nearby food is reached on foot; only launch for a distant meal.
+                recallSpur=Phase==RidePhase.Perched && foodDistance>2.5f;recallBrake=foodDistance<2;
             }
             if(recallActive && !SeekingFood)
             {
@@ -235,7 +273,8 @@ namespace FruitFlyJoust
             {
                 leftRein = Mathf.Max(0, -controlReins.x), rightRein = Mathf.Max(0, controlReins.x),
                 lift = FlightPace.ClimbRequest(controlReins.y, controlLift),
-                spur = rider.ConsumeSpur() || recallSpur, brake = rider.ConsumeBrake() || recallBrake, land = rider.land && RiderAuthority>.25f || recallLanding,
+                spur = rider.ConsumeSpur() || recallSpur, brake = rider.ConsumeBrake() || recallBrake,
+                land = rider.land && RiderAuthority>.25f || recallLanding || SeekingFood && Phase!=RidePhase.Perched && foodDistance<1.35f,
                 obstacleLeft = Obstacle(Quaternion.Euler(0, -35, 0) * transform.forward),
                 obstacleRight = Obstacle(Quaternion.Euler(0, 35, 0) * transform.forward),
                 obstacleAhead = Obstacle(transform.forward)
@@ -278,7 +317,10 @@ namespace FruitFlyJoust
                 wasDismounted=dismounted;IdleWalking=false;
                 if(!dismounted && perchSurface)
                 {
-                    surfaceDrive=Mathf.MoveTowards(surfaceDrive,rider.braking ? 0 : controlReins.y*.8f,dt*3);
+                    float requestedSurfaceDrive=rider.braking ? 0 : controlReins.y*.8f;
+                    float surfaceDeceleration=Mathf.Abs(requestedSurfaceDrive)<.05f ? 8 : 3;
+                    surfaceDrive=Mathf.MoveTowards(surfaceDrive,requestedSurfaceDrive,dt*surfaceDeceleration);
+                    if(Mathf.Abs(requestedSurfaceDrive)<.05f && Mathf.Abs(surfaceDrive)<.025f)surfaceDrive=0;
                     Quaternion pose=perchSurface.transform.rotation*perchLocalRotation;
                     pose=Quaternion.AngleAxis(controlReins.x*95*dt,pose*Vector3.up)*pose;
                     perchLocalRotation=Quaternion.Inverse(perchSurface.transform.rotation)*pose;
@@ -318,7 +360,7 @@ namespace FruitFlyJoust
                             float turn=Vector3.SignedAngle(forward,toward.normalized,normal);
                             pose=Quaternion.AngleAxis(Mathf.Clamp(turn,-120*dt,120*dt),normal)*pose;
                             perchLocalRotation=Quaternion.Inverse(perchSurface.transform.rotation)*pose;rb.MoveRotation(pose);
-                            if(foodDistance>.6f)
+                            if(!feedingTarget && foodDistance>feedingReach*.78f)
                             {
                                 Vector3 step=rb.position+(pose*Vector3.forward)*.55f*dt;
                                 if(Physics.Raycast(step,-normal,out var foodGround,surfaceProbeDistance,1,QueryTriggerInteraction.Ignore) && foodGround.collider==perchSurface && HasFootprint(foodGround,step))
@@ -344,7 +386,14 @@ namespace FruitFlyJoust
             Vector3 recallPlanar=Vector3.ProjectOnPlane(recallTarget-rb.position,Vector3.up);
             bool recallGuidance=recallActive && Phase!=RidePhase.Launching;
             bool recallCruise=recallGuidance && !recallLanding;
-            if(recallGuidance && recallPlanar.sqrMagnitude>.01f)
+            Vector3 foodPlanar=foodTarget ? Vector3.ProjectOnPlane(foodTarget.transform.position-rb.position,Vector3.up) : Vector3.zero;
+            bool forageGuidance=SeekingFood && Phase!=RidePhase.Launching && foodPlanar.sqrMagnitude>.01f;
+            if(forageGuidance)
+            {
+                float wanted=Mathf.Atan2(foodPlanar.x,foodPlanar.z)*Mathf.Rad2Deg;
+                heading=Mathf.MoveTowardsAngle(heading,wanted,140*dt);
+            }
+            else if(recallGuidance && recallPlanar.sqrMagnitude>.01f)
             {
                 float wanted=Mathf.Atan2(recallPlanar.x,recallPlanar.z)*Mathf.Rad2Deg;
                 heading=Mathf.MoveTowardsAngle(heading,wanted,140*dt);
@@ -395,7 +444,10 @@ namespace FruitFlyJoust
             }
             if (Phase == RidePhase.Launching)
                 desired = launchNormal * 3.5f + Vector3.ProjectOnPlane(desired, launchNormal) * .35f;
+            if(TryArenaCeiling(out innerCeiling) && rb.position.y>innerCeiling-.35f)
+                desired.y=Mathf.Min(desired.y,-2.5f);
             rb.velocity = Vector3.Lerp(rb.velocity, desired, 1 - Mathf.Exp(-5 * dt));
+            if(ceilingRecovery && rb.velocity.y>-.5f)rb.velocity=new Vector3(rb.velocity.x,-.5f,rb.velocity.z);
             if (bodyVisual)
                 bodyVisual.localRotation = Quaternion.Slerp(bodyVisual.localRotation,
                     approaching ? Quaternion.identity : Quaternion.Euler(-vertical * 3, 0, 0),
@@ -419,7 +471,7 @@ namespace FruitFlyJoust
             launchNormal = Vector3.up;
             cornerGripGrace=0;
             recallActive=recallLanding=false;
-            hunger=.15f;SeekingFood=Feeding=false;RiderAuthority=1;HaltereIntegrity=1;foodTarget=countedFoodTarget=null;
+            hunger=.15f;SeekingFood=Feeding=false;RiderAuthority=1;HaltereIntegrity=1;foodTarget=countedFoodTarget=feedingTarget=null;
             brain.ResetBrain();
             rider.ResetCues();
         }
@@ -443,7 +495,11 @@ namespace FruitFlyJoust
             landing.ResumeFlight();
             brain.ResetBrain();
         }
-        public void SetHunger(float value){hunger=Mathf.Clamp01(value);foodTarget=null;}
+        public void SetHunger(float value)
+        {
+            hunger=Mathf.Clamp01(value);foodTarget=feedingTarget=null;SeekingFood=Feeding=false;
+            RiderAuthority=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,.9f,hunger));
+        }
         public void DamageHaltere(float damage){HaltereIntegrity=Mathf.Clamp01(HaltereIntegrity-Mathf.Max(0,damage)/60f);}
         public static float SpeedMultiplierForHunger(float value){return Mathf.Lerp(1f,.9f,Mathf.Clamp01(value));}
         public static float TopSpeedForHunger(float value){return UnhinderedTopSpeed*SpeedMultiplierForHunger(value);}

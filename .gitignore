@@ -9,3 +9,7 @@
 
 /Research/*.once
 /Research/*.active
+/Research/*.log
+/_validation_runtime/
+*.blend1
+*.blend1.meta

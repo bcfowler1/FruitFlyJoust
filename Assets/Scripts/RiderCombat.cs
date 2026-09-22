@@ -83,6 +83,11 @@ namespace FruitFlyJoust
         private GameObject standaloneJouster;
         private CombatTarget playerFlyHealth;
         public bool ScentedArrowSelected { get; private set; }
+        public Vector3 LastArrowOrigin { get; private set; }
+        public Vector3 LastArrowDirection { get; private set; }
+        public string LastArrowImpact { get; private set; }
+        public void RecordArrowImpact(Collider collider,CombatTarget target)
+        {LastArrowImpact=(collider ? collider.name : "none")+(target ? "/"+target.name : "/no target");}
         public void SelectScentedArrow(bool selected){ScentedArrowSelected=selected;}
         public float defeatRespawnDelay = 3;
         private float defeatRespawnTimer = -1;
@@ -102,6 +107,13 @@ namespace FruitFlyJoust
         public float OnFootVisualScale { get { return animationVisual ? animationVisual.visualScale : CanonicalRiderVisualScale; } }
         public CombatTarget PlayerFlyHealth { get { return playerFlyHealth; } }
         public Vector3 FlyHitPosition { get { return playerFlyHealth ? playerFlyHealth.transform.position : RideRoot.position; } }
+        public bool IsOwnTarget(CombatTarget candidate)
+        {
+            if(!candidate)return false;
+            if(candidate==playerFlyHealth || candidate.GetComponentInParent<RiderCombat>()==this)return true;
+            var haltere=candidate.GetComponent<HaltereHitZone>();
+            return haltere && haltere.playerFly==fly;
+        }
 
         void Start()
         {
@@ -151,7 +163,7 @@ namespace FruitFlyJoust
             {
                 var haltere=new GameObject(side<0 ? "Player left haltere hitbox" : "Player right haltere hitbox");haltere.transform.SetParent(RideRoot,false);
                 haltere.transform.localPosition=new Vector3(side*.24f,.02f,-.28f)*FlyAssemblyScale;
-                var sphere=haltere.AddComponent<SphereCollider>();sphere.radius=.1f*FlyAssemblyScale;
+                var sphere=haltere.AddComponent<SphereCollider>();sphere.radius=.1f*FlyAssemblyScale;sphere.isTrigger=true;
                 var health=haltere.AddComponent<CombatTarget>();health.maximumHealth=30;health.ResetTarget();
                 haltere.AddComponent<HaltereHitZone>().playerFly=fly;
             }
@@ -233,7 +245,7 @@ namespace FruitFlyJoust
             {
                 Vector3 hand=animationVisual.Hand(false).position;
                 Quaternion rotation=LanceGeometry.RaisedForWall(lanceModel,weaponVisual,hand,RideRoot.rotation,transform);
-                LanceGeometry.AlignGrip(lanceModel,weaponVisual,hand,rotation);
+                LanceGeometry.NormalizeReach(lanceModel,weaponVisual,hand,rotation,LanceGeometry.CanonicalReach);
             }
         }
         void SetWeapon()
@@ -256,7 +268,8 @@ namespace FruitFlyJoust
                 weaponVisual.rotation = (Mounted ? saddle : avatar).rotation;
                 Vector3 scale = hand.lossyScale;
                 weaponVisual.localScale = new Vector3(size.x/Mathf.Max(.001f,scale.x),size.y/Mathf.Max(.001f,scale.y),size.z/Mathf.Max(.001f,scale.z));
-                if(weapon==Weapon.Lance)LanceGeometry.AlignGrip(lanceModel,weaponVisual,hand.position,(Mounted ? saddle : avatar).rotation);
+                if(weapon==Weapon.Lance)LanceGeometry.NormalizeReach(lanceModel,weaponVisual,hand.position,
+                    (Mounted ? saddle : avatar).rotation,LanceGeometry.CanonicalReach);
                 if(weapon==Weapon.Sword)ApplySwordHandPose();
             }
             UpdateStowedLance();
@@ -351,12 +364,7 @@ namespace FruitFlyJoust
         Vector3 Tip()
         {
             if(weapon==Weapon.Lance && lanceModel)
-            {
-                float farthest=0;Vector3 forward=weaponVisual.forward;
-                foreach(var renderer in lanceModel.GetComponentsInChildren<Renderer>())
-                {Bounds b=renderer.bounds;float projection=Vector3.Dot(b.center-weaponVisual.position,forward)+Vector3.Dot(b.extents,new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));farthest=Mathf.Max(farthest,projection);}
-                return weaponVisual.position+forward*farthest;
-            }
+                return LanceGeometry.TipPoint(lanceModel,weaponVisual);
             return weaponVisual.position + weaponVisual.forward * (weaponVisual.lossyScale.z / 2);
         }
         public bool TryDismount()
@@ -436,12 +444,15 @@ namespace FruitFlyJoust
         }
         void Update()
         {
-            if (!avatar || !Application.isFocused) return;
+            if (!avatar) return;
 #if UNITY_EDITOR
             bool automated=FindObjectOfType<CombatPlayCheck>();
 #else
             bool automated=false;
 #endif
+            // Editor validation is deliberately allowed to keep simulating while the
+            // Console or Codex has focus. Interactive builds still pause player input.
+            if(!Application.isFocused && !automated)return;
             if(!research && !standaloneJousterSpawned && !automated)
             { standaloneJouster=CreateMountedJouster(null,RideRoot.position);standaloneJousterSpawned=true; }
             if (CombatPaused && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide) return;
@@ -516,7 +527,10 @@ namespace FruitFlyJoust
             }
             cooldown = Mathf.Max(0, cooldown - CombatDeltaTime);
             swordGesture=Mathf.Max(0,swordGesture-CombatDeltaTime);
-            if(!Mounted && weapon==Weapon.Sword && LastSwordAttack==SwordAttack.Thrust && swordGesture>0 && feet.isGrounded)
+            // The scientific surface controller does not always expose its contact through
+            // CharacterController.isGrounded. Suppress lunging while actually unseated and
+            // falling, but keep the authored on-foot thrust responsive on those surfaces.
+            if(!Mounted && !unseatedFall && weapon==Weapon.Sword && LastSwordAttack==SwordAttack.Thrust && swordGesture>0)
             {
                 float phase=1-swordGesture/SwordGestureDuration;
                 feet.Move(avatar.forward*(Mathf.Sin(Mathf.Clamp01(phase)*Mathf.PI)*AttackTransition(phase)*1.8f*CombatDeltaTime));
@@ -556,8 +570,18 @@ namespace FruitFlyJoust
             if (animationVisual) animationVisual.Attack("Bow");
             var camera = view.GetComponent<Camera>(); Ray aim = camera.ViewportPointToRay(new Vector3(.5f, .5f, 0));
             Vector3 origin = animationVisual && animationVisual.Hand(true) ? animationVisual.Hand(true).position+aim.direction*.38f : (Mounted ? saddle.position + saddle.up * .9f : avatar.position + Vector3.up * .9f);
-            Vector3 point = Physics.Raycast(origin,aim.direction,out var hit,100,1,QueryTriggerInteraction.Ignore) ? hit.point : origin+aim.direction*100;
+            Vector3 point=origin+aim.direction*100;float nearest=float.PositiveInfinity;
+            foreach(var hit in Physics.RaycastAll(origin,aim.direction,100,1,QueryTriggerInteraction.Collide))
+            {
+                var candidate=hit.collider.GetComponentInParent<CombatTarget>();
+                if(IsOwnTarget(candidate))continue;
+                Transform struck=hit.collider.transform;
+                if(struck==RideRoot || struck.IsChildOf(RideRoot) || struck==avatar || struck.IsChildOf(avatar) ||
+                   struck==weaponVisual || weaponVisual && struck.IsChildOf(weaponVisual))continue;
+                if(hit.distance<nearest){nearest=hit.distance;point=hit.point;}
+            }
             Vector3 direction = (point-origin).normalized;
+            LastArrowOrigin=origin;LastArrowDirection=direction;LastArrowImpact="in flight";
             var obj = GameObject.CreatePrimitive(PrimitiveType.Cube); obj.name = "Arrow";
             Destroy(obj.GetComponent<Collider>()); obj.transform.position = origin;
             obj.transform.rotation = Quaternion.LookRotation(direction); obj.transform.localScale = new Vector3(.04f, .04f, .5f);
@@ -599,16 +623,21 @@ namespace FruitFlyJoust
             CombatTarget target=null;
             // Test the whole couched weapon so a capsule cannot slip between the hand and tip.
             float nearest=float.PositiveInfinity;
-            foreach(var collider in Physics.OverlapCapsule(weaponVisual.position,tip,.16f,1,QueryTriggerInteraction.Ignore))
+            foreach(var collider in Physics.OverlapCapsule(weaponVisual.position,tip,.16f,1,QueryTriggerInteraction.Collide))
             {
                 var candidate=collider.GetComponentInParent<CombatTarget>();if(!candidate)continue;
+                if(IsOwnTarget(candidate))continue;
                 float distance=(collider.ClosestPoint(tip)-tip).sqrMagnitude;
                 if(distance<nearest){nearest=distance;target=candidate;}
             }
             // Also sweep the tip to cover high-speed travel between rendered frames.
             Vector3 delta=tip-lastTip;
-            if(!target && delta.sqrMagnitude>.000001f && Physics.SphereCast(lastTip,.16f,delta.normalized,out var hit,
-                delta.magnitude+.2f,1,QueryTriggerInteraction.Ignore))target=hit.collider.GetComponentInParent<CombatTarget>();
+            if(!target && delta.sqrMagnitude>.000001f)foreach(var hit in Physics.SphereCastAll(lastTip,.16f,delta.normalized,
+                delta.magnitude+.2f,1,QueryTriggerInteraction.Collide))
+            {
+                var candidate=hit.collider.GetComponentInParent<CombatTarget>();
+                if(candidate && candidate.GetComponentInParent<RiderCombat>()!=this){target=candidate;break;}
+            }
             float impact=Mathf.Max(chargeSpeed,tipSpeed);
             if(target)ApplyLanceHit(target,impact);
         }
@@ -663,13 +692,14 @@ namespace FruitFlyJoust
         public void RespawnFarthestFromOpponents()
         {
             Vector3 position=FindFarthestOpponentSpawn();
-            if(animationVisual)animationVisual.ExitRagdoll();
+            if(animationVisual)animationVisual.RecreateFromPrefab(avatar,riderMaterial);
             Mounted=false;RideInput.enabled=false;RideInput.ResetCues();mountedVisual.gameObject.SetActive(false);
             var head=saddle.Find("Rider head");if(head)head.gameObject.SetActive(false);
             avatar.gameObject.SetActive(true);feet.enabled=false;avatar.position=position;
             Vector3 toward=OpponentCentroid()-position;toward=Vector3.ProjectOnPlane(toward,Vector3.up);
             avatar.rotation=toward.sqrMagnitude>.01f ? Quaternion.LookRotation(toward) : Quaternion.identity;
             feet.enabled=true;footInput.enabled=true;falling=-2;unseatedFall=false;unseatVelocity=Vector3.zero;
+            if(animationVisual)animationVisual.Pose(avatar,false,0);
             Health=100;defeatRespawnTimer=-1;PlayerRespawnCount++;LastPlayerRespawnPosition=position;
             if(playerFlyHealth)playerFlyHealth.ResetTarget();if(fly)fly.ReviveAfterDeath();
             foreach(var arrow in FindObjectsOfType<OpponentArrow>())Destroy(arrow.gameObject);
@@ -771,7 +801,9 @@ namespace FruitFlyJoust
                 var dummy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                 dummy.name = practiceEnemies ? (i%2==0 ? "Enemy swordsman" : "Enemy archer") : "Combat dummy";
                 dummy.transform.SetParent(practice.transform);
-                dummy.transform.position = ground.point+Vector3.up;
+                // CharacterController roots represent foot level; placing the
+                // capsule centre one metre above the hit left ground units airborne.
+                dummy.transform.position = ground.point;
                 dummy.GetComponent<Renderer>().sharedMaterial = weaponMaterial;
                 dummy.AddComponent<CombatTarget>();
                 if (practiceEnemies)
@@ -788,19 +820,28 @@ namespace FruitFlyJoust
         { return CreateMountedJousterAt(parent,center+RideRoot.right*10+Vector3.up*4,0); }
         GameObject CreateMountedJousterAt(Transform parent,Vector3 position,int competency)
         {
-            var mounted=GameObject.CreatePrimitive(PrimitiveType.Capsule);mounted.name="Mounted enemy jouster";
-            if(parent)mounted.transform.SetParent(parent);mounted.GetComponent<Renderer>().sharedMaterial=weaponMaterial;
-            mounted.AddComponent<CombatTarget>();var jouster=mounted.AddComponent<MountedJoustOpponent>();
+            var prefab=Resources.Load<GameObject>("Enemies/MountedJouster");
+            if(!prefab)throw new System.InvalidOperationException("Missing enemy jouster prefab in Resources/Enemies.");
+            var mounted=Instantiate(prefab,parent,false);mounted.name="Mounted enemy jouster";
+            var jouster=mounted.GetComponent<MountedJoustOpponent>();
+            if(!jouster)throw new System.InvalidOperationException("Enemy jouster prefab lacks MountedJoustOpponent.");
             jouster.competencyLevel=competency;
             var biological=RideRoot.Find("Detailed NeuroMechFly appearance");
             jouster.Initialize(this,biological ? biological.gameObject : null,saddle,RideRoot,riderMaterial,weaponMaterial,position);
             return mounted;
         }
+        public MountedJoustOpponent SpawnMountedJousterReplacement(Transform parent,Vector3 position,int competency)
+        { return CreateMountedJousterAt(parent,position,competency).GetComponent<MountedJoustOpponent>(); }
+        public MountedJoustOpponent CreateValidationMountedJouster(Transform parent,int competency=0)
+        {
+            Vector3 position=RideRoot.position+RideRoot.right*10+Vector3.up*4;
+            return CreateMountedJousterAt(parent,position,competency).GetComponent<MountedJoustOpponent>();
+        }
         public bool PlayerCameraCanSee(Vector3 worldPosition,float radius=1f)
         {
             Camera camera=view ? view.GetComponent<Camera>() : null;
             if(!camera || !camera.isActiveAndEnabled)return false;
-            if(!GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(camera),new Bounds(worldPosition,Vector3.one*radius*2)))return false;
+            if(!PlayerCameraFrameContains(worldPosition,radius))return false;
             Vector3 origin=camera.transform.position,delta=worldPosition-origin;float distance=delta.magnitude;
             if(distance<.01f)return true;
             foreach(var hit in Physics.RaycastAll(origin,delta/distance,distance,1,QueryTriggerInteraction.Ignore))
@@ -812,12 +853,34 @@ namespace FruitFlyJoust
             }
             return true;
         }
+        public bool PlayerCameraFrameContains(Vector3 worldPosition,float radius=1f)
+        {
+            Camera camera=view ? view.GetComponent<Camera>() : null;
+            return camera && camera.isActiveAndEnabled &&
+                GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(camera),
+                    new Bounds(worldPosition,Vector3.one*radius*2));
+        }
         public Vector3 FindHiddenEnemyRespawn(Vector3 preferred)
         {
             Vector3 playerPosition=RiderPosition;
+            bool FloorBelow(Vector3 candidate,out float floorY)
+            {
+                floorY=float.NegativeInfinity;
+                float rayHeight=playerPosition.y+20;
+                if(FlyMotor.TryArenaCeiling(out var innerCeiling))rayHeight=Mathf.Min(rayHeight,innerCeiling-.25f);
+                foreach(var hit in Physics.RaycastAll(new Vector3(candidate.x,rayHeight,candidate.z),Vector3.down,60,1,QueryTriggerInteraction.Ignore))
+                    if(!hit.collider.attachedRigidbody &&
+                       !hit.collider.GetComponentInParent<CombatTarget>() &&
+                       Vector3.Dot(hit.normal,Vector3.up)>.65f)
+                        floorY=Mathf.Max(floorY,hit.point.y);
+                return floorY>float.NegativeInfinity;
+            }
             bool Valid(Vector3 candidate)
             {
-                if(Vector3.Distance(candidate,playerPosition)<8 || PlayerCameraCanSee(candidate,1.25f))return false;
+                // Respawns must be outside the frame itself. Occlusion can change
+                // immediately as the player moves, exposing an apparent teleport.
+                if(Vector3.Distance(candidate,playerPosition)<8 || PlayerCameraFrameContains(candidate,1.25f) ||
+                    !FloorBelow(candidate,out _))return false;
                 foreach(var collider in Physics.OverlapSphere(candidate,.7f,1,QueryTriggerInteraction.Ignore))
                 {
                     Transform obstacle=collider.transform;
@@ -847,11 +910,9 @@ namespace FruitFlyJoust
                     Ray ray=camera.ViewportPointToRay(new Vector3(entry.x,entry.y,0));
                     Vector3 candidate=ray.GetPoint(entry.z);
                     // Never place a lower-corner arrival beneath the floor or table.
-                    var floors=Physics.RaycastAll(new Vector3(candidate.x,playerPosition.y+20,candidate.z),Vector3.down,50,1,QueryTriggerInteraction.Ignore);
-                    float floor=float.NegativeInfinity;
-                    foreach(var hit in floors)
-                        if(!hit.collider.attachedRigidbody && Vector3.Dot(hit.normal,Vector3.up)>.65f)floor=Mathf.Max(floor,hit.point.y);
-                    if(floor>float.NegativeInfinity)candidate.y=Mathf.Max(candidate.y,floor+2);
+                    if(!FloorBelow(candidate,out float floor))continue;
+                    candidate.y=Mathf.Max(candidate.y,floor+2);
+                    if(FlyMotor.TryArenaCeiling(out var ceiling))candidate.y=Mathf.Min(candidate.y,ceiling-.8f);
                     if(!Valid(candidate))continue;
                     LastEnemyRespawnPosition=candidate;LastEnemyRespawnUsesCornerEntry=true;return candidate;
                 }
@@ -867,10 +928,18 @@ namespace FruitFlyJoust
                 float score=-Vector3.Dot(direction,cameraForward)*12-Vector3.Distance(candidate,preferred)*.08f;
                 if(score>bestScore){best=candidate;bestScore=score;}
             }
-            // If every sampled point is occupied, keep the fallback behind and above
-            // the camera rather than ever permitting an on-screen pop-in.
-            Vector3 hiddenFallback=playerPosition-cameraForward*20+Vector3.up*(altitude-playerPosition.y+5);
-            LastEnemyRespawnPosition=bestScore>float.NegativeInfinity ? best : hiddenFallback;
+            if(bestScore>float.NegativeInfinity){LastEnemyRespawnPosition=best;return best;}
+            // A corner outside the arena has no landing surface. Keep the rare
+            // fallback over real floor even if every off-camera lane is blocked.
+            Vector3 fallback=preferred;
+            if(!FloorBelow(fallback,out float fallbackFloor))
+            {
+                fallback=playerPosition-cameraForward*8;
+                if(!FloorBelow(fallback,out fallbackFloor))fallback=playerPosition;
+            }
+            if(FloorBelow(fallback,out fallbackFloor))fallback.y=Mathf.Max(fallback.y,fallbackFloor+2);
+            if(FlyMotor.TryArenaCeiling(out var fallbackCeiling))fallback.y=Mathf.Min(fallback.y,fallbackCeiling-.8f);
+            LastEnemyRespawnPosition=fallback;
             return LastEnemyRespawnPosition;
         }
         public void EnsureEnemyMountReplacement(Transform parent,Vector3 position,int competency)
@@ -892,6 +961,7 @@ namespace FruitFlyJoust
     // same physical model length ahead of either hand, regardless of skeleton scaling.
     static class LanceGeometry
     {
+        public const float CanonicalReach=2.2f;
         static Renderer HandleRenderer(Transform model)
         {
             if(!model)return null;
@@ -907,6 +977,27 @@ namespace FruitFlyJoust
             var handle=HandleRenderer(model);return handle ? handle.bounds.center : (model ? model.position : Vector3.zero);
         }
         public static float GripError(Transform model,Vector3 handPosition){return Vector3.Distance(GripPoint(model),handPosition);}
+        public static Vector3 TipPoint(Transform model,Transform forwardRoot)
+        {
+            if(!model || !forwardRoot)return model ? model.position : Vector3.zero;
+            Vector3 grip=GripPoint(model),forward=forwardRoot.forward;float reach=0;
+            foreach(var renderer in model.GetComponentsInChildren<Renderer>())
+            {
+                Bounds bounds=renderer.bounds;
+                float projection=Vector3.Dot(bounds.center-grip,forward)+Vector3.Dot(bounds.extents,
+                    new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));
+                reach=Mathf.Max(reach,projection);
+            }
+            return grip+forward*reach;
+        }
+        public static void NormalizeReach(Transform model,Transform root,Vector3 handPosition,Quaternion rotation,float desiredReach)
+        {
+            if(!model || !root || desiredReach<=0)return;
+            AlignGrip(model,root,handPosition,rotation);
+            float current=Vector3.Distance(GripPoint(model),TipPoint(model,root));
+            if(current>.001f)model.localScale*=desiredReach/current;
+            AlignGrip(model,root,handPosition,rotation);
+        }
         public static Quaternion RaisedForWall(Transform model,Transform root,Vector3 handPosition,Quaternion forwardRotation,Transform owner)
         {
             if(!model || !root)return forwardRotation;

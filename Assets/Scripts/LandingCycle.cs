@@ -40,5 +40,9 @@ namespace FruitFlyJoust
             launchTime = 0;
             waitForLandingRelease = false;
         }
+        public void ForceFlight()
+        {
+            Phase=RidePhase.Flying;launchTime=0;waitForLandingRelease=true;
+        }
     }
 }

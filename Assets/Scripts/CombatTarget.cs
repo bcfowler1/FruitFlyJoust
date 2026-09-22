@@ -99,11 +99,24 @@ namespace FruitFlyJoust
             float dt = clock ? clock.CombatDeltaTime : Time.deltaTime;
             if (clock && clock.CombatPaused || dt <= 0) return;
             Vector3 movement = velocity * dt + Physics.gravity * (.5f * dt * dt);
-            if (Physics.SphereCast(transform.position, .035f, movement.normalized, out var hit, movement.magnitude,
-                1, QueryTriggerInteraction.Ignore))
+            RaycastHit selected=default(RaycastHit);bool collided=false;float nearest=float.PositiveInfinity;
+            foreach(var candidateHit in Physics.SphereCastAll(transform.position,.035f,movement.normalized,movement.magnitude,
+                1,QueryTriggerInteraction.Collide))
             {
-                var target = hit.collider.GetComponentInParent<CombatTarget>();
-                if(scentedBait)DeployBait(hit.point,hit.normal);
+                var candidate=candidateHit.collider.GetComponentInParent<CombatTarget>();
+                if(clock && clock.IsOwnTarget(candidate))continue;
+                // The broad fly-body box overlaps the lower saddle. Give the much
+                // tighter rider volume a small selection preference so an arrow
+                // visibly aimed at the rider does not kill the healthy mount first.
+                var mountedZone=candidateHit.collider.GetComponentInParent<MountedHitZone>();
+                float selectionDistance=candidateHit.distance+(mountedZone && mountedZone.fly ? .12f : 0);
+                if(selectionDistance<nearest){nearest=selectionDistance;selected=candidateHit;collided=true;}
+            }
+            if(collided)
+            {
+                var target = selected.collider.GetComponentInParent<CombatTarget>();
+                if(clock)clock.RecordArrowImpact(selected.collider,target);
+                if(scentedBait)DeployBait(selected.point,selected.normal);
                 else if (target) target.Hit(damage,velocity.normalized);
                 Destroy(gameObject); return;
             }

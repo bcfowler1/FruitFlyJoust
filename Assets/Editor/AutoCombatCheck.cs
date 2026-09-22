@@ -6,8 +6,17 @@ using UnityEngine;
 [InitializeOnLoad]
 static class AutoCombatCheck
 {
-    static AutoCombatCheck(){EditorApplication.delayCall+=Run;}
-    static void Run()
+    // Marker-driven checks let Codex run play-mode validation without manual Console copying.
+    static AutoCombatCheck()
+    {
+        // A queued check must also start when the editor enters Play without a
+        // domain reload. DelayCall alone can leave its active marker unconsumed.
+        EditorApplication.playModeStateChanged+=state=>
+        {
+            if(state==PlayModeStateChange.EnteredPlayMode)EditorApplication.delayCall+=Run;
+        };
+    }
+    internal static void Run()
     {
         string once=Path.GetFullPath(Path.Combine(Application.dataPath,"../Research/run-combat-check.once"));
         string active=Path.GetFullPath(Path.Combine(Application.dataPath,"../Research/run-combat-check.active"));

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.IO.Compression;
 using UnityEngine;
 
 namespace FruitFlyJoust
@@ -14,6 +15,7 @@ namespace FruitFlyJoust
         public bool Mounted { get; private set; }=true;
         public float LastFallDamage { get; private set; }
         public int RespawnCount { get; private set; }
+        public int UnseatingCount { get; private set; }
         public bool RiderRagdolled { get { return riderVisual && riderVisual.Ragdolled; } }
         public int RiderRagdollBodyCount { get { return riderVisual ? riderVisual.RagdollBodyCount : 0; } }
         public FlyCorpse LastFlyCorpse { get; private set; }
@@ -32,6 +34,20 @@ namespace FruitFlyJoust
         public float LanceGripError { get { return lance && riderVisual && riderVisual.Hand(false) ? LanceGeometry.GripError(lance,riderVisual.Hand(false).position) : float.PositiveInfinity; } }
         public float LanceReach { get { return lance && riderVisual && riderVisual.Hand(false) ? Vector3.Distance(riderVisual.Hand(false).position,LanceTip) : 0; } }
         public Vector3 RenderedRiderPosition { get { return riderVisual ? riderVisual.RagdollCenter : transform.position; } }
+        public Vector3 RiderWorldScale { get { return riderVisual ? riderVisual.VisualWorldScale : Vector3.zero; } }
+        public float RiderVisualHeight { get { return riderVisual ? riderVisual.VisualHeight : 0; } }
+        public int FlyVisibleRendererCount
+        {
+            get{int count=0;if(flyVisual)foreach(var renderer in flyVisual.GetComponentsInChildren<Renderer>())if(renderer.enabled&&renderer.gameObject.activeInHierarchy)count++;return count;}
+        }
+        public float FlyVisualBoundsSize
+        {
+            get
+            {
+                if(!flyVisual)return 0;var renderers=flyVisual.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return 0;
+                Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)if(renderer.enabled)bounds.Encapsulate(renderer.bounds);return bounds.size.magnitude;
+            }
+        }
         public bool RiderTransitioning { get { return riderVisual && riderVisual.Transitioning; } }
         public float GroundClearance
         {
@@ -41,6 +57,8 @@ namespace FruitFlyJoust
                     Vector3.Dot(transform.position-hit.point,hit.normal) : float.PositiveInfinity;
             }
         }
+        public float FallVerticalSpeed { get { return verticalSpeed; } }
+        public bool FeetGrounded { get { return feet && feet.isGrounded; } }
         Transform flyVisual,lance,riderAnchor;
         BiologicalPoseMirror poseMirror;
         RiderAnimationVisual riderVisual;
@@ -51,11 +69,12 @@ namespace FruitFlyJoust
         CombatTarget health,mountHealth;
         Vector3 velocity,lastLanceTip,flyDeathImpact,spawn,saddleBasePosition,saddleBaseScale,flyTemplateLocalPosition,flyTemplateLocalScale,flyMountedLocalPosition,flyMountedLocalScale;
         Quaternion saddleBaseRotation,flyTemplateLocalRotation,flyMountedLocalRotation;
-        float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1,replacementMountTimer=-1;
+        float clock,contactCooldown,verticalSpeed,peakFallSpeed,respawnTimer=-1,replacementMountTimer=-1,groundedRecoveryTimer=-1;
 
         public void Initialize(RiderCombat rider,GameObject biologicalVisual,Transform saddleTemplate,Transform rideRoot,Material sharedRiderMaterial,Material sharedWeaponMaterial,Vector3 position)
         {
             player=rider;biologicalTemplate=biologicalVisual;riderMaterial=sharedRiderMaterial;weaponMaterial=sharedWeaponMaterial;spawn=position;
+            NormalizeRootScale();
             if(biologicalTemplate)
             {
                 flyTemplateLocalPosition=biologicalTemplate.transform.localPosition;
@@ -71,8 +90,10 @@ namespace FruitFlyJoust
             {
                 riderAnchor.localPosition=rideRoot.InverseTransformPoint(saddleTemplate.position);
                 riderAnchor.localRotation=Quaternion.Inverse(rideRoot.rotation)*saddleTemplate.rotation;
-                Vector3 rootScale=rideRoot.lossyScale,saddleScale=saddleTemplate.lossyScale;
-                riderAnchor.localScale=new Vector3(saddleScale.x/Mathf.Max(.0001f,rootScale.x),saddleScale.y/Mathf.Max(.0001f,rootScale.y),saddleScale.z/Mathf.Max(.0001f,rootScale.z));
+                Vector3 rootScale=transform.lossyScale;
+                // The saddle transform supplies placement and rotation only. Its
+                // authored tack scale must never resize the humanoid rider.
+                riderAnchor.localScale=new Vector3(1/Mathf.Max(.0001f,rootScale.x),1/Mathf.Max(.0001f,rootScale.y),1/Mathf.Max(.0001f,rootScale.z));
             }
             saddleBasePosition=riderAnchor.localPosition;saddleBaseRotation=riderAnchor.localRotation;saddleBaseScale=riderAnchor.localScale;
             riderVisual=gameObject.AddComponent<RiderAnimationVisual>();riderVisual.visualScale=RiderCombat.CanonicalRiderVisualScale;riderVisual.mountedSeatHeight=-.33f;riderVisual.mountedSeatForward=-.16f;riderVisual.mountTransitions=true;
@@ -113,6 +134,14 @@ namespace FruitFlyJoust
                     // belongs to the corrected biomodel frame; rotating its orientation
                     // here turns the rider 90 degrees sideways while standing still.
                 }
+                // A newly instantiated rider starts at its prefab origin. Pose it
+                // on the saddle before measuring the visible hips; otherwise the
+                // first correction of each respawn uses an unposed skeleton.
+                if(riderVisual)riderVisual.Pose(riderAnchor,true,0);
+                CenterRiderOnThoraxAxis();
+                // Keep the authored seat as the rebuild baseline. Saving this
+                // corrected position would apply the correction again on every
+                // respawn and gradually move the rider away from the thorax.
                 poseMirror=flyVisual.gameObject.AddComponent<BiologicalPoseMirror>();poseMirror.Initialize(biologicalTemplate.transform);
                 flyMountedLocalPosition=flyVisual.localPosition;flyMountedLocalRotation=flyVisual.localRotation;flyMountedLocalScale=flyVisual.localScale;
             }
@@ -125,6 +154,20 @@ namespace FruitFlyJoust
             }
             BuildLance();
         }
+        void CenterRiderOnThoraxAxis(float maximumCorrection=float.PositiveInfinity)
+        {
+            if(!flyVisual || !riderAnchor || !riderVisual)return;
+            Transform thorax=FindPart(flyVisual,"0/Thorax");
+            Renderer thoraxRenderer=thorax ? thorax.GetComponent<Renderer>() : null;
+            Vector3 forward=VisibleLongitudinalDirection();
+            if(!thoraxRenderer || forward.sqrMagnitude<.5f)return;
+            forward=Vector3.ProjectOnPlane(forward,transform.up).normalized;
+            Vector3 right=Vector3.Cross(transform.up,forward).normalized;
+            // The imported humanoid root pivot is offset from its seated pelvis.
+            // Align the actual hips, which are the visible saddle contact point.
+            float lateral=Vector3.Dot(riderVisual.RagdollCenter-thoraxRenderer.bounds.center,right);
+            riderAnchor.position-=right*Mathf.Clamp(lateral,-maximumCorrection,maximumCorrection);
+        }
         void BuildLance()
         {
             var prefab=Resources.Load<GameObject>("Weapons/Fly Lance Source") ?? Resources.Load<GameObject>("Weapons/Fly Lance");
@@ -136,7 +179,8 @@ namespace FruitFlyJoust
             weapon.transform.localScale=new Vector3(authoredScale.x/Mathf.Max(.001f,parentScale.x),authoredScale.y/Mathf.Max(.001f,parentScale.y),authoredScale.z/Mathf.Max(.001f,parentScale.z));
             var renderer=weapon.GetComponent<Renderer>();if(renderer)renderer.sharedMaterial=weaponMaterial;lance=weapon.transform;
             Transform hand=riderVisual ? riderVisual.Hand(false) : null;
-            if(hand)LanceGeometry.AlignGrip(lance,lance,hand.position,riderAnchor ? riderAnchor.rotation : transform.rotation);
+            if(hand)LanceGeometry.NormalizeReach(lance,lance,hand.position,
+                riderAnchor ? riderAnchor.rotation : transform.rotation,LanceGeometry.CanonicalReach);
         }
         void BuildHitZones()
         {
@@ -165,25 +209,30 @@ namespace FruitFlyJoust
             for(int side=-1;side<=1;side+=2)
             {
                 var zone=new GameObject(side<0 ? "Left haltere hitbox" : "Right haltere hitbox");zone.transform.SetParent(flyVisual ? flyVisual : transform,false);
-                zone.transform.localPosition=new Vector3(side*.24f,.02f,-.28f);var sphere=zone.AddComponent<SphereCollider>();sphere.radius=.1f;
+                zone.transform.localPosition=new Vector3(side*.24f,.02f,-.28f);var sphere=zone.AddComponent<SphereCollider>();sphere.radius=.1f;sphere.isTrigger=true;
                 var sensor=zone.AddComponent<CombatTarget>();sensor.maximumHealth=30;sensor.ResetTarget();var relay=zone.AddComponent<HaltereHitZone>();relay.enemyFly=this;
                 var hit=zone.AddComponent<MountedHitZone>();hit.owner=this;hit.fly=true;hit.haltere=true;
             }
         }
         void ResetPose()
         {
+            NormalizeRootScale();
             feet.enabled=false;transform.position=spawn;transform.rotation=Quaternion.LookRotation(player ? -player.transform.forward : Vector3.back);
             Mounted=true;FlyEscaping=false;ReplacementMountScheduled=false;velocity=Vector3.zero;verticalSpeed=peakFallSpeed=0;contactCooldown=1;respawnTimer=replacementMountTimer=-1;
             health.ResetTarget();if(mountHealth)mountHealth.ResetTarget();HaltereIntegrity=1;scentMemory=0;LoomingDodging=false;lastLanceTip=LanceTip;
+        }
+        void NormalizeRootScale()
+        {
+            Vector3 parentScale=transform.parent ? transform.parent.lossyScale : Vector3.one;
+            transform.localScale=new Vector3(1/Mathf.Max(.0001f,Mathf.Abs(parentScale.x)),
+                1/Mathf.Max(.0001f,Mathf.Abs(parentScale.y)),
+                1/Mathf.Max(.0001f,Mathf.Abs(parentScale.z)));
         }
         public Vector3 LanceTip
         {
             get
             {
-                if(!lance)return transform.position;float farthest=0;Vector3 forward=lance.forward;
-                foreach(var renderer in lance.GetComponentsInChildren<Renderer>())
-                {Bounds b=renderer.bounds;float projection=Vector3.Dot(b.center-lance.position,forward)+Vector3.Dot(b.extents,new Vector3(Mathf.Abs(forward.x),Mathf.Abs(forward.y),Mathf.Abs(forward.z)));farthest=Mathf.Max(farthest,projection);}
-                return lance.position+forward*farthest;
+                return lance ? LanceGeometry.TipPoint(lance,lance) : transform.position;
             }
         }
         public float AnatomicalForwardAlignment
@@ -225,6 +274,19 @@ namespace FruitFlyJoust
                 return renderer ? Vector3.ProjectOnPlane(riderVisual.VisualRootPosition-renderer.bounds.center,transform.up).magnitude : float.PositiveInfinity;
             }
         }
+        public float RiderThoraxLateralOffset
+        {
+            get
+            {
+                if(!flyVisual || !riderVisual)return float.PositiveInfinity;
+                Transform thorax=FindPart(flyVisual,"0/Thorax");Renderer renderer=thorax ? thorax.GetComponent<Renderer>() : null;
+                Vector3 forward=VisibleLongitudinalDirection();
+                if(!renderer || forward.sqrMagnitude<.5f)return float.PositiveInfinity;
+                forward=Vector3.ProjectOnPlane(forward,transform.up).normalized;
+                Vector3 right=Vector3.Cross(transform.up,forward).normalized;
+                return Vector3.Dot(riderVisual.RagdollCenter-renderer.bounds.center,right);
+            }
+        }
         public float RiderForwardAlignment
         {
             get
@@ -244,8 +306,23 @@ namespace FruitFlyJoust
         public CombatTarget FlyHealth { get { return mountHealth; } }
         void Update()
         {
-            if(!player || player.CombatPaused)return;
-            float dt=player.CombatDeltaTime;if(dt<=0)return;
+            if(!player)return;
+            if(FlyMotor.TryArenaCeiling(out var innerCeiling) && transform.position.y>innerCeiling)
+            {
+                transform.position=new Vector3(transform.position.x,innerCeiling,transform.position.z);
+                velocity=new Vector3(velocity.x,Mathf.Min(-2,velocity.y),velocity.z);
+                verticalSpeed=Mathf.Min(verticalSpeed,-2);
+            }
+            // Death and unseating must finish even if another system temporarily
+            // pauses normal combat. Otherwise a zero-health rider remains welded to
+            // the saddle until combat resumes.
+            bool forcedTransition=(health && health.Health<=0) || (Mounted && mountHealth && mountHealth.Health<=0);
+            // A disconnected research stream is not an intentional gameplay pause:
+            // keep opponents alive on Unity's clock so they still pursue and attack.
+            bool deliberatePause=player.research && player.research.Connected && player.CombatPaused;
+            if(deliberatePause && !forcedTransition)return;
+            float dt=player.research && player.research.Connected && !player.CombatPaused ? player.CombatDeltaTime : Time.deltaTime;
+            if(dt<=0)return;
             if(health.Health<=0)
             {
                 if(respawnTimer<0)
@@ -254,11 +331,21 @@ namespace FruitFlyJoust
                     respawnTimer=FlyEscaping ? 6 : 3;Mounted=false;
                     if(groundAI)groundAI.enabled=false;
                     var riderCollider=health.GetComponent<Collider>();if(riderCollider)riderCollider.enabled=false;
-                    if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*.5f);
+                    // A rider-only kill slumps sideways and down from the saddle. The
+                    // living fly keeps its independent health and continues escaping.
+                    if(riderVisual)riderVisual.EnterRagdoll(velocity*.55f+transform.right*.45f+Vector3.down*.35f);
                     if(lance){lance.gameObject.SetActive(false);Destroy(lance.gameObject);lance=null;}
                 }
                 if(FlyEscaping)EscapeFly(dt);
-                respawnTimer-=dt;if(respawnTimer<=0)RespawnStronger();return;
+                respawnTimer-=dt;
+                if(respawnTimer<=0)
+                {
+                    // Do not make a living mount disappear on camera when only its rider
+                    // was killed. Continue the escape until the fly is out of view.
+                    if(FlyEscaping && player && player.PlayerCameraCanSee(transform.position,1.25f))respawnTimer=.5f;
+                    else RespawnStronger();
+                }
+                return;
             }
             if(Mounted && mountHealth && mountHealth.Health<=0){ReceiveLanceContact(3);return;}
             if(ReplacementMountScheduled)
@@ -285,7 +372,8 @@ namespace FruitFlyJoust
             if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f*RiderCombat.FlyAssemblyScale,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
                 velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.2f;
-                transform.position=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
+                Vector3 resolved=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
+                transform.position=Vector3.MoveTowards(transform.position,resolved,movement.magnitude+.08f);
             }
             else transform.position+=movement;
         }
@@ -293,12 +381,17 @@ namespace FruitFlyJoust
         {
             if(riderVisual)riderVisual.AdvanceTransition(player ? player.CombatDeltaTime : Time.deltaTime);
             if(riderVisual)riderVisual.Pose(Mounted && riderAnchor ? riderAnchor : transform,Mounted,Mounted ? 0 : velocity.magnitude,health && health.Health<=0);
+            // Pose evaluation can move the humanoid pelvis away from its imported
+            // root pivot during the initial cross-fade. Recenter after animation so
+            // the visible seated pelvis, rather than the FBX pivot, stays on-axis.
+            if(Mounted && riderVisual && !riderVisual.Transitioning)CenterRiderOnThoraxAxis(.12f);
+            if(riderVisual && riderVisual.Ragdolled)riderVisual.KeepRagdollAboveGround();
             Transform hand=riderVisual ? riderVisual.Hand(false) : null;
             if(Mounted && lance && hand)
             {
                 Quaternion couch=riderAnchor ? riderAnchor.rotation : transform.rotation;
                 Quaternion rotation=LanceGeometry.RaisedForWall(lance,lance,hand.position,couch,transform);
-                LanceGeometry.AlignGrip(lance,lance,hand.position,rotation);
+                LanceGeometry.NormalizeReach(lance,lance,hand.position,rotation,LanceGeometry.CanonicalReach);
             }
         }
         void Fly(float dt)
@@ -328,7 +421,11 @@ namespace FruitFlyJoust
             Vector3 movement=velocity*dt;
             if(movement.sqrMagnitude>.0001f && EnvironmentSphereCast(transform.position,.48f*RiderCombat.FlyAssemblyScale,movement.normalized,movement.magnitude+.08f,out var obstacle))
             {
-                transform.position=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
+                Vector3 resolved=obstacle.point+obstacle.normal*(.52f*RiderCombat.FlyAssemblyScale);
+                // A cast hit point is not a valid new root position when a collider
+                // starts overlapped or reports an unusual contact point. Bound the
+                // visible step by the distance this fly could travel this frame.
+                transform.position=Vector3.MoveTowards(transform.position,resolved,movement.magnitude+.08f);
                 velocity=Vector3.ProjectOnPlane(velocity,obstacle.normal)+obstacle.normal*1.5f;
             }
             else transform.position+=movement;
@@ -377,7 +474,7 @@ namespace FruitFlyJoust
         }
         bool HasStableWalkableSupport()
         {
-            if(!feet || !feet.enabled || !feet.isGrounded)return false;
+            if(!feet || !feet.enabled)return false;
             if(!EnvironmentRaycast(transform.position+Vector3.up*.18f,Vector3.down,.5f,out var hit))return false;
             if(Vector3.Dot(hit.normal,Vector3.up)<.65f || hit.collider.attachedRigidbody)return false;
             if(hit.collider.GetComponentInParent<CharacterController>() || hit.collider.GetComponentInParent<MountedJoustOpponent>())return false;
@@ -389,14 +486,29 @@ namespace FruitFlyJoust
         public bool ReceiveLanceContact(float impact)
         {
             if(!Mounted || impact<3)return false;
-            Mounted=false;FlyEscaping=false;verticalSpeed=2;peakFallSpeed=0;
-            if(riderVisual)riderVisual.EnterRagdoll(velocity+Vector3.up*2);
+            Mounted=false;FlyEscaping=false;verticalSpeed=2;peakFallSpeed=0;groundedRecoveryTimer=-1;UnseatingCount++;
+            // Unseating is cumulative trauma, not a life counter. Three otherwise
+            // clean unseatings exhaust full health; existing arrow wounds and the
+            // severity-based landing damage can make an earlier fall fatal.
+            if(health && health.Health>0)health.Hit(health.maximumHealth/3f+.01f);
+            if(riderVisual)
+            {
+                Vector3 fallVelocity=velocity;fallVelocity.y=Mathf.Clamp(fallVelocity.y+1,-2.5f,1.25f);
+                riderVisual.EnterRagdoll(fallVelocity);
+            }
             if(flyVisual)
             {
                 if(mountHealth && mountHealth.Health<=0)
                 {
                     if(poseMirror)poseMirror.StopWings();
-                    LastFlyCorpse=FlyCorpse.Create(flyVisual,velocity+flyDeathImpact,true);flyDeathImpact=Vector3.zero;
+                    Vector3 corpseVelocity=velocity+flyDeathImpact;
+                    if(flyDeathImpact.sqrMagnitude>.0001f)
+                    {
+                        Vector3 impactAxis=flyDeathImpact.normalized;
+                        float along=Vector3.Dot(Vector3.ProjectOnPlane(corpseVelocity,Vector3.up),impactAxis);
+                        if(along<.25f)corpseVelocity+=impactAxis*(.25f-along);
+                    }
+                    LastFlyCorpse=FlyCorpse.Create(flyVisual,corpseVelocity,true);flyDeathImpact=Vector3.zero;
                     ReplacementMountScheduled=true;replacementMountTimer=6;
                     flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);flyVisual=null;
                 }
@@ -450,32 +562,52 @@ namespace FruitFlyJoust
         }
         void Fall(float dt)
         {
-            if(verticalSpeed<=0 && HasStableWalkableSupport())
+            // Mounted opponents keep their CharacterController disabled. Any route
+            // into an unmounted fall must reactivate it before Move is called.
+            if(!feet)return;
+            if(!feet.enabled)feet.enabled=true;
+            // A fallen rider can land on the articulated fly corpse. Its moving
+            // Rigidbody is excluded by the static support ray, while the character
+            // controller correctly reports contact beneath its feet. Treat that
+            // contact as a landing so recovery cannot stall above the arena floor.
+            if(verticalSpeed<=0 && (HasStableWalkableSupport() || feet.isGrounded))
             {
-                LastFallDamage=Mathf.Clamp((peakFallSpeed-4)*5,0,30);if(LastFallDamage>0)health.Hit(LastFallDamage);
-                if(health.Health>0 && riderVisual){riderVisual.ExitRagdoll();riderVisual.BeginMountTransition(false);}
-                verticalSpeed=-2;groundAI=gameObject.AddComponent<CombatOpponent>();groundAI.style=CombatOpponent.Style.Swordsman;
+                if(groundedRecoveryTimer<0)
+                {
+                    LastFallDamage=Mathf.Clamp((peakFallSpeed-4)*5,0,30);if(LastFallDamage>0)health.Hit(LastFallDamage);
+                    groundedRecoveryTimer=health.Health>0 ? 1.5f : float.PositiveInfinity;
+                    verticalSpeed=-2;velocity=Vector3.zero;
+                }
+                // Leave the articulated body visibly crumpled after impact. A living
+                // rider recovers after a readable pause; a dead rider remains a corpse.
+                if(health.Health<=0)return;
+                groundedRecoveryTimer-=dt;if(groundedRecoveryTimer>0)return;
+                if(riderVisual){riderVisual.ExitRagdoll();riderVisual.BeginMountTransition(false);}
+                groundAI=gameObject.AddComponent<CombatOpponent>();groundAI.style=CombatOpponent.Style.Swordsman;
                 groundAI.speed=Mathf.Lerp(1.2f,2.7f,Competence);groundAI.attackInterval=Mathf.Lerp(1.8f,.75f,Competence);return;
             }
             verticalSpeed+=Physics.gravity.y*dt;peakFallSpeed=Mathf.Max(peakFallSpeed,-verticalSpeed);
             velocity=Vector3.MoveTowards(velocity,Vector3.zero,dt*2);
             feet.Move((Vector3.ProjectOnPlane(velocity,Vector3.up)+Vector3.up*verticalSpeed)*dt);
         }
-        void RespawnStronger()
+        MountedJoustOpponent RespawnStronger()
         {
-            competencyLevel++;RespawnCount++;clock=0;
-            if(player)spawn=player.FindHiddenEnemyRespawn(spawn);LastRespawnPosition=spawn;
-            if(riderVisual)riderVisual.ExitRagdoll();
-            if(groundAI){groundAI.enabled=false;Destroy(groundAI);groundAI=null;}
-            if(flyVisual){flyVisual.gameObject.SetActive(false);Destroy(flyVisual.gameObject);}if(lance){lance.gameObject.SetActive(false);Destroy(lance.gameObject);}
-            foreach(var zone in GetComponentsInChildren<MountedHitZone>())
-            {var target=zone.GetComponent<CombatTarget>();if(target)target.enabled=false;var collider=zone.GetComponent<Collider>();if(collider)collider.enabled=false;zone.gameObject.SetActive(false);Destroy(zone.gameObject);}
-            BuildMount();BuildHitZones();ResetPose();if(riderVisual){riderVisual.CancelMountTransition();riderVisual.Pose(riderAnchor ? riderAnchor : transform,true,0);}
+            if(!player)return null;
+            Vector3 nextSpawn=player.FindHiddenEnemyRespawn(spawn);
+            var replacement=player.SpawnMountedJousterReplacement(transform.parent,nextSpawn,competencyLevel+1);
+            replacement.RespawnCount=RespawnCount+1;
+            replacement.LastRespawnPosition=nextSpawn;
+            // A fallen articulated rider is already detached from this gameplay
+            // root. Keep that corpse where it fell while the fresh prefab enters.
+            gameObject.SetActive(false);Destroy(gameObject);
+            return replacement;
         }
+        public MountedJoustOpponent ValidationRespawn(){return RespawnStronger();}
 #if UNITY_EDITOR
         IEnumerator CaptureRenderedOpponent()
         {
-            yield return null;yield return new WaitForEndOfFrame();
+            while(poseMirror && !poseMirror.PoseCaptured)yield return null;
+            yield return new WaitForEndOfFrame();
             var renderers=GetComponentsInChildren<Renderer>();
             if(renderers.Length==0)yield break;
             Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)if(renderer.enabled)bounds.Encapsulate(renderer.bounds);
@@ -543,7 +675,10 @@ namespace FruitFlyJoust
         }
         void Update()
         {
-            float dt=Time.deltaTime;age+=dt;
+            // Script reloads, editor stalls, and breakpoint-like hitches can produce
+            // a very large rendered-frame delta. Never integrate a detached mount
+            // through that whole interval in one visible jump.
+            float dt=Mathf.Min(Time.deltaTime,.05f);age+=dt;
             scentMemory=Mathf.Max(0,scentMemory-dt);
             foreach(var bait in FindObjectsOfType<ScentedBait>())if(bait.Contains(transform.position)){scentSearchPoint=bait.transform.position;scentMemory=8;}
             Vector3 target;
@@ -576,26 +711,95 @@ namespace FruitFlyJoust
     sealed class BiologicalPoseMirror : MonoBehaviour
     {
         [System.Serializable] sealed class WingProfile { public float[] angles_degrees; public float display_frequency_hz=18; }
+        [System.Serializable] sealed class GeometryPart { public string name;public float[] pivot; }
+        [System.Serializable] sealed class GeometryPose { public float[] positions,rotations; }
+        [System.Serializable] sealed class GeometryData { public GeometryPart[] geoms;public GeometryPose[] poses; }
         Transform source;
         Transform[] sourceParts,targetParts;
         Quaternion[] previousRotations,restRotations;
+        Vector3[] restPositions,restScales;
+        Vector3[] wingPivots;
+        bool[] restActive;
+        bool poseCaptured;
+        float poseCaptureDelay;
+        Renderer[] hiddenRenderers;
+        bool[] hiddenRendererStates;
         WingProfile wingProfile;float wingClock,wingSpeedScale;
         MountedJoustOpponent owner;
         public float MaximumWingMotion { get; private set; }
         public float WingSpeedScale { get { return wingSpeedScale; } }
+        public bool PoseCaptured { get { return poseCaptured; } }
         public void Initialize(Transform template)
         {
             source=template;owner=GetComponentInParent<MountedJoustOpponent>();
             var wingAsset=Resources.Load<TextAsset>("FlyWingAnimationProfile");if(wingAsset)wingProfile=JsonUtility.FromJson<WingProfile>(wingAsset.text);
             sourceParts=new Transform[source.childCount];targetParts=new Transform[transform.childCount];previousRotations=new Quaternion[transform.childCount];restRotations=new Quaternion[transform.childCount];
+            restPositions=new Vector3[transform.childCount];restScales=new Vector3[transform.childCount];restActive=new bool[transform.childCount];
+            wingPivots=new Vector3[transform.childCount];
             for(int i=0;i<sourceParts.Length;i++)sourceParts[i]=source.GetChild(i);
-            for(int i=0;i<targetParts.Length;i++){targetParts[i]=transform.GetChild(i);previousRotations[i]=restRotations[i]=targetParts[i].localRotation;}
-            CopyPose();
+            for(int i=0;i<targetParts.Length;i++)
+            {
+                targetParts[i]=transform.GetChild(i);previousRotations[i]=restRotations[i]=targetParts[i].localRotation;
+                restPositions[i]=targetParts[i].localPosition;restScales[i]=targetParts[i].localScale;restActive[i]=targetParts[i].gameObject.activeSelf;
+            }
+            LoadNeutralWingPose();
+            hiddenRenderers=GetComponentsInChildren<Renderer>(true);hiddenRendererStates=new bool[hiddenRenderers.Length];
+            for(int i=0;i<hiddenRenderers.Length;i++){hiddenRendererStates[i]=hiddenRenderers[i].enabled;hiddenRenderers[i].enabled=false;}
+        }
+        void LoadNeutralWingPose()
+        {
+            var asset=Resources.Load<TextAsset>("FlyPlayableGeometry");if(!asset)return;
+            GeometryData geometry=null;
+            using(var stream=new MemoryStream(asset.bytes))using(var gzip=new GZipStream(stream,CompressionMode.Decompress))using(var reader=new StreamReader(gzip))
+                geometry=JsonUtility.FromJson<GeometryData>(reader.ReadToEnd());
+            if(geometry==null || geometry.geoms==null || geometry.poses==null || geometry.poses.Length==0)return;
+            var pose=geometry.poses[0];
+            for(int i=0;i<targetParts.Length;i++)
+            {
+                if(!targetParts[i] || !targetParts[i].name.Contains("Wing"))continue;
+                int part=-1;for(int j=0;j<geometry.geoms.Length;j++)if(geometry.geoms[j].name==targetParts[i].name){part=j;break;}
+                if(part<0)continue;int p=part*3,q=part*4;
+                if(p+2<pose.positions.Length)restPositions[i]=ResearchViewer.Position(pose.positions[p],pose.positions[p+1],pose.positions[p+2])*500;
+                if(q+3<pose.rotations.Length)restRotations[i]=ResearchViewer.Rotation(pose.rotations[q],pose.rotations[q+1],pose.rotations[q+2],pose.rotations[q+3]);
+                var pivot=geometry.geoms[part].pivot;if(pivot!=null && pivot.Length>=3)wingPivots[i]=ResearchViewer.Position(pivot[0],pivot[1],pivot[2])*500;
+            }
         }
         void LateUpdate(){CopyPose();}
+        void CaptureAssembledPose()
+        {
+            // MountedJoustOpponent is built during Start, before DetailedFlyVisual's
+            // first LateUpdate has placed the 69 biological parts. Capture here
+            // (execution order 100) after that placement; capturing in Initialize
+            // froze unassembled abdomen transforms and visibly detached the body.
+            int count=Mathf.Min(sourceParts.Length,targetParts.Length);
+            for(int i=0;i<count;i++)
+            {
+                if(!sourceParts[i] || !targetParts[i])continue;
+                bool wing=targetParts[i].name.Contains("Wing");
+                if(!wing){restPositions[i]=sourceParts[i].localPosition;restRotations[i]=sourceParts[i].localRotation;}
+                previousRotations[i]=restRotations[i];restScales[i]=sourceParts[i].localScale;
+                restActive[i]=sourceParts[i].gameObject.activeSelf;
+                targetParts[i].localPosition=restPositions[i];targetParts[i].localRotation=restRotations[i];targetParts[i].localScale=restScales[i];
+                targetParts[i].gameObject.SetActive(restActive[i]);
+            }
+            // FlyTackFitter.OnEnable runs while the cloned thorax is still at its
+            // pre-assembly transform, so armour fitted at that moment appears as a
+            // detached abdominal shell. Refit after all biological parts are placed.
+            var tack=GetComponent<FlyTackFitter>();if(tack)tack.Rebuild();
+            for(int i=0;i<hiddenRenderers.Length;i++)if(hiddenRenderers[i])hiddenRenderers[i].enabled=hiddenRendererStates[i];
+            poseCaptured=true;
+        }
         void CopyPose()
         {
             if(!source || sourceParts==null)return;int count=Mathf.Min(sourceParts.Length,targetParts.Length);
+            if(!poseCaptured)
+            {
+                poseCaptureDelay+=Time.deltaTime;
+                // DetailedFlyVisual exponentially settles non-animated body parts.
+                // Waiting 0.35 s leaves less than 0.2% of the initial transform error.
+                if(poseCaptureDelay<.35f)return;
+                CaptureAssembledPose();
+            }
             float speed=owner ? owner.CurrentVelocity.magnitude : 0;
             bool alive=owner && (owner.Mounted || owner.FlyEscaping) && owner.FlyHealth && owner.FlyHealth.Health>0;
             float profileRate=wingProfile!=null ? wingProfile.display_frequency_hz : 18;
@@ -606,19 +810,25 @@ namespace FruitFlyJoust
             for(int i=0;i<count;i++)
             {
                 if(!sourceParts[i] || !targetParts[i])continue;
-                targetParts[i].localPosition=sourceParts[i].localPosition;
+                // The clone starts from the biological model's measured pose, but
+                // must not copy the player's live animation each frame. Its root,
+                // wings and combat state are independently simulated.
+                targetParts[i].localPosition=restPositions[i];
                 bool wing=targetParts[i].name.Contains("Wing");
                 if(wing)
                 {
                     float side=targetParts[i].name.Contains("LWing") ? 1 : -1;
-                    targetParts[i].localRotation=wingSpeedScale<=0 ? restRotations[i] :
-                        Quaternion.AngleAxis(side*(50+measured.x),Vector3.up)*
-                        Quaternion.AngleAxis(measured.y,Vector3.forward)*
-                        Quaternion.AngleAxis(side*measured.z,Vector3.right)*restRotations[i];
+                    float stroke=(measured.x-15.2831f)*.78f;
+                    float deviation=measured.y+4.566f;
+                    float feather=(measured.z-40.6689f)*.30f;
+                    Quaternion movement=Quaternion.AngleAxis(side*(50+stroke),Vector3.up)*
+                        Quaternion.AngleAxis(deviation,Vector3.forward)*Quaternion.AngleAxis(side*feather,Vector3.right);
+                    targetParts[i].localPosition=wingSpeedScale<=0 ? restPositions[i] : wingPivots[i]+movement*(restPositions[i]-wingPivots[i]);
+                    targetParts[i].localRotation=wingSpeedScale<=0 ? restRotations[i] : movement*restRotations[i];
                 }
-                else targetParts[i].localRotation=sourceParts[i].localRotation;
-                targetParts[i].localScale=sourceParts[i].localScale;
-                targetParts[i].gameObject.SetActive(sourceParts[i].gameObject.activeSelf);
+                else targetParts[i].localRotation=restRotations[i];
+                targetParts[i].localScale=restScales[i];
+                targetParts[i].gameObject.SetActive(restActive[i]);
                 if(wing)MaximumWingMotion=Mathf.Max(MaximumWingMotion,Quaternion.Angle(previousRotations[i],targetParts[i].localRotation));
                 previousRotations[i]=targetParts[i].localRotation;
             }

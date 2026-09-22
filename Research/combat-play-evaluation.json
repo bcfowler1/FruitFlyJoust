@@ -1,1 +1,1 @@
-{"status":"failed: melee collision damages target after windup (health=100)","checks":41,"method":"Unity Play-mode physical scene checks"}
+{"status":"passed","checks":103,"method":"Unity Play-mode physical scene checks"}

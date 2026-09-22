@@ -32,6 +32,8 @@ namespace FruitFlyJoust
         private Vector3 transitionPosition;
         private Quaternion transitionRotation;
         private string transitionState;
+        private float continuityGrace;
+        private Vector3 continuityReference;
         private AuthoredPose authoredPose;
         private readonly List<Rigidbody> ragdollBodies=new List<Rigidbody>();
         private readonly List<Collider> ragdollColliders=new List<Collider>();
@@ -49,26 +51,35 @@ namespace FruitFlyJoust
         public float mountedSeatForward;
         public float visualScale = RiderCombat.CanonicalRiderVisualScale;
         public Vector3 MountedLocalPosition { get { return (authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2" ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward))*RiderCombat.FlyAssemblyScale; } }
-        public Vector3 MountedLocalScale { get { return Vector3.one*visualScale; } }
+        public Vector3 MountedLocalScale { get { return CanonicalLocalScale(body && body.parent ? body.parent : null); } }
         public Transform Hand(bool left) { return animator && animator.isHuman ? animator.GetBoneTransform(left ? HumanBodyBones.LeftHand : HumanBodyBones.RightHand) : null; }
         public Transform Head { get { return animator && animator.isHuman ? animator.GetBoneTransform(HumanBodyBones.Head) : null; } }
         public Vector3 VisualRootPosition { get { return body ? body.position : new Vector3(float.PositiveInfinity,float.PositiveInfinity,float.PositiveInfinity); } }
         public Vector3 VisualWorldScale { get { return body ? body.lossyScale : Vector3.zero; } }
         public Vector3 VisualLocalScale { get { return body ? body.localScale : Vector3.zero; } }
+        Vector3 CanonicalLocalScale(Transform anchor)
+        {
+            Vector3 parentScale=anchor ? anchor.lossyScale : Vector3.one;
+            return new Vector3(visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.x)),
+                visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.y)),
+                visualScale/Mathf.Max(.0001f,Mathf.Abs(parentScale.z)));
+        }
         public void SetClock(float simulationDelta)
         {
             if (!animator) return;
             animator.speed=1;animator.Update(Mathf.Max(0,simulationDelta));animator.speed=0;
         }
         public void CancelMountTransition() { transitionRemaining=0; }
-        public void AdvanceTransition(float delta) { transitionRemaining=mountTransitions ? Mathf.Max(0,transitionRemaining-delta) : 0; }
+        public void AdvanceTransition(float delta) { transitionRemaining=mountTransitions ? Mathf.Max(0,transitionRemaining-delta) : 0;continuityGrace=Mathf.Max(0,continuityGrace-delta); }
         public void BeginMountTransition(bool mounted)
         {
             if(!mountTransitions || !animator || !body) return;
+            continuityReference=RagdollCenter;
             transitionDuration=0;
             string name=mounted ? "Rider_Mount_Left" : "Rider_Dismount_Left";
             foreach(var clip in animator.runtimeAnimatorController.animationClips)
                 if(clip.name==name) { transitionDuration=clip.length;break; }
+            continuityGrace=Mathf.Max(.9f,transitionDuration+.25f);
             if(transitionDuration<=0) return;
             transitionRemaining=transitionDuration;transitionState=mounted ? "Mount" : "Dismount";
             transitionPosition=body.position;transitionRotation=body.rotation;
@@ -77,7 +88,7 @@ namespace FruitFlyJoust
         {
             var prefab = Resources.Load<GameObject>("BorrowedRider"); if (!prefab) return false;
             body = Instantiate(prefab, anchor, false).transform; body.name = "Animated rider";
-            body.localScale = Vector3.one * visualScale;
+            body.localScale = CanonicalLocalScale(anchor);
             animator = body.GetComponentInChildren<Animator>(); animator.applyRootMotion = false;
             animator.fireEvents=false; // Silverspur audio callbacks have no receiver in this project.
             var poseAsset=Resources.Load<TextAsset>("RiderAuthoredPose");
@@ -87,13 +98,23 @@ namespace FruitFlyJoust
             { var materials = renderer.sharedMaterials; for (int i = 0; i < materials.Length; i++) materials[i] = material; renderer.sharedMaterials = materials; }
             return true;
         }
+        public bool RecreateFromPrefab(Transform anchor,Material material)
+        {
+            // Respawns never reuse a hierarchy that has been parented through a
+            // saddle, detached as a ragdoll, or rescaled by physics recovery.
+            if(body){body.gameObject.SetActive(false);Destroy(body.gameObject);}
+            body=null;animator=null;grip=null;current=null;Ragdolled=false;
+            transitionRemaining=transitionDuration=0;unmountedVerticalOffset=0;
+            ragdollBodies.Clear();ragdollColliders.Clear();ragdollJoints.Clear();
+            return Create(anchor,material);
+        }
         public void Pose(Transform anchor, bool mounted, float speed, bool defeated = false)
         {
             if (!body) return;
             if(Ragdolled)return;
             bool useAuthored=mounted && transitionRemaining<=0 && authoredPose!=null && authoredPose.format=="FruitFlyJoust.RiderPose.v2";
             if (body.parent != anchor) body.SetParent(anchor, false);
-            body.localScale=Vector3.one*visualScale;
+            body.localScale=CanonicalLocalScale(anchor);
             body.localPosition = mounted ? (useAuthored ? authoredPose.riderLocalPosition : new Vector3(0,mountedSeatHeight,mountedSeatForward))*RiderCombat.FlyAssemblyScale : Vector3.up*unmountedVerticalOffset;
             body.localRotation = useAuthored ? authoredPose.riderLocalRotation : Quaternion.identity; body.gameObject.SetActive(true);
             if(transitionRemaining>0)
@@ -113,12 +134,27 @@ namespace FruitFlyJoust
                         var target=animator.GetBoneTransform(bone);if(!target)continue;
                         target.localPosition=saved.localPosition;target.localRotation=saved.localRotation;target.localScale=saved.localScale;
                     }
+            ConstrainTransitionStep();
+        }
+        void ConstrainTransitionStep()
+        {
+            if(continuityGrace<=0 || !body)return;
+            Vector3 center=RagdollCenter,delta=center-continuityReference;const float maximumStep=.26f;
+            if(delta.magnitude>maximumStep)
+            {
+                body.position-=delta.normalized*(delta.magnitude-maximumStep);
+                continuityGrace=Mathf.Max(continuityGrace,.12f);
+            }
+            continuityReference=RagdollCenter;
         }
         Transform Bone(HumanBodyBones bone) { return animator && animator.isHuman ? animator.GetBoneTransform(bone) : null; }
         public void EnterRagdoll(Vector3 inheritedVelocity)
         {
             if(Ragdolled || !body || !animator || !animator.isHuman)return;
             Ragdolled=true;transitionRemaining=0;body.gameObject.SetActive(true);body.SetParent(null,true);
+            // Detachment must not preserve an accidental tack/arena scale. Every
+            // player and enemy humanoid is authored at the canonical world scale.
+            body.localScale=Vector3.one*visualScale;
             if(grip)grip.enabled=false;
             HumanBodyBones[] bones={HumanBodyBones.Hips,HumanBodyBones.Spine,HumanBodyBones.Chest,HumanBodyBones.Head,
                 HumanBodyBones.LeftUpperArm,HumanBodyBones.LeftLowerArm,HumanBodyBones.RightUpperArm,HumanBodyBones.RightLowerArm,
@@ -127,13 +163,21 @@ namespace FruitFlyJoust
             foreach(var id in bones)
             {
                 Transform bone=Bone(id);if(!bone || map.ContainsKey(bone))continue;
-                var rigid=bone.gameObject.AddComponent<Rigidbody>();rigid.mass=id==HumanBodyBones.Hips ? 4 : id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? 2 : .65f;
+                // A recovered rider can be unseated again before Unity has applied
+                // deferred component destruction. Reuse that bone's physics body
+                // instead of requesting a second Rigidbody (which Unity rejects and
+                // returns null while a CharacterJoint still depends on the first).
+                var rigid=bone.GetComponent<Rigidbody>();
+                if(!rigid)rigid=bone.gameObject.AddComponent<Rigidbody>();
+                if(!rigid)continue;
+                rigid.isKinematic=false;rigid.detectCollisions=true;
+                rigid.mass=id==HumanBodyBones.Hips ? 4 : id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? 2 : .65f;
                 rigid.velocity=inheritedVelocity*(id==HumanBodyBones.Hips ? .85f : .7f);
                 rigid.angularVelocity=Vector3.Cross(Vector3.up,inheritedVelocity)*.08f;rigid.angularDrag=1.5f;rigid.maxAngularVelocity=4;
-                rigid.interpolation=RigidbodyInterpolation.Interpolate;
+                rigid.interpolation=RigidbodyInterpolation.Interpolate;rigid.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
                 Collider collider;
-                if(id==HumanBodyBones.Head){var sphere=bone.gameObject.AddComponent<SphereCollider>();sphere.radius=.12f;collider=sphere;}
-                else {var capsule=bone.gameObject.AddComponent<CapsuleCollider>();capsule.direction=1;capsule.radius=id==HumanBodyBones.Hips || id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? .1f : .055f;capsule.height=capsule.radius*3.2f;collider=capsule;}
+                if(id==HumanBodyBones.Head){var sphere=bone.GetComponent<SphereCollider>();if(!sphere)sphere=bone.gameObject.AddComponent<SphereCollider>();sphere.enabled=true;sphere.radius=.12f;collider=sphere;}
+                else {var capsule=bone.GetComponent<CapsuleCollider>();if(!capsule)capsule=bone.gameObject.AddComponent<CapsuleCollider>();capsule.enabled=true;capsule.direction=1;capsule.radius=id==HumanBodyBones.Hips || id==HumanBodyBones.Spine || id==HumanBodyBones.Chest ? .1f : .055f;capsule.height=capsule.radius*3.2f;collider=capsule;}
                 map.Add(bone,rigid);ragdollBodies.Add(rigid);ragdollColliders.Add(collider);
             }
             // GetBoneTransform requires the humanoid animator to remain live while
@@ -144,7 +188,7 @@ namespace FruitFlyJoust
                 Transform parent=pair.Key.parent;Rigidbody connected=null;
                 while(parent && !map.TryGetValue(parent,out connected))parent=parent.parent;
                 if(!connected)continue;
-                var joint=pair.Key.gameObject.AddComponent<CharacterJoint>();joint.connectedBody=connected;joint.enableProjection=true;
+                var joint=pair.Key.GetComponent<CharacterJoint>();if(!joint)joint=pair.Key.gameObject.AddComponent<CharacterJoint>();if(!joint)continue;joint.connectedBody=connected;joint.enableProjection=true;
                 joint.lowTwistLimit=new SoftJointLimit{limit=-35};joint.highTwistLimit=new SoftJointLimit{limit=35};joint.swing1Limit=new SoftJointLimit{limit=50};joint.swing2Limit=new SoftJointLimit{limit=50};ragdollJoints.Add(joint);
             }
         }
@@ -153,14 +197,14 @@ namespace FruitFlyJoust
             if(!Ragdolled)return;
             Transform hips=Bone(HumanBodyBones.Hips);
             Vector3 preservedHips=hips ? hips.position : body.position;
-            // CharacterJoint requires the Rigidbody on the same object. Queue the
-            // joints for destruction first so Unity does not reject removal of a
-            // body that is still a required component dependency.
-            foreach(var joint in ragdollJoints)if(joint){joint.connectedBody=null;Destroy(joint);}
-            foreach(var collider in ragdollColliders)if(collider)Destroy(collider);
-            var bodiesToRemove=ragdollBodies.ToArray();
-            foreach(var rigid in bodiesToRemove)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;}
-            StartCoroutine(RemoveRagdollBodiesAfterJoints(bodiesToRemove));
+            // Keep the ragdoll components for reuse. Unity does not guarantee that
+            // deferred CharacterJoint destruction completes before a dependent
+            // Rigidbody removal, which produced one error per articulated bone.
+            // Kinematic bodies with disabled colliders are inert under animation and
+            // can be safely reactivated by the next EnterRagdoll call.
+            foreach(var joint in ragdollJoints)if(joint)joint.connectedBody=null;
+            foreach(var collider in ragdollColliders)if(collider)collider.enabled=false;
+            foreach(var rigid in ragdollBodies)if(rigid){rigid.velocity=Vector3.zero;rigid.angularVelocity=Vector3.zero;rigid.isKinematic=true;rigid.detectCollisions=false;}
             ragdollBodies.Clear();ragdollJoints.Clear();ragdollColliders.Clear();Ragdolled=false;
             animator.enabled=true;animator.Rebind();animator.Update(0);
             // Rebind restores the animated skeleton around its old visual root while
@@ -168,14 +212,41 @@ namespace FruitFlyJoust
             // the first recovered animation frame begins at the last rendered hips.
             hips=Bone(HumanBodyBones.Hips);
             if(hips)body.position+=preservedHips-hips.position;
+            continuityReference=hips ? hips.position : body.position;continuityGrace=.9f;
             if(grip)grip.enabled=true;current=null;
         }
-        System.Collections.IEnumerator RemoveRagdollBodiesAfterJoints(Rigidbody[] bodies)
+        public void KeepRagdollAboveGround()
         {
-            // Destroy is applied at the end of the frame. Wait until the joints
-            // are actually gone before removing their required body components.
-            yield return null;
-            foreach(var rigid in bodies)if(rigid)Destroy(rigid);
+            if(!Ragdolled || !body)return;
+            // Also repairs ragdolls created before a tack-scale change or script
+            // reload, so existing fallen riders converge to the canonical size.
+            body.localScale=Vector3.one*visualScale;
+            var renderers=body.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return;
+            Bounds bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            if(FlyMotor.TryArenaCeiling(out var innerCeiling) && bounds.max.y>innerCeiling)
+            {
+                body.position+=Vector3.down*(bounds.max.y-innerCeiling+.02f);
+                foreach(var rigid in ragdollBodies)if(rigid && rigid.velocity.y>0)
+                    rigid.velocity=new Vector3(rigid.velocity.x,Mathf.Min(-.5f,rigid.velocity.y),rigid.velocity.z);
+                bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            }
+            RaycastHit ground=default(RaycastHit);float nearest=float.PositiveInfinity;bool found=false;
+            // Start at the body center. Starting above it can cross a ceiling and
+            // misclassify the roof's top face as ground below the ragdoll.
+            Vector3 origin=bounds.center+Vector3.up*.03f;
+            foreach(var hit in Physics.RaycastAll(origin,Vector3.down,8,1,QueryTriggerInteraction.Ignore))
+            {
+                if(!hit.collider || hit.distance>=nearest || Vector3.Dot(hit.normal,Vector3.up)<.65f ||
+                   hit.collider.attachedRigidbody || hit.collider.GetComponentInParent<CharacterController>() ||
+                   hit.collider.GetComponentInParent<CombatTarget>())continue;
+                Transform candidate=hit.collider.transform;if(candidate==body || candidate.IsChildOf(body))continue;
+                nearest=hit.distance;ground=hit;found=true;
+            }
+            if(!found)return;float correction=ground.point.y+.015f-bounds.min.y;
+            if(correction<=0 || correction>2)return;
+            body.position+=Vector3.up*correction;
+            foreach(var rigid in ragdollBodies)if(rigid && rigid.velocity.y<0)
+                rigid.velocity=new Vector3(rigid.velocity.x,0,rigid.velocity.z);
         }
         public void Attack(string state) { if (animator) animator.CrossFade(state, .06f, 1, 0); }
         public void AimUpperBody(Transform frame,Vector3 worldDirection,float weight)
@@ -185,10 +256,10 @@ namespace FruitFlyJoust
             Vector3 planar=Vector3.ProjectOnPlane(worldDirection,frame.up);
             if(planar.sqrMagnitude<.001f)return;
             float aimYaw=Vector3.SignedAngle(frame.forward,planar.normalized,frame.up);
-            // Stand side-on to the shot with the torso turned to the right of the
-            // firing line. Arm IK below still reaches along worldDirection, so the
-            // bow and projectile remain aimed forward rather than following the chest.
-            float yaw=Mathf.Clamp(Mathf.DeltaAngle(0,aimYaw+90),-105,105);
+            // Turn partially side-on to the shot. Sixty degrees leaves enough reach for
+            // the draw arm to cross the chest while the bow arm and projectile stay on
+            // the world-space firing line established below.
+            float yaw=Mathf.Clamp(Mathf.DeltaAngle(0,aimYaw+60),-105,105);
             LastWaistAimDegrees=yaw*weight;
             Twist(HumanBodyBones.Spine,frame.up,yaw*.22f*weight);
             Twist(HumanBodyBones.Chest,frame.up,yaw*.33f*weight);

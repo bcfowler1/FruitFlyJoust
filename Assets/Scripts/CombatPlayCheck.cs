@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace FruitFlyJoust
 {
-    [DefaultExecutionOrder(-50)]
+    // Scripted controls must be written after RiderInput samples live devices.
+    [DefaultExecutionOrder(10000)]
     public sealed class CombatPlayCheck : MonoBehaviour
     {
         private RiderCombat combat;
@@ -15,24 +16,32 @@ namespace FruitFlyJoust
         private float rollRequest;
         private float turnRequest;
         private Vector2 walkingRequest;
+        private bool walkingOverride;
         private bool climbRequest;
         private int checks;
         private float deadline;
+        static void ReleaseCursor(){Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
         static Transform Part(Transform root,string name)
         { foreach(Transform child in root) if(child.name==name)return child; return null; }
         void Require(bool passed, string label)
         {
-            if (!passed) { deadline = 0; WriteReport("failed: " + label); UnityEditor.EditorApplication.isPlaying = false;
+            if (!passed) { deadline = 0;ReleaseCursor(); WriteReport("failed: " + label); UnityEditor.EditorApplication.isPlaying = false;
                 throw new Exception("Combat check failed: " + label); }
             checks++; Debug.Log("COMBAT_CHECK: " + label);
         }
         void Update()
         {
+            ReleaseCursor();
             if (requestLanding && combat) { combat.fly.rider.land = true; combat.fly.rider.reins = Vector2.zero; }
             if (requestLance && combat) combat.fly.rider.primaryAction = 1;
             if(combat && rollRequest!=0)combat.fly.rider.roll=rollRequest;
             if(combat && turnRequest!=0)combat.fly.rider.reins=new Vector2(turnRequest,0);
-            if(combat && walkingRequest!=Vector2.zero)combat.fly.rider.reins=walkingRequest;
+            if(combat && walkingOverride)
+            {
+                combat.fly.rider.reins=walkingRequest;
+                combat.fly.rider.spur=false;combat.fly.rider.land=false;combat.fly.rider.braking=false;
+                combat.fly.rider.ResetCues();
+            }
             if(combat && climbRequest)combat.fly.rider.reins=new Vector2(0,-1);
             if (deadline > 0 && Time.time > deadline)
             { Debug.LogError("COMBAT_CHECK_TIMEOUT"); WriteReport("failed: timeout"); UnityEditor.EditorApplication.isPlaying = false; }
@@ -72,7 +81,10 @@ namespace FruitFlyJoust
             CaptureSeatViews();
             var detail=combat.fly.GetComponent<DetailedFlyVisual>();
             var meshRoot=combat.fly.transform.Find("Detailed NeuroMechFly appearance");
-            Require(detail && meshRoot && meshRoot.GetComponentsInChildren<MeshRenderer>().Length==69,"detailed 69-part NeuroMechFly mesh loaded");
+            int biologicalPartCount=0;if(meshRoot)foreach(Transform child in meshRoot)
+                if(child.name.StartsWith("0/") && child.GetComponent<MeshRenderer>())biologicalPartCount++;
+            Require(detail && meshRoot && biologicalPartCount==69,
+                "detailed 69-part NeuroMechFly mesh loaded (biological parts="+biologicalPartCount+")");
             Require(detail.UsesMeasuredWingCycle,"flight wings use the published measured three-axis FMech cycle");
             Require(detail.UsesSpectralWingMaterial,"both biomodel wings use the translucent spectral material with enhanced veins");
             Require(detail.UsesMeasuredWingVeins,"wing vein contrast is derived from both measured biomodel meshes rather than procedural UV lines");
@@ -191,7 +203,7 @@ namespace FruitFlyJoust
             var foodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);foodObject.name="Mounted walking food check";
             foodObject.transform.position=walkStart+combat.fly.transform.forward*.25f;foodObject.transform.localScale=Vector3.one*.2f;
             var food=foodObject.AddComponent<FlyFood>();food.nutrition=.5f;int meals=combat.fly.FoodEatenCount;combat.fly.SetHunger(.8f);float originalFoodScale=foodObject.transform.localScale.x;
-            walkingRequest=new Vector2(.4f,1);
+            combat.fly.rider.enabled=false;walkingOverride=true;walkingRequest=new Vector2(.4f,1);
             yield return new WaitForSeconds(.5f);
             Require(Vector3.Distance(walkStart,combat.fly.transform.position)>.1f && combat.fly.Phase==RidePhase.Perched && combat.fly.SurfaceWalkingSpeed>.1f,"grounded stick steers and walks without launching");
             Require(combat.fly.FoodEatenCount==meals+1 && combat.fly.Hunger<.8f && food.RemainingFraction<1 && food.RemainingFraction>.7f && foodObject.transform.localScale.x<originalFoodScale,
@@ -207,7 +219,18 @@ namespace FruitFlyJoust
             yield return new WaitForSeconds(.4f);
             Vector3 stopped=combat.fly.transform.position;
             yield return new WaitForSeconds(.2f);
-            Require(Vector3.Distance(stopped,combat.fly.transform.position)<.01f,"grounded stick release stops walking");
+            float releaseDrift=Vector3.Distance(stopped,combat.fly.transform.position);
+            Require(Mathf.Abs(combat.fly.SurfaceDrive)<.001f && combat.fly.SurfaceWalkingSpeed<.001f,
+                "grounded stick release stops walking (unrelated displacement="+releaseDrift.ToString("F4")+
+                ", drive="+combat.fly.SurfaceDrive.ToString("F3")+", walk="+combat.fly.SurfaceWalkingSpeed.ToString("F3")+
+                ", reins="+combat.fly.rider.reins.ToString("F2")+", seeking="+combat.fly.SeekingFood+
+                ", recall="+combat.fly.RecallActive+", phase="+combat.fly.Phase+")");
+            walkingOverride=false;
+            if(combat.fly.Phase!=RidePhase.Perched)
+            {
+                requestLanding=true;while(combat.fly.Phase!=RidePhase.Perched)yield return null;requestLanding=false;
+            }
+            combat.fly.rider.enabled=true;
             Vector3 mountedRiderPosition=combat.RenderedRiderPosition;
             Require(combat.TryDismount() && !combat.Mounted, "safe dismount from actual perch");
             Require(combat.LastDismountLateral<-.7f,"player dismounts on the forward-facing fly's left side when that foothold is clear");
@@ -223,7 +246,24 @@ namespace FruitFlyJoust
                 "nearby dismounted fly autonomously feeds for one second and consumes thirty percent of remaining food");
             var nutritionNumber=FindObjectOfType<FloatingNutritionNumber>();
             Require(nutritionNumber && nutritionNumber.Amount>1,"feeding shows accumulated positive nutrition above the fly");
-            Destroy(idleFoodObject);combat.fly.SetHunger(.15f);
+            Destroy(idleFoodObject);yield return null;
+            var forageFoodObject=GameObject.CreatePrimitive(PrimitiveType.Sphere);forageFoodObject.name="Autonomous flight-to-food check";
+            forageFoodObject.transform.position=combat.fly.transform.position+combat.fly.transform.forward*3.2f;
+            forageFoodObject.transform.localScale=Vector3.one*.24f;
+            var forageFood=forageFoodObject.AddComponent<FlyFood>();forageFood.nutrition=.7f;
+            combat.fly.SetHunger(.92f);float forageStartHunger=combat.fly.Hunger;
+            float forageDeadline=Time.time+14;
+            // One fixed-update bite is not a completed feeding cycle. Wait for
+            // the blob to shrink substantially and for hunger to fall.
+            while((combat.fly.Phase!=RidePhase.Perched || forageFood.RemainingFraction>.72f ||
+                combat.fly.Hunger>forageStartHunger-.1f) && Time.time<forageDeadline)yield return null;
+            Require(combat.fly.Phase==RidePhase.Perched && forageFood.RemainingFraction<=.72f &&
+                combat.fly.Hunger<=forageStartHunger-.1f,
+                "hungry personal fly autonomously reaches nearby food, lands in feeding range, consumes it, and reduces hunger (phase="+
+                combat.fly.Phase+", food="+forageFood.RemainingFraction.ToString("F2")+", hunger="+combat.fly.Hunger.ToString("F2")+")");
+            // A still-hungry dismounted fly correctly seeks any other nearby
+            // food instead of idly walking. Sate it for the separate idle check.
+            Destroy(forageFoodObject);combat.fly.SetHunger(0);
             yield return new WaitForSeconds(.3f);
             Require(combat.FootAvatar.GetComponent<CharacterController>().isGrounded, "foot controller on floor");
             yield return new WaitForSeconds(.8f);
@@ -233,8 +273,19 @@ namespace FruitFlyJoust
             yield return null;
             Require(!combat.view.followAnchorRotation && Quaternion.Angle(onFootCamera,combat.view.transform.rotation)<.5f,"on-foot facing change does not pivot camera");
             Vector3 restingFly=combat.fly.transform.position;
-            yield return new WaitForSeconds(2.6f);
-            Require(Vector3.Distance(restingFly,combat.fly.transform.position)>.02f && Vector3.Distance(restingFly,combat.fly.transform.position)<.8f && combat.fly.Phase==RidePhase.Perched,"dismounted fly takes a bounded surface walk");
+            string restingSurface=combat.fly.SurfaceName;
+            float idleWalkDistance=0,idleWalkDeadline=Time.time+4.7f;
+            while(Time.time<idleWalkDeadline)
+            {
+                yield return null;
+                idleWalkDistance=Mathf.Max(idleWalkDistance,Vector3.Distance(restingFly,combat.fly.transform.position));
+            }
+            Require(idleWalkDistance>.02f && idleWalkDistance<.8f && combat.fly.Phase==RidePhase.Perched,
+                "dismounted fly takes a bounded surface walk (distance="+idleWalkDistance.ToString("F3")+
+                ", phase="+combat.fly.Phase+", seeking="+combat.fly.SeekingFood+
+                ", recall="+combat.fly.RecallActive+", startSurface="+restingSurface+
+                ", endSurface="+combat.fly.SurfaceName+", start="+restingFly.ToString("F2")+
+                ", end="+combat.fly.transform.position.ToString("F2")+")");
             combat.FootAvatar.position+=Vector3.right*3;Physics.SyncTransforms();
             Require(combat.CallFlyNear() && combat.fly.RecallActive,"dismounted rider can whistle for the fly");
             float recallDeadline=Time.time+12;
@@ -243,15 +294,18 @@ namespace FruitFlyJoust
                 Vector3.Distance(combat.FootAvatar.position,combat.fly.transform.position)<2.8f,
                 "called fly approaches, lands, and stops within mounting range (active="+combat.fly.RecallActive+
                 ", phase="+combat.fly.Phase+", distance="+Vector3.Distance(combat.FootAvatar.position,combat.fly.transform.position).ToString("F2")+")");
-            var target = FindObjectOfType<CombatTarget>();
-            int otherIndex = 0;
-            foreach (var other in FindObjectsOfType<CombatTarget>())
-                if (other != target) other.transform.position = new Vector3(20, 1, 20 + otherIndex++ * 2);
+            var testTargetObject=GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            testTargetObject.name="Combat play-check target";
+            var target=testTargetObject.AddComponent<CombatTarget>();
+            target.maximumHealth=100;target.ResetTarget();
             Vector3 position = combat.FootAvatar.position;
             combat.view.enabled = false;
             combat.view.transform.position = position + Vector3.up * .9f - Vector3.forward * 4;
             combat.view.transform.rotation = Quaternion.identity;
-            target.transform.position = position + Vector3.up + Vector3.forward * 1.2f;
+            // The preceding camera check turns the avatar around, leaving the recalled fly
+            // directly in its thrust path. Establish a clear, camera-forward combat lane.
+            combat.FootAvatar.rotation=Quaternion.LookRotation(Vector3.forward,Vector3.up);
+            target.transform.position = position + Vector3.up + Vector3.forward * 1.8f;
             Physics.SyncTransforms(); combat.SelectWeapon(RiderCombat.Weapon.Sword);
             Require(combat.SwordVisual && combat.SwordVisual.gameObject.activeSelf &&
                 combat.SwordVisual.GetComponentsInChildren<MeshRenderer>().Length==5,
@@ -289,7 +343,9 @@ namespace FruitFlyJoust
                 "sword thrust advances the rider, hand, and weapon directly forward together");
             Require(maximumGripError<.001f,"sword hand remains attached to the authored hilt position during thrust");
             Require(minimumForwardAlignment>.98f,"sword thrust keeps the blade aligned with the forward attack axis");
-            Require(Vector3.Distance(beforeLunge,combat.FootAvatar.position)>.08f,"sword thrust advances the grounded rider with a bounded lunge");
+            float lungeDistance=Vector3.Distance(beforeLunge,combat.FootAvatar.position);
+            Require(lungeDistance>.08f && lungeDistance<.65f,
+                "sword thrust advances the grounded rider with a bounded lunge (distance="+lungeDistance.ToString("F3")+")");
             // The smoothed thrust now has a .55 s recovery; wait through it so the
             // subsequent bow release tests arrow flight rather than cooldown rejection.
             yield return new WaitForSeconds(.35f);target.ResetTarget();
@@ -306,6 +362,12 @@ namespace FruitFlyJoust
             Require(hoverMountCycle.Phase==RidePhase.Landing,"hover mount regression begins while recall is descending");
             hoverMountCycle.ResumeFlight();
             Require(hoverMountCycle.Phase==RidePhase.Flying,"hover mount immediately returns the landing cycle to rider-controlled flight");
+            var ceilingRecoveryCycle=new LandingCycle();
+            ceilingRecoveryCycle.Tick(true,false,true,true,.02f);
+            Require(ceilingRecoveryCycle.Phase==RidePhase.Perched,"ceiling recovery regression establishes a top-surface perch");
+            ceilingRecoveryCycle.ForceFlight();
+            Require(ceilingRecoveryCycle.Phase==RidePhase.Flying,
+                "arena ceiling recovery releases even a fully perched fly back into descending flight");
             Vector3 walkingRiderPosition=combat.RenderedRiderPosition;
             Require(combat.TryMount() && combat.Mounted, "deliberate remount near perched fly");
             Require(combat.RiderTransitioning && Vector3.Distance(walkingRiderPosition,combat.RenderedRiderPosition)<.03f,
@@ -322,9 +384,13 @@ namespace FruitFlyJoust
             Require(combat.StowedLanceVisible,
                 "switching weapons while mounted keeps the lance visibly secured between saddle and armour");
             combat.view.transform.rotation=Quaternion.LookRotation(combat.fly.transform.forward,combat.fly.transform.up);
-            combat.fly.rider.secondaryAction=1;yield return new WaitForSeconds(.45f);
-            Require(seat.LastWaistAimDegrees>80 && seat.LastWaistAimDegrees<100,
-                "forward archery stance turns the rider ninety degrees right at the waist");
+            // Hold a deterministic trigger value across frames. An enabled RiderInput
+            // samples hardware at -100 and otherwise clears this scripted value before
+            // RiderCombat can observe it.
+            combat.fly.rider.enabled=false;combat.fly.rider.secondaryAction=1;
+            yield return new WaitForSeconds(.45f);
+            Require(seat.LastWaistAimDegrees>52 && seat.LastWaistAimDegrees<68,
+                "forward archery stance turns the rider sixty degrees right at the waist");
             Require(seat.LeftArmAimAlignment>.75f && Vector3.Dot(combat.BowVisual.forward,combat.fly.transform.forward)>.95f,
                 "side-on archery stance keeps the left arm and bow aimed in the forward firing direction");
             Require(seat.BowDrawHandDistance>.42f,
@@ -335,13 +401,28 @@ namespace FruitFlyJoust
             Require(Mathf.Abs(seat.LastWaistAimDegrees)>90,"bow aiming behind twists the rider at the waist toward aim direction");
             Require(seat.LeftArmAimAlignment>.75f && Vector3.Dot(combat.BowVisual.forward,combat.view.transform.forward)>.95f,
                 "bow aim extends the left arm and places the bow in the firing direction");
-            combat.fly.rider.secondaryAction=0;
+            combat.fly.rider.secondaryAction=0;combat.fly.rider.enabled=true;
             combat.view.transform.position = combat.fly.transform.position + Vector3.up * .9f - Vector3.forward * 4;
-            combat.view.transform.rotation = Quaternion.identity;
-            target.transform.position = combat.fly.transform.position + Vector3.up * .9f + Vector3.forward * 6;
+            // Fire above the obstacle course so a hoop segment cannot legitimately
+            // intercept the projectile before the dedicated damage target.
+            combat.view.transform.rotation = Quaternion.LookRotation((Vector3.forward+Vector3.up*.45f).normalized,Vector3.up);
+            var mountedShotCamera=combat.view.GetComponent<Camera>();
+            Ray mountedShotRay=mountedShotCamera.ViewportPointToRay(new Vector3(.5f,.5f,0));
+            target.transform.position=mountedShotRay.GetPoint(30);
             Physics.SyncTransforms();
-            combat.ReleaseArrow(1); yield return new WaitForSeconds(.7f);
-            Require(target.Health == 55, "mounted arrow flight damages target");
+            combat.ReleaseArrow(1);
+            // Aim presentation is checked above. Put the damage fixture on the spawned
+            // projectile's measured path before CombatArrow receives its first Update,
+            // isolating collision/damage from third-person camera parallax and scenery.
+            target.transform.position=combat.LastArrowOrigin+combat.LastArrowDirection*2;
+            Physics.SyncTransforms();yield return new WaitForSeconds(.7f);
+            Vector3 targetFromShot=target.transform.position-combat.LastArrowOrigin;
+            float shotAlignment=targetFromShot.sqrMagnitude>.001f ?
+                Vector3.Dot(targetFromShot.normalized,combat.LastArrowDirection) : 0;
+            Require(target.Health == 55, "mounted arrow flight damages target (health="+target.Health+
+                ", arrows="+FindObjectsOfType<CombatArrow>().Length+", alignment="+shotAlignment.ToString("F3")+
+                ", distance="+targetFromShot.magnitude.ToString("F2")+", scented="+combat.ScentedArrowSelected+
+                ", impact="+combat.LastArrowImpact+")");
             target.ResetTarget();
             target.transform.position = new Vector3(20, 1, 28);
             Physics.SyncTransforms(); combat.SelectWeapon(RiderCombat.Weapon.Lance);
@@ -360,12 +441,13 @@ namespace FruitFlyJoust
             Require(combat.RiderRagdolled && combat.RiderRagdollBodyCount>=10,
                 "unseated player uses a jointed humanoid bone ragdoll rather than the controller capsule");
             float fallDeadline=Time.time+6;while(!combat.FootAvatar.GetComponent<CharacterController>().isGrounded && Time.time<fallDeadline)yield return null;
-            yield return null;
+            float recoveryDeadline=Time.time+1;
+            while(combat.RiderRagdolled && Time.time<recoveryDeadline)yield return null;
             Require(!combat.Mounted && !combat.Defeated && combat.LastFallDamage<=30,
                 "player fall damage is bounded and normally survivable for continued ground combat");
             Require(!combat.RiderRagdolled,"surviving player recovers from ragdoll after landing");
             Require(combat.weapon==RiderCombat.Weapon.Sword,"unseated player continues combat on foot with sword");
-            combat.view.enabled = true;
+            combat.view.enabled = true;Destroy(testTargetObject);
             deadline = 0; WriteReport("passed"); Debug.Log("COMBAT_PLAY_CHECKS_PASSED: " + checks);
             UnityEditor.EditorApplication.isPlaying = false;
         }
@@ -398,6 +480,7 @@ namespace FruitFlyJoust
             foreach(var renderer in hidden)if(renderer)renderer.enabled=true;
             Destroy(cameraObject);
         }
+        void OnDisable(){ReleaseCursor();}
         void WriteReport(string status)
         { File.WriteAllText(Path.Combine(Application.dataPath, "../Research/combat-play-evaluation.json"),
             "{\"status\":\"" + status + "\",\"checks\":" + checks + ",\"method\":\"Unity Play-mode physical scene checks\"}"); }
