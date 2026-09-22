@@ -9,7 +9,7 @@ static class ValidationRefreshBridge
 {
     static readonly string[] Markers={
         "run-combat-check.once","run-enemy-check.once","run-enemy-lifecycle-check.once",
-        "run-surface-check.once"
+        "run-surface-check.once","run-plant-check.once"
     };
     static bool pending;
     static double refreshAt;
@@ -44,6 +44,12 @@ static class ValidationRefreshBridge
         {
             SessionState.SetString(LastRefreshKey,markerStamp);
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            return;
+        }
+        if(Path.GetFileName(marker)=="run-plant-check.once")
+        {
+            File.Delete(marker);
+            PlantLabTools.BuildIndoorLab();
             return;
         }
         AutoCombatCheck.Run();

@@ -110,12 +110,28 @@ namespace FruitFlyJoust
             Quaternion pose = SurfaceGeometry.Pose(transform.forward, surface.normal);
             Vector3[] offsets = { pose * Vector3.right * .4f, pose * Vector3.left * .4f,
                 pose * Vector3.forward * .65f, pose * Vector3.back * .65f };
+            var grip = surface.collider.GetComponent<FlyGripSurface>();
+            bool wrapFacets = grip && grip.allowFacetWrap;
+            int supported = 0;
             foreach (Vector3 offset in offsets)
+            {
                 if (!Physics.Raycast(position + offset, -surface.normal, out var edge, surfaceProbeDistance, 1,
-                    QueryTriggerInteraction.Ignore) || edge.collider != surface.collider ||
-                    Vector3.Dot(edge.normal, surface.normal) < .95f ||
-                    Mathf.Abs(Vector3.Dot(edge.point - surface.point, surface.normal)) > .25f) return false;
-            return true;
+                    QueryTriggerInteraction.Ignore) || edge.collider != surface.collider)
+                {
+                    if (!wrapFacets) return false;
+                    continue;
+                }
+                float normalAlignment = Vector3.Dot(edge.normal, surface.normal);
+                float heightDifference = Mathf.Abs(Vector3.Dot(edge.point - surface.point, surface.normal));
+                if (normalAlignment < (wrapFacets ? -.05f : .95f) ||
+                    heightDifference > (wrapFacets ? .65f : .25f))
+                {
+                    if (!wrapFacets) return false;
+                    continue;
+                }
+                supported++;
+            }
+            return supported >= (wrapFacets ? 2 : offsets.Length);
         }
 
         void Perch(RaycastHit surface)
