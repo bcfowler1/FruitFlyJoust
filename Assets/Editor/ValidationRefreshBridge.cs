@@ -9,7 +9,8 @@ static class ValidationRefreshBridge
 {
     static readonly string[] Markers={
         "run-combat-check.once","run-enemy-check.once","run-enemy-lifecycle-check.once",
-        "run-surface-check.once","run-plant-check.once"
+        "run-surface-check.once","run-plant-check.once","run-kitchen-check.once",
+        "run-kitchen-play.once","run-kitchen-seeds.once"
     };
     static bool pending;
     static double refreshAt;
@@ -50,6 +51,26 @@ static class ValidationRefreshBridge
         {
             File.Delete(marker);
             PlantLabTools.BuildIndoorLab();
+            return;
+        }
+        if(Path.GetFileName(marker)=="run-kitchen-check.once")
+        {
+            File.Delete(marker);
+            KitchenLevelTools.Build(1049);
+            return;
+        }
+        if(Path.GetFileName(marker)=="run-kitchen-play.once")
+        {
+            File.Delete(marker);
+            UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/KitchenLevel1.unity");
+            new GameObject("Kitchen play checks").AddComponent<FruitFlyJoust.KitchenLevelPlayCheck>();
+            EditorApplication.isPlaying=true;
+            return;
+        }
+        if(Path.GetFileName(marker)=="run-kitchen-seeds.once")
+        {
+            File.Delete(marker);
+            KitchenLevelTools.VerifySeeds();
             return;
         }
         AutoCombatCheck.Run();

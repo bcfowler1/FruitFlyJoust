@@ -22,6 +22,7 @@ namespace FruitFlyJoust
         public Transform mountedVisual;
         public RiderCamera view;
         public PracticeCourse course;
+        public bool spawnStandaloneJouster = true;
         public Material riderMaterial, weaponMaterial;
         public enum Weapon { Sword, Bow, Lance }
         public enum SwordAttack { LeftToRight, RightToLeft, Thrust }
@@ -453,7 +454,7 @@ namespace FruitFlyJoust
             // Editor validation is deliberately allowed to keep simulating while the
             // Console or Codex has focus. Interactive builds still pause player input.
             if(!Application.isFocused && !automated)return;
-            if(!research && !standaloneJousterSpawned && !automated)
+            if(!research && spawnStandaloneJouster && !standaloneJousterSpawned && !automated)
             { standaloneJouster=CreateMountedJouster(null,RideRoot.position);standaloneJousterSpawned=true; }
             if (CombatPaused && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide) return;
             if (Defeated && !Input.GetKeyDown(KeyCode.Backspace) && !RideInput.resetRide && !footInput.resetRide)

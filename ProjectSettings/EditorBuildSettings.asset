@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Practice.unity
     guid: 47a00c43f01e23943ae0f40c4e4b99d6
+  - enabled: 1
+    path: Assets/KitchenLevel1.unity
+    guid: a11ffe5f5069b5a4baa6aef06753aa3d
+  - enabled: 1
+    path: Assets/KitchenLevel2.unity
+    guid: 56b4356da3a343047852a93acb0f11a2
   m_configObjects: {}
