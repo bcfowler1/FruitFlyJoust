@@ -47,6 +47,9 @@ namespace FruitFlyJoust
 
         [Header("Placement")]
         public bool includePot = true;
+        public bool hangingPlant;
+        [Range(3, 8)] public int vineCount = 5;
+        [Range(2f, 5f)] public float hangerLength = 3.8f;
         [Range(10, 18)] public int potFaces = 12;
         [Range(1.25f, 2.4f)] public float potRadius = 1.65f;
         [Range(1.4f, 2.6f)] public float potHeight = 2.0f;
@@ -82,6 +85,7 @@ namespace FruitFlyJoust
             internodes = Mathf.Clamp(internodes, 3, 11);
             potFaces = Mathf.Clamp(potFaces, 10, 18);
             petalCount = Mathf.Clamp(petalCount, 4, 8);
+            vineCount = Mathf.Clamp(vineCount, 3, 8);
         }
 
         public void Rebuild()
@@ -96,11 +100,59 @@ namespace FruitFlyJoust
             generated.SetParent(transform, false);
             GeneratedStemCount = GeneratedLeafCount = GeneratedFlowerStalkCount = 0;
             if (includePot) BuildPot(generated);
+            if (hangingPlant && includePot) BuildHanger(generated);
             var growth = new GameObject("Growth").transform;
             growth.SetParent(generated, false);
             growth.localPosition = Vector3.up * BaseHeight;
             var random = new System.Random(seed);
-            BuildStem(growth, internodes, internodeLength, stemRadius, 0, random);
+            if (hangingPlant) BuildHangingVines(growth, random);
+            else BuildStem(growth, internodes, internodeLength, stemRadius, 0, random);
+        }
+
+        void BuildHangingVines(Transform growth, System.Random random)
+        {
+            for (int vine = 0; vine < vineCount; vine++)
+            {
+                float azimuth = (vine + .18f) * 360f / vineCount;
+                float radians = azimuth * Mathf.Deg2Rad;
+                var pivot = new GameObject("Trailing vine " + (vine + 1)).transform;
+                pivot.SetParent(growth, false);
+                pivot.localPosition = new Vector3(Mathf.Cos(radians), 0,
+                    Mathf.Sin(radians)) * (potRadius * .68f);
+                pivot.localRotation = Quaternion.AngleAxis(azimuth, Vector3.up) *
+                    Quaternion.AngleAxis(157f + vine % 3 * 5f, Vector3.forward);
+                float lengthVariation = .68f + .12f * (vine % 5);
+                BuildStem(pivot, internodes, internodeLength * lengthVariation,
+                    stemRadius * (.88f + .06f * (vine % 3)), 1, random);
+                BuildLeaf(growth, 0, azimuth, .47f, 1);
+            }
+        }
+
+        void BuildHanger(Transform generated)
+        {
+            var hanger = new GameObject("Ceiling hanger").transform;
+            hanger.SetParent(generated, false);
+            Vector3 hook = Vector3.up * (potHeight + hangerLength);
+            for (int cable = 0; cable < 3; cable++)
+            {
+                float angle = (cable * 120f + potFacetRotation) * Mathf.Deg2Rad;
+                Vector3 rim = new Vector3(Mathf.Cos(angle) * potRadius * .9f,
+                    potHeight, Mathf.Sin(angle) * potRadius * .9f);
+                AddHangerCable(hanger, "Suspension cable " + (cable + 1), rim, hook);
+            }
+            AddHangerCable(hanger, "Ceiling hook", hook,
+                hook + Vector3.up * .15f);
+        }
+
+        void AddHangerCable(Transform parent, string name, Vector3 from, Vector3 to)
+        {
+            var cable = new GameObject(name).transform;
+            cable.SetParent(parent, false);
+            cable.localPosition = from;
+            Vector3 delta = to - from;
+            cable.localRotation = Quaternion.FromToRotation(Vector3.up, delta);
+            AddMesh(cable.gameObject, StemMesh(5, 2, delta.magnitude, .035f,
+                1f, 0, 0, 0), new[] { potRimMaterial }, false);
         }
 
         float Vary(System.Random random)

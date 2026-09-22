@@ -53,17 +53,23 @@ public static class PlantLabTools
             7, ProceduralPlant.LeafPattern.Whorled, 5, .96f, 3.8f, 3.2f,
             .41f, .07f, new Color(.37f, .34f, .23f), new Color(.57f, .47f, .30f),
             new Color(.94f, .50f, .38f), new Color(.87f, .38f, .12f));
+        CreatePreset(group.transform, "Hanging jade vines", FindHangingPosition(2.8f,
+                new Vector3(-25, 0, 24), new Vector3(-24, 0, -25),
+                new Vector3(25, 0, -24), new Vector3(25, 0, 24)), 109,
+            5, ProceduralPlant.LeafPattern.Spiral, 4, 1.55f, 2.8f, 2.48f,
+            .42f, 0, new Color(.16f, .47f, .38f), new Color(.33f, .65f, .56f),
+            new Color(.71f, .88f, .73f), new Color(.42f, .73f, .63f), true);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene, ScenePath);
         AssetDatabase.SaveAssets();
-        Debug.Log("PLANT_LAB_READY: combat models preserved; three flowering plants placed clear of room obstacles");
+        Debug.Log("PLANT_LAB_READY: combat models preserved; three floor plants and one corner hanging plant clear of room obstacles");
         ValidateLab();
     }
 
     static void CreatePreset(Transform parent, string name, Vector3 position, int seed,
         int faces, ProceduralPlant.LeafPattern pattern, int nodes, float nodeLength,
         float leafLength, float leafWidth, float widest, float branchChance,
-        Color upper, Color lower, Color petalColor, Color fruitColor)
+        Color upper, Color lower, Color petalColor, Color fruitColor, bool hanging = false)
     {
         var root = new GameObject(name);
         root.transform.SetParent(parent, false);
@@ -78,6 +84,15 @@ public static class PlantLabTools
         plant.leafWidth = leafWidth;
         plant.widestPoint = widest;
         plant.branchChance = branchChance;
+        plant.hangingPlant = hanging;
+        if (hanging)
+        {
+            plant.stemRadius = .17f;
+            plant.stemBend = .28f;
+            plant.potRadius = 1.4f;
+            plant.potHeight = 1.65f;
+            plant.leafRiseDegrees = 8f;
+        }
         plant.stemMaterial = Material("Stem", new Color(.24f, .32f, .19f));
         plant.leafUpperMaterial = Material(name + " upper", upper);
         plant.leafLowerMaterial = Material(name + " lower", lower);
@@ -85,11 +100,14 @@ public static class PlantLabTools
         plant.potMaterial = Material("Faceted pot", new Color(.28f, .36f, .44f));
         plant.potRimMaterial = Material("Pot rim", new Color(.58f, .49f, .40f));
         plant.soilMaterial = Material("Soil", new Color(.20f, .16f, .13f));
-        plant.budMaterial = Material("Flower buds and calyx", new Color(.32f, .53f, .22f));
-        plant.petalMaterial = Material(name + " petals", petalColor);
-        plant.flowerCenterMaterial = Material("Flower pollen", new Color(.98f, .72f, .19f));
-        plant.youngFruitMaterial = Material("Young fruit", new Color(.48f, .68f, .27f));
-        plant.ripeFruitMaterial = Material(name + " ripe fruit", fruitColor);
+        if (!hanging)
+        {
+            plant.budMaterial = Material("Flower buds and calyx", new Color(.32f, .53f, .22f));
+            plant.petalMaterial = Material(name + " petals", petalColor);
+            plant.flowerCenterMaterial = Material("Flower pollen", new Color(.98f, .72f, .19f));
+            plant.youngFruitMaterial = Material("Young fruit", new Color(.48f, .68f, .27f));
+            plant.ripeFruitMaterial = Material(name + " ripe fruit", fruitColor);
+        }
         Regenerate(plant);
         SavePreset(plant);
     }
@@ -100,6 +118,16 @@ public static class PlantLabTools
         foreach (var candidate in candidates)
             if (ClearOfSceneObjects(candidate, radius)) return candidate;
         throw new InvalidOperationException("No collision-free position for a plant of radius " + radius);
+    }
+
+    static Vector3 FindHangingPosition(float leafLength, params Vector3[] candidates)
+    {
+        Vector3 position = FindClearPosition(leafLength + 1f, candidates);
+        var ceiling = GameObject.Find("Ceiling");
+        var collider = ceiling ? ceiling.GetComponent<Collider>() : null;
+        if (!collider) throw new InvalidOperationException("Hanging plant needs a ceiling collider.");
+        position.y = collider.bounds.min.y - 1.65f - 3.8f;
+        return position;
     }
 
     static bool ClearOfSceneObjects(Vector3 center, float radius, Transform ignore = null)
@@ -201,19 +229,24 @@ public static class PlantLabTools
             null, new[] { typeof(RaycastHit), typeof(Vector3) }, null);
         int opponents = UnityEngine.Object.FindObjectsOfType<CombatOpponent>().Length;
         bool combatPreserved = UnityEngine.Object.FindObjectOfType<RiderCombat>() && opponents >= 2;
-        bool passed = plants.Length == 3 && fly && footprint != null && combatPreserved;
+        int hangingCount = 0;
+        foreach (var plant in plants) if (plant.hangingPlant) hangingCount++;
+        bool passed = plants.Length == 4 && hangingCount == 1 && fly &&
+            footprint != null && combatPreserved;
         string detail = "plants=" + plants.Length + ", combatPreserved=" + combatPreserved +
-            ", opponents=" + opponents;
+            ", opponents=" + opponents + ", hanging=" + hangingCount;
         Physics.SyncTransforms();
         foreach (var plant in plants)
         {
             var stems = plant.GetComponentsInChildren<FlyGripSurface>(true);
             MeshCollider leaf = null, stem = null;
             int leafCount = 0;
+            float lowestGripSurface = float.PositiveInfinity;
             foreach (var surface in stems)
             {
                 var collider = surface.GetComponent<MeshCollider>();
                 if (!collider) continue;
+                lowestGripSurface = Mathf.Min(lowestGripSurface, collider.bounds.min.y);
                 if (surface.allowFacetWrap && !stem) stem = collider;
                 if (!surface.allowFacetWrap) { leafCount++; if (!leaf) leaf = collider; }
             }
@@ -221,13 +254,16 @@ public static class PlantLabTools
                 plant.leafWidth > 1.5f * RiderCombat.FlyAssemblyScale &&
                 stem && leaf && leafCount >= plant.internodes;
             bool pot = plant.transform.Find("Generated plant/Removable rotated-facet pot") != null;
-            var mainStem = plant.transform.Find("Generated plant/Growth/Main faceted stem");
+            var growth = plant.transform.Find("Generated plant/Growth");
+            var mainStem = growth ? growth.Find("Main faceted stem") : null;
             bool floralStages = mainStem && mainStem.Find("Bud stalk") &&
                 mainStem.Find("Open flower stalk") && mainStem.Find("Young fruit stalk") &&
                 mainStem.Find("Ripe fruit stalk");
+            var sampledStem = plant.hangingPlant && growth ?
+                growth.Find("Trailing vine 1/Branch faceted stem") : mainStem;
             float largestLeaf = 0, smallestLeaf = float.PositiveInfinity;
-            if (mainStem)
-                foreach (Transform child in mainStem)
+            if (sampledStem)
+                foreach (Transform child in sampledStem)
                 {
                     var blade = child.Find("Closed leaf blade");
                     if (!blade) continue;
@@ -236,8 +272,23 @@ public static class PlantLabTools
                     smallestLeaf = Mathf.Min(smallestLeaf, length);
                 }
             bool smallerTips = largestLeaf > 0 && smallestLeaf < largestLeaf * .8f;
+            int trailingVines = 0;
+            if (growth)
+                foreach (Transform child in growth)
+                    if (child.name.StartsWith("Trailing vine ")) trailingVines++;
+            var ceiling = GameObject.Find("Ceiling");
+            var ceilingCollider = ceiling ? ceiling.GetComponent<Collider>() : null;
+            bool hangingShape = !plant.hangingPlant ||
+                (trailingVines == plant.vineCount &&
+                 plant.transform.Find("Generated plant/Ceiling hanger/Ceiling hook") &&
+                 ceilingCollider &&
+                 lowestGripSurface < plant.transform.position.y - 2f &&
+                 Mathf.Abs(plant.transform.position.y + plant.potHeight +
+                     plant.hangerLength - ceilingCollider.bounds.min.y) < .2f &&
+                 Mathf.Abs(plant.transform.position.x) >= 20f &&
+                 Mathf.Abs(plant.transform.position.z) >= 20f);
             bool placementClear = ClearOfSceneObjects(plant.transform.position,
-                plant.leafLength + 2f, plant.transform);
+                plant.leafLength + (plant.hangingPlant ? 3f : 2f), plant.transform);
             foreach (var other in plants)
             {
                 if (other == plant) continue;
@@ -269,13 +320,15 @@ public static class PlantLabTools
             }
             bool savedMeshes = leaf && AssetDatabase.Contains(leaf.sharedMesh) &&
                 stem && AssetDatabase.Contains(stem.sharedMesh);
-            passed &= geometry && pot && floralStages && smallerTips && placementClear &&
+            passed &= geometry && pot && (plant.hangingPlant || floralStages) &&
+                smallerTips && hangingShape && placementClear &&
                 leafContact && stemContact && savedMeshes && topGrip && underGrip && stemGrip;
             detail += " | " + plant.name + ": leaves=" + leafCount + ", width=" +
                 plant.leafWidth.ToString("F2") + ", faces=" + plant.stemFaces +
                 ", bothLeafFaces=" + leafContact + ", stemSide=" + stemContact +
                 ", flyGrip=" + topGrip + "/" + underGrip + "/" + stemGrip +
                 ", flowers=" + floralStages + ", smallTips=" + smallerTips +
+                ", hangingShape=" + hangingShape + ", vines=" + trailingVines +
                 ", placementClear=" + placementClear + ", pot=" + pot +
                 ", savedMeshes=" + savedMeshes;
         }
